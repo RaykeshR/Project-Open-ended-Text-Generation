@@ -1,8 +1,28 @@
 # Project: Open-ended Text Generation
 
+## Generation
+
 ```py
 python -m open_text_gen.generate --alphas 0.2 0.5 0.8 --dataset_name wikitext --output_dir open_text_gen/wikitext
 python -m open_text_gen.generate --alphas 0.2 0.5 0.8 --dataset_name wikitext --output_dir open_text_gen/wikitext --num_prefixes 5
+```
+
+## Evaluation
+
+### Coherence
+
+```bash
+python open_text_gen/compute_coherence.py --opt_model_name facebook/opt-2.7b --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.2_gpt2-xl_256.jsonl
+python open_text_gen/compute_coherence.py --opt_model_name facebook/opt-2.7b --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.5_gpt2-xl_256.jsonl
+python open_text_gen/compute_coherence.py --opt_model_name facebook/opt-2.7b --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.8_gpt2-xl_256.jsonl
+```
+
+### Diversity, MAUVE, and Generation Length
+
+```bash
+python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.2_gpt2-xl_256.jsonl
+python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.5_gpt2-xl_256.jsonl
+python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.8_gpt2-xl_256.jsonl
 ```
 
 
