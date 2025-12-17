@@ -11,25 +11,16 @@ import torch.nn.functional as F
 
 import json
 def load_result(in_f):
+    all_prefix_text_list = [[]]
+    all_prediction_list = [[]]
     with open(in_f) as f:
-        result_list = json.load(f)
-
-    # load all predictions
-    number_of_predictions_per_instance = len(result_list[0]['generated_result'])
-    print ('Number of predictions per instance is {}'.format(number_of_predictions_per_instance))
-    all_prefix_text_list, all_prediction_list = [], []
-    for idx in range(number_of_predictions_per_instance):
-        one_prefix_text_list, one_prediction_list = [], []
-        for item in result_list:
-            one_prediction = item['generated_result'][str(idx)]
-            if len(one_prediction.strip().split()) == 0:
+        for line in f:
+            item = json.loads(line)
+            if 'generated' not in item or len(item['generated'].strip().split()) == 0:
                 continue
-            one_prefix_text = item['prefix_text']
-            one_prefix_text_list.append(one_prefix_text)
-            one_prediction_list.append(one_prediction)
-        assert len(one_prefix_text_list) == len(one_prediction_list)
-        all_prefix_text_list.append(one_prefix_text_list)
-        all_prediction_list.append(one_prediction_list)
+            all_prefix_text_list[0].append(item['prefix'])
+            all_prediction_list[0].append(item['generated'])
+    print ('Number of predictions per instance is {}'.format(len(all_prefix_text_list)))
     return all_prefix_text_list, all_prediction_list
 
 class CoherenceEvaluator(nn.Module):

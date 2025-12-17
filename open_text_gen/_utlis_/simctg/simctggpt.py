@@ -108,6 +108,7 @@ class SimCTGGPT(nn.Module):
         last_hidden_states = None
         logits = None
         for step in range(decoding_len):
+            print('.', end='', flush=True)
             input_ids, past_key_values, last_hidden_states, logits = ContrastiveDecodingOneStepFast(
                 self.model,
                 input_ids,

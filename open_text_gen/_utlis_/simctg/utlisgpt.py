@@ -90,26 +90,25 @@ def ContrastiveDecodingOneStepFast(
 def enlarge_past_key_values(past_key_values, beam_width):
     # from [B, num_head, seq_len, esz] to [B*K, num_head, seq_len, esz]
     new_key_values = []
-    for layer in past_key_values:
+    for layer in past_key_values: # layer is a tuple (key_tensor, value_tensor)
         items = []
-        for item in layer:
-            # item is the key and value matrix
-            bsz, num_head, seq_len, esz = item.size()
-            item = item.unsqueeze(1).expand(-1, beam_width, -1, -1, -1).reshape(bsz*beam_width, num_head, seq_len, esz)    # [bsz*beam, num_head, seq_len, esz]
-            items.append(item)
-        new_key_values.append(items)
-    return new_key_values
+        for item_tensor in layer: # item_tensor is either key or value tensor
+            bsz, num_head, seq_len, esz = item_tensor.size()
+            item_tensor = item_tensor.unsqueeze(1).expand(-1, beam_width, -1, -1, -1).reshape(bsz*beam_width, num_head, seq_len, esz)
+            items.append(item_tensor)
+        new_key_values.append(tuple(items)) # Make it a tuple
+    return tuple(new_key_values) # Make it a tuple
 
 def select_past_key_values(past_key_values, beam_width, selected_idx):
     '''select_idx: [B]'''
     new_key_values = []
-    for layer in past_key_values:
+    for layer in past_key_values: # layer is a tuple (key_tensor, value_tensor)
         items = []
-        for item in layer:
-            bsz_and_beam, num_head, seq_len, esz = item.size()
+        for item_tensor in layer: # item_tensor is either key or value tensor
+            bsz_and_beam, num_head, seq_len, esz = item_tensor.size()
             bsz = int(bsz_and_beam//beam_width)
-            item = torch.stack(torch.split(item, beam_width, dim=0))    # [B, K, num_head, seq_len, esz] 
-            item = item[range(bsz), selected_idx, :, :, :]   # [B, num_head, seq_len, esz]
-            items.append(item)
-        new_key_values.append(items)
-    return new_key_values
+            item_tensor = torch.stack(torch.split(item_tensor, beam_width, dim=0))    # [B, K, num_head, seq_len, esz] 
+            item_tensor = item_tensor[range(bsz), selected_idx, :, :, :]   # [B, num_head, seq_len, esz]
+            items.append(item_tensor)
+        new_key_values.append(tuple(items)) # Make it a tuple
+    return tuple(new_key_values) # Make it a tuple
