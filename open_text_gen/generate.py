@@ -11,6 +11,7 @@ def main():
     parser.add_argument('--model_name', type=str, default='gpt2-xl', help='the name of the language model')
     parser.add_argument('--dataset_name', type=str, default='wikitext', help='the name of the dataset to use')
     parser.add_argument('--dataset_config', type=str, default='wikitext-103-raw-v1', help='the config of the dataset to use')
+    parser.add_argument('--dataset_split', type=str, default='test', help='the split of the dataset to use')
     parser.add_argument('--output_dir', type=str, default='.', help='the directory to save the output file')
     parser.add_argument('--decoding_strategy', type=str, default='contrastive', help='the decoding strategy to use')
     parser.add_argument('--alphas', type=float, nargs='+', default=[0.6], help='the list of alpha values for contrastive search')
@@ -30,7 +31,7 @@ def main():
     model.eval()
 
     # Load the dataset
-    dataset = load_dataset(args.dataset_name, args.dataset_config, split='test')
+    dataset = load_dataset(args.dataset_name, args.dataset_config, split=args.dataset_split)
     
     for alpha in args.alphas:
         output_filename = f'{args.dataset_name}_contrastive-alpha-{alpha}_{args.model_name}_{args.decoding_len}.jsonl'
