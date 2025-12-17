@@ -1,0 +1,29 @@
+*/__pycache__
+__pycache__
+.venv
+*.env
+*/.env
+**/.env
+database/.env
+.env
+Resources-20251126
+
+# Fichiers temporaires
+*.swp
+*.swo
+*~
+
+# Les Paquets / archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.pdf
+*.png
+
+# Les Logs 
+*.log.env
