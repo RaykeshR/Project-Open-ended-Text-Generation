@@ -50,6 +50,17 @@ Téléchargement des Données/ Model
 %USERPROFILE%\.cache\huggingface
 ```
 
+Pour utiliser Cuda/GPU : 
+```bash
+https://developer.nvidia.com/cuda-13-0-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_local
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
+pip uninstall torch torchvision torchaudio -y
+pip install torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 --index-url https://download.pytorch.org/whl/cu130
+nvidia-smi
+
+```
+(les dernières lignes sont là en cas de bug)
+
 ### Mise en place (Windows):
 
 <!-- <details open> -->
