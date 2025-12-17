@@ -7,6 +7,7 @@ __pycache__
 database/.env
 .env
 Resources-20251126
+.git
 
 # Fichiers temporaires
 *.swp
