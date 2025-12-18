@@ -10,8 +10,8 @@ def main():
     parser.add_argument('--dataset_name', type=str, default='wikinews', help='the name of the dataset to use')
     parser.add_argument('--model_name', type=str, default='gpt2-xl', help='the name of the language model')
     parser.add_argument('--decoding_len', type=int, default=256, help='the decoding length')
-    parser.add_argument('--num_prefixes', type=int, default=100, help='the number of prefixes to use from the dataset')
-    parser.add_argument('--beam_width', type=int, default=5, help='the beam width for contrastive search')
+    parser.add_argument('--num_prefixes', type=int, default=100, help='the number of prefixes to use')
+    parser.add_argument('--beam_width', type=int, default=5, help='the beam width (K)')
     
     args = parser.parse_args()
 
@@ -21,11 +21,17 @@ def main():
     # Chemin vers l'interpréteur python actuel (celui du venv)
     python_exe = sys.executable
 
+    # On définit des valeurs fixes pour ce script "simple"
+    # (Puisque vous ferez un Grid Search complet dans un autre fichier)
+    k = args.beam_width
+    epsilon = 0.0 
+
     for alpha in args.alphas:
-        print(f'Running experiment for alpha = {alpha}')
+        print(f'\n--- Running experiment for K={k}, Alpha={alpha}, Epsilon={epsilon} ---')
         
         # 1. Generate text
-        generation_output_filename = f'{args.dataset_name}_contrastive-alpha-{alpha}_{args.model_name}_{args.decoding_len}.jsonl'
+        # IMPORTANT : Le nom doit correspondre EXACTEMENT à celui généré dans generate.py
+        generation_output_filename = f'{args.dataset_name}_k{k}_a{alpha}_e{epsilon}_{args.model_name}.jsonl'
         generation_output_path = f'{output_dir}/{generation_output_filename}'
         
         generation_cmd = [
@@ -35,20 +41,22 @@ def main():
             # '--dataset_config', 'wikinews',
             '--output_dir', output_dir,
             '--decoding_strategy', 'contrastive',
-            '--alphas', str(alpha),
-            '--epsilons', str(args.beam_width),
             '--decoding_len', str(args.decoding_len),
-            '--num_prefixes', str(args.num_prefixes)
+            '--num_prefixes', str(args.num_prefixes),
+            # On passe les paramètres alignés
+            '--alphas', str(alpha),
+            '--ks', str(k),         # on passe bien K ici
+            '--epsilons', str(epsilon) # on passe 0.0 ici
         ]
+        
         print("Generating text...")
         subprocess.run(generation_cmd, check=True)
 
         # 2. Evaluate
         # 2.1 Coherence
-        # CORRECTION : Appel direct au script python au lieu du script bash
-        coherence_output_filename = generation_output_filename.replace('.jsonl', '_opt-2.7b_coherence_result.json')
-        # Note: compute_coherence.py calcule lui-même le chemin de sortie basé sur test_path, 
-        # on ne passe donc que les arguments qu'il accepte.
+        # On garde le nom du fichier de cohérence aligné avec le nouveau nom de fichier
+        coherence_output_filename = generation_output_filename.replace('.jsonl', '_opt-125m_coherence_result.json')
+        # coherence_output_filename = generation_output_filename.replace('.jsonl', '_opt-2.7b_coherence_result.json') # Vous pouvez changer pour 'facebook/opt-125m' pour tester plus vite
         
         coherence_cmd = [
             python_exe, 'open_text_gen/compute_coherence.py',
@@ -62,6 +70,7 @@ def main():
         # 2.2 Diversity, Mauve, Gen Length
         diversity_output_filename = generation_output_filename.replace('.jsonl', '_diversity_mauve_gen_length_result.json')
         diversity_output_path = f'{output_dir}/{diversity_output_filename}'
+        
         diversity_cmd = [
             python_exe, 'open_text_gen/measure_diversity_mauve_gen_length.py',
             '--test_path', generation_output_path,
