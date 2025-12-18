@@ -44,7 +44,9 @@ python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text
 ```
 
 ### run_experiment.py
+```bash
 python run_experiment.py --model_name gpt2 --dataset_name wikitext --num_prefixes 5 --alphas 0.6 --decoding_len 50
+```
 
 Téléchargement des Données/ Model
 ```CMD
