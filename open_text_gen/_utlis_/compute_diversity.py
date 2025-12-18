@@ -5,24 +5,20 @@ import numpy as np
 
 def load_result(in_f):
     reference_list = []
-    all_prediction_list = [[]] # Match the expected format for a single prediction run
+    all_prediction_list = []
     with open(in_f, 'r', encoding='utf-8') as f:
-        for line in f:
-            try:
-                item = json.loads(line)
-                # Ensure the line has the required keys and the generated text is not empty
-                if 'generated' not in item or 'prefix' not in item or not item['generated'].strip():
-                    continue
-                
-                # The 'prefix' is used as the reference text for diversity calculation
-                reference_list.append(item['prefix'])
-                all_prediction_list[0].append(item['generated'])
-            except json.JSONDecodeError:
-                # Skip malformed lines
-                print(f"Avertissement: Ligne JSON malformée ignorée dans {in_f}")
-                continue
+        data = json.load(f)
+        for item in data:
+            reference_list.append(item['reference_text'])
+            if not all_prediction_list:
+                # Initialize based on the number of generated results in the first item
+                num_predictions = len(item['generated_result'])
+                all_prediction_list = [[] for _ in range(num_predictions)]
+            
+            for idx in range(len(all_prediction_list)):
+                all_prediction_list[idx].append(item['generated_result'][str(idx)])
     
-    print(f'Number of predictions per instance is {len(all_prediction_list)}')
+    print(f'Number of prediction sets is {len(all_prediction_list)}')
     return reference_list, all_prediction_list
 
 ###########################################################################################################
@@ -73,11 +69,11 @@ def measure_repetition_and_diversity(text_list):
             pred_res_dict[n]['total'] += one_pred_res_dict[n]['total']
 
     # prediction result
-    pred_seq_2 = 1 - (pred_res_dict[2]['unique']/pred_res_dict[2]['total']) if pred_res_dict[2]['total'] > 0 else 0.0
+    pred_seq_2 = 1 - (pred_res_dict[2]['unique']/pred_res_dict[2]['total'])
     pred_seq_2 = round(pred_seq_2 * 100, 2)
-    pred_seq_3 = 1 - (pred_res_dict[3]['unique']/pred_res_dict[3]['total']) if pred_res_dict[3]['total'] > 0 else 0.0
+    pred_seq_3 = 1 - (pred_res_dict[3]['unique']/pred_res_dict[3]['total'])
     pred_seq_3 = round(pred_seq_3 * 100, 2)
-    pred_seq_4 = 1 - (pred_res_dict[4]['unique']/pred_res_dict[4]['total']) if pred_res_dict[4]['total'] > 0 else 0.0
+    pred_seq_4 = 1 - (pred_res_dict[4]['unique']/pred_res_dict[4]['total'])
     pred_seq_4 = round(pred_seq_4 * 100, 2)
     pred_div = (1 - pred_seq_2/100) * (1 - pred_seq_3/100) * (1 - pred_seq_4/100)
     return pred_seq_2, pred_seq_3, pred_seq_4, pred_div
@@ -90,18 +86,28 @@ def measure_diversity(in_f):
     reference_diversity = round(reference_diversity*100, 2)
 
     prediction_diversity_list = []
+    rep2_list, rep3_list, rep4_list = [], [], []
     for idx in range(len(all_prediction_list)):
-        _, _, _, one_prediction_diversity = measure_repetition_and_diversity(all_prediction_list[idx])
+        rep2, rep3, rep4, one_prediction_diversity = measure_repetition_and_diversity(all_prediction_list[idx])
         one_prediction_diversity = round(one_prediction_diversity*100, 2)
         prediction_diversity_list.append(one_prediction_diversity)
+        rep2_list.append(rep2)
+        rep3_list.append(rep3)
+        rep4_list.append(rep4)
 
     pred_div_mean = np.mean(prediction_diversity_list)
     pred_div_std = np.std(prediction_diversity_list)
+    rep2_mean = np.mean(rep2_list)
+    rep3_mean = np.mean(rep3_list)
+    rep4_mean = np.mean(rep4_list)
 
     result_dict = {
         'reference_div': str(reference_diversity),
         'prediction_diversity_list': [str(num) for num in prediction_diversity_list],
         'prediction_div_mean': str(pred_div_mean),
         'prediction_div_std': str(pred_div_std),
+        'rep_2': str(rep2_mean),
+        'rep_3': str(rep3_mean),
+        'rep_4': str(rep4_mean),
     }
     return result_dict

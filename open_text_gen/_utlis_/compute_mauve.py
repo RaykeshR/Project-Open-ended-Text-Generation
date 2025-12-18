@@ -32,24 +32,20 @@ def parse_text(reference_text, prediction_text, tokenizer):
 
 def load_result(in_f, tokenizer):
     reference_list = []
-    all_prediction_list = [[]] # Match the expected format for a single prediction run
+    all_prediction_list = []
     with open(in_f, 'r', encoding='utf-8') as f:
-        for line in f:
-            try:
-                item = json.loads(line)
-                # Ensure the line has the required keys and the generated text is not empty
-                if 'generated' not in item or 'prefix' not in item or not item['generated'].strip():
-                    continue
-                
-                # The 'prefix' is the reference text, 'generated' is the prediction
-                reference_list.append(item['prefix'])
-                all_prediction_list[0].append(item['generated'])
-            except json.JSONDecodeError:
-                # Skip malformed lines
-                print(f"Avertissement: Ligne JSON malformée ignorée dans {in_f}")
-                continue
+        data = json.load(f)
+        for item in data:
+            reference_list.append(item['reference_text'])
+            if not all_prediction_list:
+                # Initialize based on the number of generated results in the first item
+                num_predictions = len(item['generated_result'])
+                all_prediction_list = [[] for _ in range(num_predictions)]
+            
+            for idx in range(len(all_prediction_list)):
+                all_prediction_list[idx].append(item['generated_result'][str(idx)])
     
-    print(f'Number of predictions per instance is {len(all_prediction_list)}')
+    print(f'Number of prediction sets is {len(all_prediction_list)}')
     return reference_list, all_prediction_list
 
 def evaluate_one_instance(reference_list, prediction_list, tokenizer):
@@ -57,18 +53,14 @@ def evaluate_one_instance(reference_list, prediction_list, tokenizer):
     data_num = len(reference_list)
     for idx in range(data_num):
         one_ref, one_pred = reference_list[idx], prediction_list[idx]
-        # We still call parse_text to get the tokenized & truncated versions, but ignore the flag
-        one_ref, one_pred, _ = parse_text(one_ref, one_pred, tokenizer)
-        
-        # We ignore the flag and just check if both reference and prediction are non-empty
-        if len(one_ref.strip()) > 0 and len(one_pred.strip()) > 0:
+        one_ref, one_pred, flag = parse_text(one_ref, one_pred, tokenizer)
+        if not flag:
+            continue
+
+        if len(one_pred.strip()) > 0:
             ref_list.append(one_ref)
             pred_list.append(one_pred)
             
-    if not ref_list or not pred_list:
-        print("Avertissement : Aucune paire de texte valide trouvée pour l'évaluation MAUVE après filtrage. Retour de 0.0.")
-        return 0.0
-
     # use gpt2 model as the based model based on the author's implementation:
     # https://github.com/XiangLi1999/ContrastiveDecoding/blob/98cad19349fb08ee95b0f25a661179866f8e2c84/text-generation/eval_script.py#L248
     out =  mauve.compute_mauve(p_text=ref_list, q_text=pred_list, device_id=0, verbose=False,

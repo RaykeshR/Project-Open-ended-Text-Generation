@@ -1,20 +1,19 @@
 import json
 import numpy as np
 def load_result(in_f):
-    all_prediction_list = [[]] # Match the expected format for a single prediction run
+    all_prediction_list = []
     with open(in_f, 'r', encoding='utf-8') as f:
-        for line in f:
-            try:
-                item = json.loads(line)
-                # Ensure the line has the required key and the generated text is not empty
-                if 'generated' in item and item['generated'].strip():
-                    all_prediction_list[0].append(item['generated'])
-            except json.JSONDecodeError:
-                # Skip malformed lines
-                print(f"Avertissement: Ligne JSON malformée ignorée dans {in_f}")
-                continue
+        data = json.load(f)
+        for item in data:
+            if not all_prediction_list:
+                # Initialize based on the number of generated results in the first item
+                num_predictions = len(item['generated_result'])
+                all_prediction_list = [[] for _ in range(num_predictions)]
+            
+            for idx in range(len(all_prediction_list)):
+                all_prediction_list[idx].append(item['generated_result'][str(idx)])
     
-    print(f'Number of predictions per instance is {len(all_prediction_list)}')
+    print(f'Number of prediction sets is {len(all_prediction_list)}')
     return all_prediction_list
     
 def compute_one_gen_len(text_list):

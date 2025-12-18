@@ -49,11 +49,11 @@ def load_all_results(base_dir='open_text_gen'):
             all_results_map[key] = {
                 'Dataset': dataset,
                 'Strategy': strategy,
-                'MAUVE': data['mauve_dict']['mauve'],
-                'Gen_Length': data['gen_length_dict']['gen_length_mean'],
-                'Diversity_rep2': data['diversity_dict']['rep_2'],
-                'Diversity_rep3': data['diversity_dict']['rep_3'],
-                'Diversity_rep4': data['diversity_dict']['rep_4'],
+                'MAUVE': float(data['mauve_dict']['mauve_mean']),
+                'Gen_Length': float(data['gen_length_dict']['gen_len_mean']),
+                'Diversity_rep2': float(data['diversity_dict']['rep_2']),
+                'Diversity_rep3': float(data['diversity_dict']['rep_3']),
+                'Diversity_rep4': float(data['diversity_dict']['rep_4']),
             }
         except Exception as e:
             print(f"AVERTISSEMENT: Impossible de traiter {f_path}: {e}")
