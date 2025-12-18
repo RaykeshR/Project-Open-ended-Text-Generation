@@ -31,21 +31,26 @@ def parse_text(reference_text, prediction_text, tokenizer):
     return reference_text, prediction_text, flag
 
 def load_result(in_f, tokenizer):
+    with open(in_f) as f:
+        result_list = json.load(f)
+
+    # load reference list
     reference_list = []
+    for item in result_list:
+        one_reference_text = item['reference_text']
+        reference_list.append(one_reference_text)
+
+    # load all predictions
+    number_of_predictions_per_instance = len(result_list[0]['generated_result'])
+    print ('Number of predictions per instance is {}'.format(number_of_predictions_per_instance))
     all_prediction_list = []
-    with open(in_f, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        for item in data:
-            reference_list.append(item['reference_text'])
-            if not all_prediction_list:
-                # Initialize based on the number of generated results in the first item
-                num_predictions = len(item['generated_result'])
-                all_prediction_list = [[] for _ in range(num_predictions)]
-            
-            for idx in range(len(all_prediction_list)):
-                all_prediction_list[idx].append(item['generated_result'][str(idx)])
-    
-    print(f'Number of prediction sets is {len(all_prediction_list)}')
+    for idx in range(number_of_predictions_per_instance):
+        one_prediction_list = []
+        for item in result_list:
+            one_prediction = item['generated_result'][str(idx)]
+            one_prediction_list.append(one_prediction)
+        assert len(one_prediction_list) == len(reference_list)
+        all_prediction_list.append(one_prediction_list)
     return reference_list, all_prediction_list
 
 def evaluate_one_instance(reference_list, prediction_list, tokenizer):
@@ -54,10 +59,11 @@ def evaluate_one_instance(reference_list, prediction_list, tokenizer):
     for idx in range(data_num):
         one_ref, one_pred = reference_list[idx], prediction_list[idx]
         one_ref, one_pred, flag = parse_text(one_ref, one_pred, tokenizer)
-        if not flag:
+        if flag:
+            pass
+        else:
             continue
-
-        if len(one_pred.strip()) > 0:
+        if len(one_pred.strip()) > 0: # igore predictions with zero length
             ref_list.append(one_ref)
             pred_list.append(one_pred)
             

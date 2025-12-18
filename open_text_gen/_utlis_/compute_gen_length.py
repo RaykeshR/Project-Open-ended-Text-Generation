@@ -1,19 +1,19 @@
 import json
 import numpy as np
 def load_result(in_f):
+    with open(in_f) as f:
+        result_list = json.load(f)
+
+    # load all predictions
+    number_of_predictions_per_instance = len(result_list[0]['generated_result'])
+    print ('Number of predictions per instance is {}'.format(number_of_predictions_per_instance))
     all_prediction_list = []
-    with open(in_f, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        for item in data:
-            if not all_prediction_list:
-                # Initialize based on the number of generated results in the first item
-                num_predictions = len(item['generated_result'])
-                all_prediction_list = [[] for _ in range(num_predictions)]
-            
-            for idx in range(len(all_prediction_list)):
-                all_prediction_list[idx].append(item['generated_result'][str(idx)])
-    
-    print(f'Number of prediction sets is {len(all_prediction_list)}')
+    for idx in range(number_of_predictions_per_instance):
+        one_prediction_list = []
+        for item in result_list:
+            one_prediction = item['generated_result'][str(idx)]
+            one_prediction_list.append(one_prediction)
+        all_prediction_list.append(one_prediction_list)
     return all_prediction_list
     
 def compute_one_gen_len(text_list):
