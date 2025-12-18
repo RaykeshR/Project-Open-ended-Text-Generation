@@ -43,7 +43,8 @@ python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text
 python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text_gen/wikitext/wikitext_contrastive-alpha-0.8_gpt2-xl_256.jsonl
 ```
 
-
+### run_experiment.py
+python run_experiment.py --model_name gpt2 --dataset_name wikitext --num_prefixes 5 --alphas 0.6 --decoding_len 50
 
 Téléchargement des Données/ Model
 ```CMD

@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--alphas', type=float, nargs='+', default=[0.6], help='the list of alpha values for contrastive search')
     parser.add_argument('--ks', type=int, nargs='+', default=[5], help='Liste des valeurs de K')
     parser.add_argument('--epsilons', type=float, nargs='+', default=[0.0], help='Liste des seuils epsilon')
-    parser.add_argument('--beam_width', type=int, default=5, help='the beam width for contrastive search')
+    # parser.add_argument('--beam_width', type=int, default=5, help='the beam width for contrastive search')
     parser.add_argument('--decoding_len', type=int, default=256, help='the decoding length')
     parser.add_argument('--num_prefixes', type=int, default=100, help='the number of prefixes to use from the dataset')
 
@@ -40,6 +40,7 @@ def main():
             for epsilon in args.epsilons:
                 output_filename = f'{args.dataset_name}_k{k}_a{alpha}_e{epsilon}_{args.model_name}.jsonl'
                 output_path = f'{args.output_dir}/{output_filename}'
+                print(f"\n--- Generation: k={k}, alpha={alpha}, epsilon={epsilon} ---")
                 
                 with open(output_path, 'w', encoding='utf-8') as f: # Ouverture du fichier
                     for i in tqdm(range(args.num_prefixes)):

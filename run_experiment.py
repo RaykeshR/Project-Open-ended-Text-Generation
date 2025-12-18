@@ -36,7 +36,7 @@ def main():
             '--output_dir', output_dir,
             '--decoding_strategy', 'contrastive',
             '--alphas', str(alpha),
-            '--beam_width', str(args.beam_width),
+            '--epsilons', str(args.beam_width),
             '--decoding_len', str(args.decoding_len),
             '--num_prefixes', str(args.num_prefixes)
         ]
