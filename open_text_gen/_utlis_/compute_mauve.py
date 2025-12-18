@@ -13,19 +13,15 @@ def parse_text(reference_text, prediction_text, tokenizer):
     reference_tokens = tokenizer.tokenize(reference_text)
     prediction_tokens = tokenizer.tokenize(prediction_text)
     # min_len = min(len(reference_tokens), len(prediction_tokens)) # Non utilisé
+    # On tronque à 128 maximum, mais on accepte les textes plus courts (ex: 50)
     reference_tokens = reference_tokens[:128]
-    reference_text = decode(reference_tokens, tokenizer)
     prediction_tokens = prediction_tokens[:128]
+    
+    reference_text = decode(reference_tokens, tokenizer)
     prediction_text = decode(prediction_tokens, tokenizer)
     
-    # On garde la condition de longueur minimale si nécessaire, ou on l'adapte
-    # Le code original exigeait strictement 128 tokens
-    if min(len(reference_tokens), len(prediction_tokens)) == 128:
-        flag = True
-    else:
-        # Pour éviter d'ignorer trop de données si vos générations sont courtes,
-        # vous pourriez vouloir mettre flag = True ici aussi, mais je garde la logique originale.
-        flag = False 
+    # On accepte tout texte ayant au moins 10 tokens
+    flag = True if min(len(reference_tokens), len(prediction_tokens)) > 10 else False
     return reference_text, prediction_text, flag
 
 def load_result(in_f, tokenizer=None):
@@ -36,14 +32,11 @@ def load_result(in_f, tokenizer=None):
         for line in f:
             if not line.strip(): continue
             item = json.loads(line)
-            
-            if 'prefix' in item:
-                reference_list.append(item['prefix'])
-            if 'generated' in item:
-                all_prediction_list[0].append(item['generated'])
-                
-    # Vérification d'intégrité
-    assert len(all_prediction_list[0]) == len(reference_list)
+            # Utilisation des nouvelles clés de generate.py
+            ref = item.get('gold_ref') or item.get('reference_text') or ""
+            gen = item.get('gen_text') or item.get('generated') or ""
+            reference_list.append(ref)
+            all_prediction_list[0].append(gen)
     return reference_list, all_prediction_list
 
 def evaluate_one_instance(reference_list, prediction_list, tokenizer):
