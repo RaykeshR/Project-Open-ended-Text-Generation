@@ -33,9 +33,9 @@ def main():
     ]
 
     # Hyperparamètres à tester
-    ks = [5, 10]              # Taille du beam (beam_width)
-    alphas = [0.4, 0.6, 0.8]  # Pénalité de dégénérescence
-    epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)
+    ks = [5    ]              # Taille du beam (beam_width)              |[5, 10]
+    alphas = [     0.6     ]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8]
+    epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
     # Paramètres globaux
     dataset_name = 'wikitext'

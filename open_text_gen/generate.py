@@ -72,7 +72,7 @@ def main():
                                 input_ids=input_ids,
                                 beam_width=k,
                                 alpha=alpha,
-                                decoding_len=args.decoding_len
+                                decoding_len=args.decoding_len,
                             )
                         else:
                             raise NotImplementedError
