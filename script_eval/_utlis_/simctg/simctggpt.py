@@ -18,9 +18,12 @@ val_fct = CrossEntropyLoss(reduction='none')
 class SimCTGGPT(nn.Module):
     def __init__(self, model_name, special_token_list=[]):
         super(SimCTGGPT, self).__init__()
-        from transformers import AutoTokenizer, GPT2LMHeadModel
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = GPT2LMHeadModel.from_pretrained(model_name)
+        # from transformers import AutoTokenizer, GPT2LMHeadModel
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        # self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        # self.model = GPT2LMHeadModel.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
         if len(special_token_list) > 0:
             print ('Original vocabulary size is {}'.format(len(self.tokenizer)))
             print ('Adding special tokens...')
