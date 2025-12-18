@@ -40,8 +40,10 @@ def main():
 
         # # --- FAMILLE OPT (Facebook/Meta) ---
         # # Architecture similaire à GPT-2 mais entraînement différent
+        # 'facebook/opt-125m',  # Très rapide, idéal pour tester
         # 'facebook/opt-350m',            # 350M : Pour comparer avec gpt2-medium
         # 'facebook/opt-1.3b',            # 1.3B : Concurrent direct de gpt2-xl et TinyLlama
+        # 'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
         # # --- FAMILLE MICROSOFT (Phi) ---
         # # Entraînés sur des données de très haute qualité (livres, code)
@@ -66,18 +68,18 @@ def main():
     coherence_models = [
         # 'facebook/opt-125m',  # Très rapide, idéal pour tester
         # 'facebook/opt-350m',  # Bon compromis
-        'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
-        # 'facebook/opt-2.7b'  # Le plus précis (celui qui a fait planter mon PC avant)
+        # 'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
+        # 'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
         # # --- FAMILLE GPT-2 (Les classiques) ---
-        # 'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
-        # 'gpt2-xl'        # ~1.5B params (Lourd)
+        'gpt2',          # ~124M params (Très rapide)
+        'gpt2-medium',   # ~355M params
+        'gpt2-large',    # ~774M params
+        # 'gpt2-xl',        # ~1.5B params (Lourd)
     ]
 
     # Hyperparamètres à tester
-    ks = [5, 10]              # Taille du beam (beam_width)              |[5, 10][5    ]
+    ks = [5    ]              # Taille du beam (beam_width)              |[5, 10][5    ]
     alphas = [     0.6     ]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
     epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
