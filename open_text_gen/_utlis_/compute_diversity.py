@@ -14,16 +14,8 @@ def load_result(in_f):
             if not line.strip():
                 continue
             item = json.loads(line)
-            
-            # 'prefix' est utilisé comme référence (texte humain)
-            if 'prefix' in item:
-                reference_list.append(item['prefix'])
-            
-            # 'generated' est la prédiction
-            if 'generated' in item:
-                all_prediction_list[0].append(item['generated'])
-                
-    print(f'Number of predictions per instance is {len(all_prediction_list)}')
+            reference_list.append(item.get('prompt') or item.get('prefix') or "")
+            all_prediction_list[0].append(item.get('gen_text') or item.get('generated') or "")
     return reference_list, all_prediction_list
 
 ###########################################################################################################

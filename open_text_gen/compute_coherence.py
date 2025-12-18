@@ -13,14 +13,19 @@ import json
 def load_result(in_f):
     all_prefix_text_list = [[]]
     all_prediction_list = [[]]
-    with open(in_f) as f:
+    with open(in_f, 'r', encoding='utf-8') as f:
         for line in f:
+            if not line.strip(): continue
             item = json.loads(line)
-            if 'generated' not in item or len(item['generated'].strip().split()) == 0:
+            # On cherche soit 'prompt' (nouveau), soit 'prefix' (ancien)
+            prefix = item.get('prompt') or item.get('prefix') or ""
+            # On cherche soit 'gen_text' (nouveau), soit 'generated' (ancien)
+            generated = item.get('gen_text') or item.get('generated') or ""
+            
+            if len(generated.strip().split()) == 0:
                 continue
-            all_prefix_text_list[0].append(item['prefix'])
-            all_prediction_list[0].append(item['generated'])
-    print ('Number of predictions per instance is {}'.format(len(all_prefix_text_list)))
+            all_prefix_text_list[0].append(prefix)
+            all_prediction_list[0].append(generated)
     return all_prefix_text_list, all_prediction_list
 
 class CoherenceEvaluator(nn.Module):

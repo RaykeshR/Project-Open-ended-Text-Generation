@@ -37,39 +37,38 @@ def main():
         output_filename = f'{args.dataset_name}_contrastive-alpha-{alpha}_{args.model_name}_{args.decoding_len}.jsonl'
         output_path = f'{args.output_dir}/{output_filename}'
         
-        with open(output_path, 'w') as f:
-            results_list = []
+        with open(output_path, 'w', encoding='utf-8') as f: # Ouverture du fichier
             for i in tqdm(range(args.num_prefixes)):
                 prefix_text = dataset[i]['text']
-                if len(prefix_text) == 0:
+                if len(prefix_text.strip()) == 0:
                     continue
 
                 input_ids = tokenizer.encode(prefix_text, return_tensors='pt').to(device)
-
-                if args.decoding_strategy == 'contrastive':
-                    output = model.fast_contrastive_search(
-                        input_ids=input_ids,
-                        beam_width=args.beam_width,
-                        alpha=alpha,
-                        decoding_len=args.decoding_len
-                    )
-                else:
-                    raise NotImplementedError
+                
+                # Génération
+                output = model.fast_contrastive_search(
+                    input_ids=input_ids,
+                    beam_width=args.beam_width,
+                    alpha=alpha,
+                    decoding_len=args.decoding_len
+                )
+                
                 generated_full_text = tokenizer.decode(output, skip_special_tokens=True)
+
+                # On construit l'objet complet avec tous les champs que tu souhaites
                 result = {
-                    "ended": False, # Valeur par défaut
-                    "tokens": output, # La liste des IDs
+                    "ended": False,
+                    "tokens": output, # Liste d'IDs
                     "prompt": prefix_text,
                     "gen_text": generated_full_text,
                     "len": len(output) - input_ids.size(1),
-                    "nll4tok": [], # Calculable via model.forward si nécessaire
-                    "ppl": 0,      # Calculable via model.eval_loss si nécessaire
-                    "gold_ref": "" # Si vous avez une référence dans votre dataset
+                    "nll4tok": [], 
+                    "ppl": 0,
+                    "gold_ref": "" 
                 }
-                results_list.append(result)
-
-            # Sauvegarde finale sous forme de liste JSON (format [{}, {}])
-            json.dump(results_list, f, indent=4)
+                
+                # ÉCRITURE LIGNE PAR LIGNE
+                f.write(json.dumps(result) + '\n')
 
 if __name__ == '__main__':
     main()
