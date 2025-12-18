@@ -10,6 +10,9 @@ import numpy as np
 import torch.nn.functional as F
 
 import json
+import progressbar
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
 def load_result(in_f):
     all_prefix_text_list = [[]]
     all_prediction_list = [[]]
@@ -31,10 +34,10 @@ def load_result(in_f):
 class CoherenceEvaluator(nn.Module):
     def __init__(self, model_name):
         super(CoherenceEvaluator, self).__init__()
-        from transformers import GPT2Tokenizer, OPTForCausalLM
+        # from transformers import GPT2Tokenizer, OPTForCausalLM
         print ('Loading model...')
-        self.model = OPTForCausalLM.from_pretrained(model_name)
-        self.tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         print ('Model loaded.')
         self.vocab_size = self.model.config.vocab_size
         print ('The vocabulary size of the language model is {}'.format(self.vocab_size))
@@ -98,7 +101,9 @@ class CoherenceEvaluator(nn.Module):
 
     def evaluate_coherence(self, prefix_text, prediction_text, cuda_available, device):
         context_tokens = self.tokenizer.tokenize(prefix_text)
-        context_token_ids = [self.bos_token_id] + self.tokenizer.convert_tokens_to_ids(context_tokens)
+        # Gestion du token BOS si le tokenizer ne l'a pas (ex: gpt2)
+        bos_id = [self.bos_token_id] if self.bos_token_id is not None else []
+        context_token_ids = bos_id + self.tokenizer.convert_tokens_to_ids(context_tokens)
         context_token_ids = torch.LongTensor(context_token_ids).view(1,-1)
 
         prediction_tokens = self.tokenizer.tokenize(prediction_text)
@@ -112,7 +117,6 @@ class CoherenceEvaluator(nn.Module):
         coherence = self.compute_coherence(context_token_ids, prediction_token_ids)
         return coherence
 
-import progressbar
 def evaluate_batch_coherence(model, prefix_text_list, prediction_text_list, cuda_available, device):
     assert len(prefix_text_list) == len(prediction_text_list)
 
@@ -146,7 +150,12 @@ if __name__ == '__main__':
     args = parse_config()
     device = torch.device('cuda')
 
-    opt_model_name = args.opt_model_name.split('/')[1]
+    # Gestion robuste du nom (avec ou sans /) 
+    if '/' in args.opt_model_name:
+        opt_model_name = args.opt_model_name.split('/')[1]
+    else:
+        opt_model_name = args.opt_model_name
+        
     evaluation_save_path = args.test_path[:-5] + '_{}_coherence_result.json'.format(opt_model_name)
     print ('Result save path is {}'.format(evaluation_save_path))
 
