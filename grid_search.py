@@ -2,6 +2,12 @@ import os
 import subprocess
 import sys
 import itertools
+import time
+import datetime
+
+def format_timedelta(seconds):
+    """Formate les secondes en H:M:S"""
+    return str(datetime.timedelta(seconds=int(seconds)))
 
 def main():
     # =========================================================================
@@ -47,13 +53,21 @@ def main():
     # On utilise itertools.product pour faire toutes les combinaisons possibles
     # (Modèle x K x Alpha x Epsilon)
     combinations = list(itertools.product(gen_models, ks, alphas, epsilons))
+    total_combinations = len(combinations)
     
-    print(f" Démarrage de la Grid Search : {len(combinations)} configurations à tester.")
+    print(f" Démarrage de la Grid Search : {total_combinations} configurations à tester.")
     print(f" Résultats sauvegardés dans : {output_dir}")
 
-    for model_name, k, alpha, epsilon in combinations:
+    # Initialisation des chronomètres globaux
+    global_start_time = time.time()
+    iteration_times = []
+
+    for idx, (model_name, k, alpha, epsilon) in enumerate(combinations):
+        iter_start_time = time.time()
+        current_iter = idx + 1
+        
         print(f"\n{'='*60}")
-        print(f"Configuration : Modèle={model_name} | k={k} | alpha={alpha} | epsilon={epsilon}")
+        print(f"Configuration {current_iter}/{total_combinations} : Modèle={model_name} | k={k} | alpha={alpha} | epsilon={epsilon}")
         print(f"{'='*60}")
 
         # --- A. GÉNÉRATION ---
@@ -117,7 +131,28 @@ def main():
         except subprocess.CalledProcessError:
             print(" Erreur Diversité/MAUVE")
 
-    print("\n Grid Search terminée ! Vous pouvez analyser les fichiers JSON dans le dossier de sortie.")
+        # --- CALCULS DE TEMPS ---
+        iter_end_time = time.time()
+        iter_duration = iter_end_time - iter_start_time
+        iteration_times.append(iter_duration)
+        
+        # Moyenne des itérations passées
+        avg_duration = sum(iteration_times) / len(iteration_times)
+        
+        # Temps écoulé total
+        total_elapsed = iter_end_time - global_start_time
+        
+        # Estimation du reste
+        remaining_iters = total_combinations - current_iter
+        estimated_remaining = avg_duration * remaining_iters
+        
+        print(f"\n Fin de l'itération {current_iter}/{total_combinations}")
+        print(f"  \033[31m ➤ \033[0m Durée config actuelle : {format_timedelta(iter_duration)}")
+        print(f"  \033[31m ➤ \033[0m Temps écoulé total    : {format_timedelta(total_elapsed)}")
+        print(f"  \033[31m ➤ \033[0m Moyenne par config    : {format_timedelta(avg_duration)}")
+        print(f"  \033[31m ➤ \033[0m TEMPS RESTANT ESTIMÉ  : {format_timedelta(estimated_remaining)}")
+
+    print(f"\n Grid Search terminée en {format_timedelta(time.time() - global_start_time)} ! Vous pouvez analyser les fichiers JSON dans le dossier de sortie.")
 
 if __name__ == '__main__':
     main()
