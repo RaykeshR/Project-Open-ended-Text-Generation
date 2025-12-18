@@ -4,26 +4,25 @@ import argparse
 import numpy as np
 
 def load_result(in_f):
-    with open(in_f) as f:
-        result_list = json.load(f)
-
-    # load reference list
     reference_list = []
-    for item in result_list:
-        one_reference_text = item['reference_text']
-        reference_list.append(one_reference_text)
-
-    # load all predictions
-    number_of_predictions_per_instance = len(result_list[0]['generated_result'])
-    print ('Number of predictions per instance is {}'.format(number_of_predictions_per_instance))
-    all_prediction_list = []
-    for idx in range(number_of_predictions_per_instance):
-        one_prediction_list = []
-        for item in result_list:
-            one_prediction = item['generated_result'][str(idx)]
-            one_prediction_list.append(one_prediction)
-        assert len(one_prediction_list) == len(reference_list)
-        all_prediction_list.append(one_prediction_list)
+    all_prediction_list = [[]] # Match the expected format for a single prediction run
+    with open(in_f, 'r', encoding='utf-8') as f:
+        for line in f:
+            try:
+                item = json.loads(line)
+                # Ensure the line has the required keys and the generated text is not empty
+                if 'generated' not in item or 'prefix' not in item or not item['generated'].strip():
+                    continue
+                
+                # The 'prefix' is used as the reference text for diversity calculation
+                reference_list.append(item['prefix'])
+                all_prediction_list[0].append(item['generated'])
+            except json.JSONDecodeError:
+                # Skip malformed lines
+                print(f"Avertissement: Ligne JSON malformée ignorée dans {in_f}")
+                continue
+    
+    print(f'Number of predictions per instance is {len(all_prediction_list)}')
     return reference_list, all_prediction_list
 
 ###########################################################################################################
@@ -74,11 +73,11 @@ def measure_repetition_and_diversity(text_list):
             pred_res_dict[n]['total'] += one_pred_res_dict[n]['total']
 
     # prediction result
-    pred_seq_2 = 1 - (pred_res_dict[2]['unique']/pred_res_dict[2]['total'])
+    pred_seq_2 = 1 - (pred_res_dict[2]['unique']/pred_res_dict[2]['total']) if pred_res_dict[2]['total'] > 0 else 0.0
     pred_seq_2 = round(pred_seq_2 * 100, 2)
-    pred_seq_3 = 1 - (pred_res_dict[3]['unique']/pred_res_dict[3]['total'])
+    pred_seq_3 = 1 - (pred_res_dict[3]['unique']/pred_res_dict[3]['total']) if pred_res_dict[3]['total'] > 0 else 0.0
     pred_seq_3 = round(pred_seq_3 * 100, 2)
-    pred_seq_4 = 1 - (pred_res_dict[4]['unique']/pred_res_dict[4]['total'])
+    pred_seq_4 = 1 - (pred_res_dict[4]['unique']/pred_res_dict[4]['total']) if pred_res_dict[4]['total'] > 0 else 0.0
     pred_seq_4 = round(pred_seq_4 * 100, 2)
     pred_div = (1 - pred_seq_2/100) * (1 - pred_seq_3/100) * (1 - pred_seq_4/100)
     return pred_seq_2, pred_seq_3, pred_seq_4, pred_div
