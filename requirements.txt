@@ -72,7 +72,6 @@ sentencepiece==0.2.1
 setuptools==80.9.0
 simctg==0.7
 six==1.17.0
-sklearn==0.0.post12
 smart_open==7.5.0
 soupsieve==2.8
 spacy==3.8.11
@@ -84,7 +83,7 @@ thinc==8.3.10
 threadpoolctl==3.6.0
 tokenizers==0.22.1
 torch==2.9.1
-torchvision==0.24.1+cu130
+torchvision==0.24.1
 tqdm==4.67.1
 transformers==4.57.3
 typer-slim==0.20.0

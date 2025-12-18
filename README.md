@@ -78,6 +78,7 @@ python -m venv .venv && .venv\Scripts\activate && python -m pip install --upgrad
 ```
 (en cas de bug faire les étapes ci-dessous ou essayer sur CMD ou powershell>=7.0)
 ```$env:SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL='True'; ./.venv/Scripts/python.exe -m pip install -r requirements.txt```
+```set SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True```
 
 ### 1. Cloner le Repo
 
