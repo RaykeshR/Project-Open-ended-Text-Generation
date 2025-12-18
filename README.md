@@ -46,6 +46,12 @@ python open_text_gen/measure_diversity_mauve_gen_length.py --test_path open_text
 ### run_experiment.py
 ```bash
 python run_experiment.py --model_name gpt2 --dataset_name wikitext --num_prefixes 5 --alphas 0.6 --decoding_len 50
+python grid_search.py
+```bash
+Pour tester des modèles de Ollama directement (texte généré par Ollama puis évalué)
+```
+python open_text_gen/generate_ollama.py --models llama3 mistral --num_prefixes 100
+python run_eval_ollama.py
 ```
 
 Téléchargement des Données/ Model
