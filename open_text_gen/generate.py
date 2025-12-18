@@ -1,6 +1,6 @@
 import torch
 from transformers import AutoTokenizer
-from ._utlis_.simctg.simctggpt import SimCTGGPT
+from _utlis_.simctg.simctggpt import SimCTGGPT
 import argparse
 import json
 from tqdm import tqdm
@@ -38,6 +38,7 @@ def main():
         output_path = f'{args.output_dir}/{output_filename}'
         
         with open(output_path, 'w') as f:
+            results_list = []
             for i in tqdm(range(args.num_prefixes)):
                 prefix_text = dataset[i]['text']
                 if len(prefix_text) == 0:
@@ -54,14 +55,21 @@ def main():
                     )
                 else:
                     raise NotImplementedError
-                
-                generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
-
+                generated_full_text = tokenizer.decode(output, skip_special_tokens=True)
                 result = {
-                    "prefix": prefix_text,
-                    "generated": generated_text
+                    "ended": False, # Valeur par défaut
+                    "tokens": output, # La liste des IDs
+                    "prompt": prefix_text,
+                    "gen_text": generated_full_text,
+                    "len": len(output) - input_ids.size(1),
+                    "nll4tok": [], # Calculable via model.forward si nécessaire
+                    "ppl": 0,      # Calculable via model.eval_loss si nécessaire
+                    "gold_ref": "" # Si vous avez une référence dans votre dataset
                 }
-                f.write(json.dumps(result) + '\n')
+                results_list.append(result)
+
+            # Sauvegarde finale sous forme de liste JSON (format [{}, {}])
+            json.dump(results_list, f, indent=4)
 
 if __name__ == '__main__':
     main()

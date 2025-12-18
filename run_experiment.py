@@ -2,6 +2,7 @@ import os
 import subprocess
 import json
 import argparse
+import sys  # Ajout important pour utiliser le python courant
 
 def main():
     parser = argparse.ArgumentParser()
@@ -17,6 +18,9 @@ def main():
     output_dir = f'open_text_gen/{args.dataset_name}'
     os.makedirs(output_dir, exist_ok=True)
 
+    # Chemin vers l'interpréteur python actuel (celui du venv)
+    python_exe = sys.executable
+
     for alpha in args.alphas:
         print(f'Running experiment for alpha = {alpha}')
         
@@ -25,39 +29,46 @@ def main():
         generation_output_path = f'{output_dir}/{generation_output_filename}'
         
         generation_cmd = [
-            'python', 'open_text_gen/generate.py',
+            python_exe, 'open_text_gen/generate.py', # Utilise sys.executable
             '--model_name', args.model_name,
             '--dataset_name', args.dataset_name,
-            '--dataset_config', 'wikinews',
-            '--output_path', generation_output_path,
+            # '--dataset_config', 'wikinews',
+            '--output_dir', output_dir,
             '--decoding_strategy', 'contrastive',
             '--alphas', str(alpha),
             '--beam_width', str(args.beam_width),
             '--decoding_len', str(args.decoding_len),
             '--num_prefixes', str(args.num_prefixes)
         ]
-        subprocess.run(generation_cmd)
+        print("Generating text...")
+        subprocess.run(generation_cmd, check=True)
 
         # 2. Evaluate
         # 2.1 Coherence
+        # CORRECTION : Appel direct au script python au lieu du script bash
         coherence_output_filename = generation_output_filename.replace('.jsonl', '_opt-2.7b_coherence_result.json')
-        coherence_output_path = f'{output_dir}/{coherence_output_filename}'
+        # Note: compute_coherence.py calcule lui-même le chemin de sortie basé sur test_path, 
+        # on ne passe donc que les arguments qu'il accepte.
+        
         coherence_cmd = [
-            'bash', 'open_text_gen/measure_coherence.sh',
-            generation_output_path,
-            coherence_output_path
+            python_exe, 'open_text_gen/compute_coherence.py',
+            '--opt_model_name', 'facebook/opt-125m',
+            # '--opt_model_name', 'facebook/opt-2.7b', # Vous pouvez changer pour 'facebook/opt-125m' pour tester plus vite
+            '--test_path', generation_output_path
         ]
-        subprocess.run(coherence_cmd)
+        print("Measuring coherence...")
+        subprocess.run(coherence_cmd, check=True)
 
         # 2.2 Diversity, Mauve, Gen Length
         diversity_output_filename = generation_output_filename.replace('.jsonl', '_diversity_mauve_gen_length_result.json')
         diversity_output_path = f'{output_dir}/{diversity_output_filename}'
         diversity_cmd = [
-            'python', 'open_text_gen/measure_diversity_mauve_gen_length.py',
+            python_exe, 'open_text_gen/measure_diversity_mauve_gen_length.py',
             '--test_path', generation_output_path,
             '--result_path', diversity_output_path
         ]
-        subprocess.run(diversity_cmd)
+        print("Measuring diversity and MAUVE...")
+        subprocess.run(diversity_cmd, check=True)
         
     print('Experiment finished.')
 

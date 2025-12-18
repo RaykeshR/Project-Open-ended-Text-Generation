@@ -4,26 +4,26 @@ import argparse
 import numpy as np
 
 def load_result(in_f):
-    with open(in_f) as f:
-        result_list = json.load(f)
-
-    # load reference list
     reference_list = []
-    for item in result_list:
-        one_reference_text = item['reference_text']
-        reference_list.append(one_reference_text)
-
-    # load all predictions
-    number_of_predictions_per_instance = len(result_list[0]['generated_result'])
-    print ('Number of predictions per instance is {}'.format(number_of_predictions_per_instance))
-    all_prediction_list = []
-    for idx in range(number_of_predictions_per_instance):
-        one_prediction_list = []
-        for item in result_list:
-            one_prediction = item['generated_result'][str(idx)]
-            one_prediction_list.append(one_prediction)
-        assert len(one_prediction_list) == len(reference_list)
-        all_prediction_list.append(one_prediction_list)
+    # On initialise une liste de listes pour correspondre à la structure attendue
+    # (cas où il y aurait plusieurs prédictions par entrée, ici il n'y en a qu'une)
+    all_prediction_list = [[]] 
+    
+    with open(in_f, 'r', encoding='utf-8') as f:
+        for line in f:
+            if not line.strip():
+                continue
+            item = json.loads(line)
+            
+            # 'prefix' est utilisé comme référence (texte humain)
+            if 'prefix' in item:
+                reference_list.append(item['prefix'])
+            
+            # 'generated' est la prédiction
+            if 'generated' in item:
+                all_prediction_list[0].append(item['generated'])
+                
+    print(f'Number of predictions per instance is {len(all_prediction_list)}')
     return reference_list, all_prediction_list
 
 ###########################################################################################################
@@ -87,8 +87,11 @@ def measure_repetition_and_diversity(text_list):
 def measure_diversity(in_f):
     reference_list, all_prediction_list = load_result(in_f)
     #from simctg.evaluation import measure_repetition_and_diversity
-    _, _, _, reference_diversity = measure_repetition_and_diversity(reference_list)
-    reference_diversity = round(reference_diversity*100, 2)
+    if len(reference_list) > 0:
+        _, _, _, reference_diversity = measure_repetition_and_diversity(reference_list)
+        reference_diversity = round(reference_diversity*100, 2)
+    else:
+        reference_diversity = 0.0
 
     prediction_diversity_list = []
     for idx in range(len(all_prediction_list)):
