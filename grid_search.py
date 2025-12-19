@@ -67,28 +67,28 @@ def main():
     # Utiliser plusieurs juges permet de vérifier si le score est robuste.
     coherence_models = [
         'facebook/opt-125m',  # Très rapide, idéal pour tester
-        # 'facebook/opt-350m',  # Bon compromis
-        # 'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
+        'facebook/opt-350m',  # Bon compromis
+        'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
         ###'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
         # # --- FAMILLE GPT-2 (Les classiques) ---
-        # 'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
+        'gpt2',          # ~124M params (Très rapide)
+        'gpt2-medium',   # ~355M params
+        'gpt2-large',    # ~774M params
         ###'gpt2-xl',        # ~1.5B params (Lourd)
     ]
 
     # Hyperparamètres à tester
     ks = [5    ]              # Taille du beam (beam_width)              |[5, 10][5    ]
-    alphas = [     0.6     ]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
+    alphas = [0.8, 0.6, 0.4]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
     epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
     # Paramètres globaux
     dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
-    num_prefixes = 5        # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2'~124M params sinon 5 )
-    decoding_len = 16        # Longueur du texte généré (256 est standard utilisé pour 'gpt2'~124M  params  sinon 16)
+    num_prefixes = 100        # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2'~124M params sinon 5 )
+    decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2'~124M  params  sinon 16)
 
     # =========================================================================
     # 2. EXÉCUTION
