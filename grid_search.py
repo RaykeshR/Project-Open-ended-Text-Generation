@@ -18,46 +18,46 @@ def main():
     # Vous pouvez commenter ceux que vous ne voulez pas tester (ex: gpt2-xl si manque de RAM)
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
-        'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
-        ### 'gpt2-xl'        # ~1.5B params (Lourd)
+        # 'gpt2',          # ~124M params (Très rapide)
+        'gpt2-medium',   # ~355M params
+        'gpt2-large',    # ~774M params
+        'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
         # # Très performants, souvent meilleurs que des modèles 10x plus gros d'il y a 2 ans.
-        # 'Qwen/Qwen1.5-0.5B',            # 0.5B : Incroyablement léger et surprenant
-        # # 'Qwen/Qwen1.5-1.8B',          # 1.8B : Le test ultime pour votre RAM (limite haute)
+        'Qwen/Qwen1.5-0.5B',            # 0.5B : Incroyablement léger et surprenant
+        # 'Qwen/Qwen1.5-1.8B',          # 1.8B : Le test ultime pour votre RAM (limite haute)
 
         # # --- FAMILLE LLAMA (Architecture moderne) ---
         # # Le standard actuel, très efficace.
-        # 'TinyLlama/TinyLlama-1.1B-Chat-v1.0', # 1.1B : Excellent compromis taille/performance
+        'TinyLlama/TinyLlama-1.1B-Chat-v1.0', # 1.1B : Excellent compromis taille/performance
         # 'meta-llama/Meta-Llama-3-8B', # 8B : Le nouveau roi (trop gros ici)
 
         # # --- FAMILLE DEEPSEEK (Coding/Math specialists) ---
         # # Leurs modèles "Coder" existent en petite taille et sont très logiques
-        # 'deepseek-ai/deepseek-coder-1.3b-base', # 1.3B : Excellent raisonnement
+        'deepseek-ai/deepseek-coder-1.3b-base', # 1.3B : Excellent raisonnement
         # 'deepseek-ai/deepseek-llm-7b-base', # 7B (trop gros ici)
 
         # # --- FAMILLE OPT (Facebook/Meta) ---
         # # Architecture similaire à GPT-2 mais entraînement différent
-        # 'facebook/opt-125m',  # Très rapide, idéal pour tester
-        # 'facebook/opt-350m',            # 350M : Pour comparer avec gpt2-medium
-        # 'facebook/opt-1.3b',            # 1.3B : Concurrent direct de gpt2-xl et TinyLlama
+        'facebook/opt-125m',  # Très rapide, idéal pour tester
+        'facebook/opt-350m',            # 350M : Pour comparer avec gpt2-medium
+        'facebook/opt-1.3b',            # 1.3B : Concurrent direct de gpt2-xl et TinyLlama
         # 'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
         # # --- FAMILLE MICROSOFT (Phi) ---
         # # Entraînés sur des données de très haute qualité (livres, code)
-        # 'microsoft/phi-1_5',            # 1.3B : Très logique et cohérent
+        'microsoft/phi-1_5',            # 1.3B : Très logique et cohérent
         # 'microsoft/phi-2',            # 2.7B : Risque de crash (comme OPT-2.7B)
 
         # # --- FAMILLE ELEUTHER AI (Open Science) ---
         # # Modèles très utilisés dans la recherche
-        # 'EleutherAI/gpt-neo-1.3B',      # 1.3B : L'alternative open-source historique à GPT-3
-        # 'EleutherAI/pythia-1.4b',       # 1.4B : Très clean, bon pour l'analyse scientifique
+        'EleutherAI/gpt-neo-1.3B',      # 1.3B : L'alternative open-source historique à GPT-3
+        'EleutherAI/pythia-1.4b',       # 1.4B : Très clean, bon pour l'analyse scientifique
         
         # # --- FAMILLE BLOOM (Multilingue) ---
         # # Si jamais vous voulez tester un peu de français plus tard
-        # 'bigscience/bloom-560m',        # 560M : Petit mais polyvalent
+        'bigscience/bloom-560m',        # 560M : Petit mais polyvalent
 
         # # --- FAMILLE MISTRAL (fr) ---
         # 'mistralai/Mistral-7B-v0.1',  # 7B : Le standard actuel (trop gros ici)
@@ -66,29 +66,29 @@ def main():
     # Liste des modèles "juges" pour la cohérence (du plus léger au plus lourd)
     # Utiliser plusieurs juges permet de vérifier si le score est robuste.
     coherence_models = [
-        # 'facebook/opt-125m',  # Très rapide, idéal pour tester
+        'facebook/opt-125m',  # Très rapide, idéal pour tester
         # ###########'facebook/opt-350m',  # Bon compromis
-        # 'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
+        'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
         ###'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
         # # --- FAMILLE GPT-2 (Les classiques) ---
-        # 'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
+        'gpt2',          # ~124M params (Très rapide)
+        'gpt2-medium',   # ~355M params
+        'gpt2-large',    # ~774M params
         'gpt2-xl',        # ~1.5B params (Lourd)
     ]
 
     # Hyperparamètres à tester
     ks = [5    ]              # Taille du beam (beam_width)              |[5, 10][5    ]
-    alphas = [0.8, 0.6, 0.4]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
+    alphas = [     0.6     ]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
     epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
     # Paramètres globaux
     dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
-    num_prefixes = 100        # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2'~124M params sinon 5 )
-    decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2'~124M  params  sinon 16)
+    num_prefixes = 5         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2'~124M params sinon 5 )
+    decoding_len = 16        # Longueur du texte généré (256 est standard utilisé pour 'gpt2'~124M  params  sinon 16)
 
     # =========================================================================
     # 2. EXÉCUTION

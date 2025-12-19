@@ -31,6 +31,7 @@ def main():
     model = SimCTGGPT(args.model_name)
     model.to(device)
     model.eval()
+    safe_model_name = args.model_name.replace('/', '-')
 
     # Chargement du dataset
     dataset = load_dataset(args.dataset_name, args.dataset_config, split=args.dataset_split, trust_remote_code=True)
@@ -38,7 +39,7 @@ def main():
     for k in args.ks:
         for alpha in args.alphas:
             for epsilon in args.epsilons:
-                output_filename = f'{args.dataset_name}_k{k}_a{alpha}_e{epsilon}_{args.model_name}.jsonl'
+                output_filename = f'{args.dataset_name}_k{k}_a{alpha}_e{epsilon}_{safe_model_name}.jsonl'
                 output_path = f'{args.output_dir}/{output_filename}'
                 print(f"\n--- Generation: k={k}, alpha={alpha}, epsilon={epsilon} ---")
                 
