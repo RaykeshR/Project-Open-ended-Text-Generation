@@ -36,8 +36,11 @@ class CoherenceEvaluator(nn.Module):
         super(CoherenceEvaluator, self).__init__()
         # from transformers import GPT2Tokenizer, OPTForCausalLM
         print ('Loading model...')
-        # self.model = AutoModelForCausalLM.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16) # pour 'facebook/opt-2.7b'
+        if "2.7b" in model_name:
+            print(f" \033[30m Modèle lourd \033[1m détecté \033[91m({model_name})\033[0m : Chargement en float16 pour économiser la RAM.")
+            self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16) # pour 'facebook/opt-2.7b'
+        else:
+            self.model = AutoModelForCausalLM.from_pretrained(model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         print ('Model loaded.')
         self.vocab_size = self.model.config.vocab_size
