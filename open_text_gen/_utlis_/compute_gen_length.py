@@ -7,8 +7,9 @@ def load_result(in_f):
         for line in f:
             if not line.strip(): continue
             item = json.loads(line)
-            if 'generated' in item:
-                all_prediction_list[0].append(item['generated'])
+            text = item.get('gen_text') or item.get('generated')
+            if text:
+                all_prediction_list[0].append(text)
                 
     print(f'Number of predictions per instance is {len(all_prediction_list)}')
     return all_prediction_list
