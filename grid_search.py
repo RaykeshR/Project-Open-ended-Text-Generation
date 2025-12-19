@@ -20,8 +20,8 @@ def main():
         # --- FAMILLE GPT-2 (Les classiques) ---
         # 'gpt2',          # ~124M params (Très rapide)
         'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
-        # 'gpt2-xl'        # ~1.5B params (Lourd)
+        'gpt2-large',    # ~774M params
+        'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
         # # Très performants, souvent meilleurs que des modèles 10x plus gros d'il y a 2 ans.
