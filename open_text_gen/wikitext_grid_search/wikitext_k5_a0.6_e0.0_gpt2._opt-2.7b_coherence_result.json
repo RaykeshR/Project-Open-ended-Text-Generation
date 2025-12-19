@@ -1,9 +1,9 @@
 [
     {
         "coherence_score_list": [
-            "-inf"
+            "-0.9611929"
         ],
-        "coherence_mean": "-inf",
-        "coherence_std": "nan"
+        "coherence_mean": "-0.9611929",
+        "coherence_std": "0.0"
     }
 ]

@@ -10,9 +10,9 @@
         },
         "gen_length_dict": {
             "gen_len_list": [
-                "0.0"
+                "97.86842105263158"
             ],
-            "gen_len_mean": "0.0",
+            "gen_len_mean": "97.87",
             "gen_len_std": "0.0"
         },
         "mauve_dict": {
