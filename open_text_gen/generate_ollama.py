@@ -8,7 +8,7 @@ from transformers import AutoTokenizer
 def main():
     parser = argparse.ArgumentParser()
     # Liste des modèles Ollama à tester (ex: llama3, mistral)
-    parser.add_argument('--models', type=str, nargs='+', default=['llama3', 'mistral'], help='Liste des modèles Ollama')
+    parser.add_argument('--models', type=str, nargs='+', default=['llama3.2', 'mistral'], help='Liste des modèles Ollama')
     parser.add_argument('--dataset_name', type=str, default='wikitext', help='Nom du dataset')
     parser.add_argument('--dataset_config', type=str, default='wikitext-103-raw-v1', help='Config du dataset')
     parser.add_argument('--dataset_split', type=str, default='test', help='Split du dataset')
