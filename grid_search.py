@@ -166,7 +166,7 @@ def main():
             ]
             try:
                 subprocess.run(coh_cmd, check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
                 print(f" Erreur cohérence avec {coh_model}")
                 print(f"\n[ERREUR CRITIQUE] Le processus a crashé avec le code : {e.returncode}")
                 print(f"Commande échouée : {e.cmd}")
