@@ -87,8 +87,8 @@ def main():
     dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
-    num_prefixes = 100         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2'~124M params sinon 5 )
-    decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2'~124M  params  sinon 16)
+    num_prefixes = 100         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
+    decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
 
     # =========================================================================
     # 2. EXÉCUTION
