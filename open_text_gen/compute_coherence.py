@@ -36,7 +36,8 @@ class CoherenceEvaluator(nn.Module):
         super(CoherenceEvaluator, self).__init__()
         # from transformers import GPT2Tokenizer, OPTForCausalLM
         print ('Loading model...')
-        self.model = AutoModelForCausalLM.from_pretrained(model_name)
+        # self.model = AutoModelForCausalLM.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16) # pour 'facebook/opt-2.7b'
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         print ('Model loaded.')
         self.vocab_size = self.model.config.vocab_size
