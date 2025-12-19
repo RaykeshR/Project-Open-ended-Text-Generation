@@ -18,9 +18,9 @@ def main():
     # Vous pouvez commenter ceux que vous ne voulez pas tester (ex: gpt2-xl si manque de RAM)
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
-        # 'gpt2',          # ~124M params (Très rapide)
-        'gpt2-medium',   # ~355M params
-        'gpt2-large',    # ~774M params
+        'gpt2',          # ~124M params (Très rapide)
+        # 'gpt2-medium',   # ~355M params
+        # 'gpt2-large',    # ~774M params
         ### 'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
@@ -84,7 +84,9 @@ def main():
     epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
     # Paramètres globaux
-    dataset_name = 'wikitext'
+    dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
+    dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
+    dataset_split = 'test' # test | train | test
     num_prefixes = 5        # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2'~124M params sinon 5 )
     decoding_len = 16        # Longueur du texte généré (256 est standard utilisé pour 'gpt2'~124M  params  sinon 16)
 
@@ -131,6 +133,8 @@ def main():
                 python_exe, 'open_text_gen/generate.py',
                 '--model_name', model_name,
                 '--dataset_name', dataset_name,
+                '--dataset_config', dataset_config,
+                '--dataset_split', dataset_split,
                 '--output_dir', output_dir,
                 '--decoding_strategy', 'contrastive',
                 '--decoding_len', str(decoding_len),
