@@ -55,7 +55,7 @@ class CoherenceEvaluator(nn.Module):
         outputs = self.model(input_ids=input_ids, output_hidden_states=True)
         logits = outputs.logits
         assert logits.size() == torch.Size([bsz, seqlen, self.vocab_size])
-        probability = F.softmax(logits, dim=-1) # bsz x seqlen x vocab_size
+        probability = F.softmax(logits.float(), dim=-1) # bsz x seqlen x vocab_size
         last_hidden_states = outputs.hidden_states[-1]
         assert last_hidden_states.size() == torch.Size([bsz, seqlen, self.embed_dim])
         return last_hidden_states, probability
