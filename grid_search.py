@@ -121,7 +121,9 @@ def main():
         # --- A. GÉNÉRATION ---
         # Nom du fichier qui sera créé par generate.py
         # DOIT correspondre au format dans generate.py : {dataset}_k{k}_a{alpha}_e{epsilon}_{model}.jsonl
-        filename_base = f'{dataset_name}_k{k}_a{alpha}_e{epsilon}_{model_name}'
+        safe_model_name = model_name.replace('/', '-')
+        
+        filename_base = f'{dataset_name}_k{k}_a{alpha}_e{epsilon}_{safe_model_name}'
         jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
         # Si le fichier existe déjà, on peut sauter l'étape (pratique si le script plante et qu'on relance)
