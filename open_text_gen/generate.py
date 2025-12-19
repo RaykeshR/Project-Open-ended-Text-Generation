@@ -33,7 +33,7 @@ def main():
     model.eval()
 
     # Chargement du dataset
-    dataset = load_dataset(args.dataset_name, args.dataset_config, split=args.dataset_split)
+    dataset = load_dataset(args.dataset_name, args.dataset_config, split=args.dataset_split, trust_remote_code=True)
     
     for k in args.ks:
         for alpha in args.alphas:
