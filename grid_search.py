@@ -71,7 +71,7 @@ def main():
         # 'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
         # 'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
-        # # --- FAMILLE GPT-2 (Les classiques) ---
+        # # --- FAMILLE GPT-2 (Les classiques) --- 
         # 'gpt2',          # ~124M params (Très rapide)
         # 'gpt2-medium',   # ~355M params
         # 'gpt2-large',    # ~774M params
