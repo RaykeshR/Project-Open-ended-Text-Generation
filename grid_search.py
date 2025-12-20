@@ -149,7 +149,10 @@ def main():
             try:
                 subprocess.run(gen_cmd, check=True)
             except subprocess.CalledProcessError as e:
-                print(f" Erreur lors de la génération pour {model_name}. On passe à la suite.")
+                print(f" Erreur lors de la génération pour \033[31m{model_name}. On passe à la suite.")
+                print(f"\n[ERREUR CRITIQUE] Le processus a crashé avec le code : {e.returncode}")
+                print(f"Commande échouée : \x1b[2m{e.cmd}\033[0m")
+                print(f"\x1b[31m\x1b[5m!!!\x1b[1m Erreur \x1b[101m: {e}\x1b[25m\033[0m")
                 continue
 
         # --- B. ÉVALUATION (COHÉRENCE) ---
