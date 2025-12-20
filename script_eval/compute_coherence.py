@@ -134,7 +134,8 @@ def evaluate_batch_coherence(model, prefix_text_list, prediction_text_list, cuda
             one_coherence_score = model.evaluate_coherence(one_prefix_text, one_prediction_text, cuda_available, device)
             result_list.append(one_coherence_score)
         p.finish()
-    return np.mean(result_list)
+    # return np.mean(result_list)
+    return result_list
 
 def parse_config():
     parser = argparse.ArgumentParser()
@@ -164,9 +165,9 @@ if __name__ == '__main__':
     number_of_predictions_per_instance = len(all_prefix_text_list)
     coherence_score_list = []
     for idx in range(number_of_predictions_per_instance):
-        one_coherence_score = evaluate_batch_coherence(model, all_prefix_text_list[idx], 
+        batch_scores = evaluate_batch_coherence(model, all_prefix_text_list[idx], 
             all_prediction_list[idx], cuda_available=cuda_available, device=device)
-        coherence_score_list.append(one_coherence_score)
+        coherence_score_list.extend(batch_scores)
 
     coherence_mean, coherence_std = np.mean(coherence_score_list), np.std(coherence_score_list)
     result_dict = {

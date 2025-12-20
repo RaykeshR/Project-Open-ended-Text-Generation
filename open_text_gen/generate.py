@@ -44,8 +44,13 @@ def main():
                 print(f"\n--- Generation: k={k}, alpha={alpha}, epsilon={epsilon} ---")
                 
                 with open(output_path, 'w', encoding='utf-8') as f: # Ouverture du fichier
-                    for i in tqdm(range(args.num_prefixes)):
-                        full_text = dataset[i]['text']
+                    compteur_valide = 0;index_dataset = 0
+                    pbar = tqdm(total=args.num_prefixes) # Barre de progression basée sur les lignes valides
+
+                    while compteur_valide < args.num_prefixes:
+                        if index_dataset >= len(dataset):break # Sécurité pour ne pas dépasser la taille du dataset
+
+                        full_text = dataset[index_dataset]['text']
                         
                         # Tokenisation du texte original pour découpage précis
                         tokens = tokenizer.encode(full_text)
@@ -56,6 +61,7 @@ def main():
                         
                         # On vérifie qu'on a assez de texte pour faire un test
                         if len(tokens) < prefix_len + 10:
+                            index_dataset += 1
                             continue
 
                         prefix_tokens = tokens[:prefix_len]
@@ -96,6 +102,11 @@ def main():
                         
                         # Sauvegarde immédiate ligne par ligne (JSONL)
                         f.write(json.dumps(result) + '\n')
+                        compteur_valide += 1
+                        pbar.update(1)
+                        index_dataset += 1
+                    print(compteur_valide+"itérations")
+                    pbar.close()                        
 
 if __name__ == '__main__':
     main()
