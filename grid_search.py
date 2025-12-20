@@ -18,10 +18,10 @@ def main():
     # Vous pouvez commenter ceux que vous ne voulez pas tester (ex: gpt2-xl si manque de RAM)
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
-        'gpt2',          # ~124M params (Très rapide)
+        # 'gpt2',          # ~124M params (Très rapide)
         # 'gpt2-medium',   # ~355M params
         # 'gpt2-large',    # ~774M params
-        # 'gpt2-xl'        # ~1.5B params (Lourd)
+        'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
         # # Très performants, souvent meilleurs que des modèles 10x plus gros d'il y a 2 ans.
@@ -79,8 +79,8 @@ def main():
     ]
 
     # Hyperparamètres à tester
-    ks = [5    ]              # Taille du beam (beam_width)              |[5, 10][5    ]
-    alphas = [     0.6     ]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
+    ks = [5, 10]              # Taille du beam (beam_width)              |[5, 10][5    ]
+    alphas = [0.4, 0.6, 0.8]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
     epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
     # Paramètres globaux
@@ -127,7 +127,7 @@ def main():
         jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
         # Si le fichier existe déjà, on peut sauter l'étape (pratique si le script plante et qu'on relance)
-        if os.path.exists(jsonl_output_path) and False:
+        if os.path.exists(jsonl_output_path):
             print(f" Fichier existant trouvé, on passe la génération : {jsonl_output_path}")
         else:
             print(" Génération du texte...")
