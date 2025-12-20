@@ -18,9 +18,9 @@ def main():
     # Vous pouvez commenter ceux que vous ne voulez pas tester (ex: gpt2-xl si manque de RAM)
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
-        # 'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        'gpt2-large',    # ~774M params
+        'gpt2',          # ~124M params (Très rapide)
+        'gpt2-medium',   # ~355M params
+        # 'gpt2-large',    # ~774M params
         # 'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
