@@ -183,19 +183,19 @@ def main():
     if coh_cols:
         main_coh_col = coh_cols[0] # Rank by the first coherence judge
         best_coherence = df.sort_values(by=main_coh_col, ascending=False).head(3)
-        print(f"\n🏆 Top 3 for Coherence ({main_coh_col}):")
+        print(f"\n Top 3 for Coherence ({main_coh_col}):")
         display_cols = ['Model', 'k', 'alpha', main_coh_col, 'MAUVE', 'rep-3']
         print(best_coherence[[c for c in display_cols if c in df.columns]])
 
     if 'MAUVE' in df.columns:
         best_mauve = df.sort_values(by='MAUVE', ascending=False).head(3)
-        print(f"\n🏆 Top 3 for MAUVE (Distribution Similarity):")
+        print(f"\n Top 3 for MAUVE (Distribution Similarity):")
         display_cols = ['Model', 'k', 'alpha', 'MAUVE', coh_cols[0] if coh_cols else 'MAUVE', 'rep-3']
         print(best_mauve[[c for c in display_cols if c in df.columns]])
         
     if 'rep-3' in df.columns:
         lowest_rep3 = df.sort_values(by='rep-3', ascending=True).head(3)
-        print(f"\n🏆 Top 3 for Diversity (Lowest rep-3):")
+        print(f"\n Top 3 for Diversity (Lowest rep-3):")
         display_cols = ['Model', 'k', 'alpha', 'rep-3', 'MAUVE', coh_cols[0] if coh_cols else 'MAUVE']
         print(lowest_rep3[[c for c in display_cols if c in df.columns]])
 
