@@ -124,19 +124,28 @@ def main():
         # Best Coherence
         best_coherence = df.nlargest(3, main_coh_col)
         print(f"\n🏆 Top 3 for Coherence ({main_coh_col}):")
-        print(best_coherence[['Model', 'k', 'alpha', main_coh_col, 'MAUVE']])
+        display_cols = ['Model', 'k', 'alpha', main_coh_col]
+        if 'MAUVE' in df.columns:
+            display_cols.append('MAUVE')
+        print(best_coherence[display_cols])
     
     # Best MAUVE
     if 'MAUVE' in df.columns:
         best_mauve = df.nlargest(3, 'MAUVE')
         print("\n🏆 Top 3 for MAUVE (Distribution similarity):")
-        print(best_mauve[['Model', 'k', 'alpha', 'MAUVE', coh_cols[0] if coh_cols else 'MAUVE']])
+        display_cols = ['Model', 'k', 'alpha', 'MAUVE']
+        if coh_cols:
+            display_cols.append(coh_cols[0])
+        print(best_mauve[display_cols])
         
     # Lowest Repetition (good for diversity)
     if 'rep-3' in df.columns:
         lowest_rep3 = df.nsmallest(3, 'rep-3')
         print("\n🏆 Top 3 for Diversity (Lowest rep-3):")
-        print(lowest_rep3[['Model', 'k', 'alpha', 'rep-3', 'MAUVE']])
+        display_cols = ['Model', 'k', 'alpha', 'rep-3']
+        if 'MAUVE' in df.columns:
+            display_cols.append('MAUVE')
+        print(lowest_rep3[display_cols])
         
     print("\nAnalysis complete.")
 
