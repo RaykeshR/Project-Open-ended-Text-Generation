@@ -217,7 +217,7 @@ Le Model Context Protocol (MCP) est un protocole standard ouvert conçu pour con
 Ici, le MCP Github permettra à gemini d'accéder aux code source sans passer par une recherche web à chaque fois.
 
 1. ouvrir un terminal (WSL, ...)
-2. taper : `cd ~/.gemini`
+2. taper : `cd ~/.gemini`                ( %USERPROFILE%\.gemini )
 3. modifier le fichier settings.json et ajouter au json : 
 ```
     , 
