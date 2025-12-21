@@ -19,9 +19,9 @@ def main():
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
         'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
-        # 'gpt2-xl'        # ~1.5B params (Lourd)
+        'gpt2-medium',   # ~355M params
+        'gpt2-large',    # ~774M params
+        'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
         # # Très performants, souvent meilleurs que des modèles 10x plus gros d'il y a 2 ans.
@@ -68,19 +68,19 @@ def main():
     coherence_models = [
         'facebook/opt-125m',  # Très rapide, idéal pour tester
         # # # ###########'facebook/opt-350m',  # Bon compromis
-        # 'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
-        # 'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
+        'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
+        'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
-        # # --- FAMILLE GPT-2 (Les classiques) --- 
-        # 'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
-        # 'gpt2-large',    # ~774M params
-        # 'gpt2-xl',        # ~1.5B params (Lourd)
+        # # --- FAMILLE GPT-2 (Les classiques) ---
+        'gpt2',          # ~124M params (Très rapide)
+        'gpt2-medium',   # ~355M params
+        'gpt2-large',    # ~774M params
+        'gpt2-xl',        # ~1.5B params (Lourd)
     ]
 
     # Hyperparamètres à tester
-    ks = [5    ]              # Taille du beam (beam_width)              |[5, 10][5    ]
-    alphas = [     0.6     ]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
+    ks = [5, 10]              # Taille du beam (beam_width)              |[5, 10][5    ]
+    alphas = [0.4, 0.6, 0.8]  # Pénalité de dégénérescence               |[0.4, 0.6, 0.8][     0.6     ]
     epsilons = [0.0]          # Seuil de probabilité (0.0 = désactivé)   |[0.0]
 
     # Paramètres globaux
@@ -127,7 +127,7 @@ def main():
         jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
         # Si le fichier existe déjà, on peut sauter l'étape (pratique si le script plante et qu'on relance)
-        if os.path.exists(jsonl_output_path) and False:
+        if os.path.exists(jsonl_output_path):
             print(f" Fichier existant trouvé, on passe la génération : {jsonl_output_path}")
         else:
             print(" Génération du texte...")
@@ -149,7 +149,10 @@ def main():
             try:
                 subprocess.run(gen_cmd, check=True)
             except subprocess.CalledProcessError as e:
-                print(f" Erreur lors de la génération pour {model_name}. On passe à la suite.")
+                print(f" Erreur lors de la génération pour \033[31m{model_name}. On passe à la suite.")
+                print(f"\n[ERREUR CRITIQUE] Le processus a crashé avec le code : {e.returncode}")
+                print(f"Commande échouée : \x1b[2m{e.cmd}\033[0m")
+                print(f"\x1b[31m\x1b[5m!!!\x1b[1m Erreur \x1b[101m: {e}\x1b[25m\033[0m")
                 continue
 
         # --- B. ÉVALUATION (COHÉRENCE) ---
@@ -167,9 +170,9 @@ def main():
             try:
                 subprocess.run(coh_cmd, check=True)
             except subprocess.CalledProcessError as e:
-                print(f" Erreur cohérence avec {coh_model}")
+                print(f" Erreur cohérence avec \033[31m{coh_model}")
                 print(f"\n[ERREUR CRITIQUE] Le processus a crashé avec le code : {e.returncode}")
-                print(f"Commande échouée : {e.cmd}")
+                print(f"Commande échouée : {e.cmd}\033[0m")
 
         # --- C. ÉVALUATION (DIVERSITÉ & MAUVE) ---
         print(" Mesure de Diversité & MAUVE...")

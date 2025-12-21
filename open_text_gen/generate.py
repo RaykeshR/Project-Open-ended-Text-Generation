@@ -105,7 +105,7 @@ def main():
                         compteur_valide += 1
                         pbar.update(1)
                         index_dataset += 1
-                    print(compteur_valide+"itérations")
+                    print(f"{compteur_valide} itérations")
                     pbar.close()                        
 
 if __name__ == '__main__':

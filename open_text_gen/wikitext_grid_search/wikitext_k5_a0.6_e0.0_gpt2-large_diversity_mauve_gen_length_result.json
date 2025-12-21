@@ -1,25 +1,25 @@
 [
     {
         "diversity_dict": {
-            "reference_div": "100.0",
+            "reference_div": "98.78",
             "prediction_diversity_list": [
-                "51.77"
+                "0.0"
             ],
-            "prediction_div_mean": "51.77",
+            "prediction_div_mean": "0.0",
             "prediction_div_std": "0.0"
         },
         "gen_length_dict": {
             "gen_len_list": [
-                "0.0"
+                "188.91"
             ],
-            "gen_len_mean": "0.0",
+            "gen_len_mean": "188.91",
             "gen_len_std": "0.0"
         },
         "mauve_dict": {
             "mauve_score_list": [
-                "0.40720962619612555"
+                "4.095075871623671"
             ],
-            "mauve_mean": "0.41",
+            "mauve_mean": "4.1",
             "mauve_std": "0.0"
         }
     }
