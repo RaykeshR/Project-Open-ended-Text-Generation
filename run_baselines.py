@@ -122,6 +122,10 @@ def main():
     global_start_time = time.time()
     iteration_times = []
     run_count = 0
+    
+    # --- LOG DES ERREURS ---
+    # Liste pour stocker le détail précis des échecs
+    errors_log = [] 
 
     for model_name in gen_models:
         safe_model_name = model_name.replace('/', '-')
@@ -129,16 +133,18 @@ def main():
         for strat in baselines:
             run_count += 1
             iter_start_time = time.time()
+            config_name = f"{model_name} | {strat['name']}"
             
             print(f"\n{'='*80}")
-            print(f"Configuration {run_count}/{total_runs} : Modèle={model_name} | Stratégie={strat['name']}")
+            print(f"Configuration {run_count}/{total_runs} : {config_name}")
             print(f"{'='*80}")
 
             # --- A. GÉNÉRATION ---
             # Construction du nom de fichier attendu (format standard du projet)
             # Ex: wikitext_greedy_gpt2-xl_256.jsonl
             # Note: Le script generate.py construit souvent le nom lui-même, mais on doit le deviner pour l'étape suivante.
-            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}_{decoding_len}'
+            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}'
+            # generate_baselines.py ne met PAS la longueur dans le nom par défaut, contrairement à l'ancien script
             jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
             print(f" 1. Génération du texte ({strat['name']})...")
@@ -161,17 +167,22 @@ def main():
             except subprocess.CalledProcessError as e:
                 print(f"\n\033[31m[ERREUR CRITIQUE] La génération a échoué pour {strat['name']}.\033[0m")
                 print(f"\033[91mCode retour : {e.returncode}\033[0m")
+                # On enregistre l'erreur et on passe
+                errors_log.append({'config': config_name, 'step': 'GÉNÉRATION', 'details': f'Code erreur: {e.returncode}'})
                 continue
 
             # Vérification que le fichier a bien été créé (parfois generate.py change légèrement le nom)
             # Si le fichier exact n'existe pas, on essaie de le trouver avec glob ou on avertit.
             if not os.path.exists(jsonl_output_path):
-                # Fallback : certains scripts nomment différemment (ex: sans le _256 à la fin)
-                fallback_path = f'{output_dir}/{dataset_name}_{strat["file_suffix"]}_{safe_model_name}.jsonl'
+                # Fallback : essayer avec le suffixe _256 si generate.py l'a ajouté (comportement ancien script)
+                fallback_path = f'{output_dir}/{filename_base}_{decoding_len}.jsonl'
                 if os.path.exists(fallback_path):
                     jsonl_output_path = fallback_path
+                    # Mise à jour du base name pour les résultats
+                    filename_base = f'{filename_base}_{decoding_len}'
                 else:
                     print(f"\033[33m[ATTENTION] Impossible de trouver le fichier généré attendu :\n{jsonl_output_path}\nPassage aux évaluations suivantes impossible pour cette config.\033[0m")
+                    errors_log.append({'config': config_name, 'step': 'FICHIER', 'details': 'Fichier JSONL introuvable'})
                     continue
 
             # --- B. ÉVALUATION (COHÉRENCE) ---
@@ -186,6 +197,7 @@ def main():
                     subprocess.run(coh_cmd, check=True)
                 except subprocess.CalledProcessError:
                     print(f"\033[91m -> Erreur lors du calcul de cohérence ({coh_model})\033[0m")
+                    errors_log.append({'config': config_name, 'step': 'COHÉRENCE', 'details': f'Juge {coh_model} échoué'})
 
             # --- C. ÉVALUATION (DIVERSITÉ & MAUVE) ---
             print(" 3. Diversité, MAUVE & Longueur...")
@@ -200,6 +212,7 @@ def main():
                 subprocess.run(div_cmd, check=True)
             except subprocess.CalledProcessError:
                  print(f"\033[91m -> Erreur lors du calcul Diversité/MAUVE\033[0m")
+                 errors_log.append({'config': config_name, 'step': 'MAUVE/DIV', 'details': 'Script mesure échoué'})
 
             # --- CALCULS DE TEMPS ---
             iter_end_time = time.time()
@@ -216,7 +229,26 @@ def main():
             print(f"  \033[32m ➤ \033[0m Moyenne : {format_timedelta(avg_duration)}")
             print(f"  \033[34m ➤ \033[0m RESTANT ESTIMÉ : {format_timedelta(estimated_remaining)}")
 
-    print(f"\n\033[42m[SUCCÈS] Tous les baselines sont terminés en {format_timedelta(time.time() - global_start_time)}.\033[0m")
+    # =========================================================================
+    # 3. RAPPORT FINAL (DICO D'ERREURS)
+    # =========================================================================
+    total_time = time.time() - global_start_time
+    print("\n" + "="*80)
+    print(f"RAPPORT FINAL ({format_timedelta(total_time)})")
+    print("="*80)
+    
+    if len(errors_log) == 0:
+        print(f"\033[42m SUCCÈS TOTAL \033[0m : 0 erreurs détectées.")
+    else:
+        print(f"\033[41m {len(errors_log)} ERREURS DÉTECTÉES : \033[0m")
+        print("-" * 80)
+        # Affichage tabulaire propre
+        print(f"{'CONFIGURATION':<40} | {'ÉTAPE':<12} | {'DÉTAIL'}")
+        print("-" * 80)
+        for err in errors_log:
+            # Coloration rouge pour l'étape
+            print(f"{err['config']:<40} | \033[31m{err['step']:<12}\033[0m | {err['details']}")
+    print("="*80)
 
 if __name__ == '__main__':
     main()
