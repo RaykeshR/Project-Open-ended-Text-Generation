@@ -144,7 +144,7 @@ def main():
             print(f" 1. Génération du texte ({strat['name']})...")
             
             gen_cmd = [
-                python_exe, 'open_text_gen/generate.py',
+                python_exe, 'open_text_gen/generate_baselines.py',
                 '--model_name', model_name,
                 '--dataset_name', dataset_name,
                 '--dataset_config', dataset_config,
