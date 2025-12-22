@@ -17,10 +17,10 @@ def main():
     # Vous pouvez commenter ceux que vous ne voulez pas tester (ex: gpt2-xl si manque de RAM)
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
-        # 'gpt2',          # ~124M params (Très rapide)
+        'gpt2',          # ~124M params (Très rapide)
         # 'gpt2-medium',   # ~355M params
         # 'gpt2-large',    # ~774M params
-        'gpt2-xl'        # ~1.5B params (Lourd)
+        # 'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
         # # Très performants, souvent meilleurs que des modèles 10x plus gros d'il y a 2 ans.
@@ -146,29 +146,32 @@ def main():
             filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}_{decoding_len}'
             jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
-            print(f" 1. Génération du texte ({strat['name']})...")
-            
-            gen_cmd = [
-                python_exe, 'open_text_gen/generate_baselines.py',
-                '--model_name', model_name,
-                '--dataset_name', dataset_name,
-                '--dataset_config', dataset_config,
-                '--dataset_split', dataset_split,
-                '--output_dir', output_dir,
-                '--decoding_strategy', strat['strategy_flag'],
-                '--decoding_len', str(decoding_len),
-                '--num_prefixes', str(num_prefixes)
-            ] + strat['extra_args']
+            # Si le fichier existe déjà, on peut sauter l'étape (pratique si le script plante et qu'on relance)
+            if os.path.exists(jsonl_output_path):
+                print(f" Fichier existant trouvé, on passe la génération : {jsonl_output_path}")
+            else:
+                print(f" 1. Génération du texte ({strat['name']})...")
+                gen_cmd = [
+                    python_exe, 'open_text_gen/generate_baselines.py',
+                    '--model_name', model_name,
+                    '--dataset_name', dataset_name,
+                    '--dataset_config', dataset_config,
+                    '--dataset_split', dataset_split,
+                    '--output_dir', output_dir,
+                    '--decoding_strategy', strat['strategy_flag'],
+                    '--decoding_len', str(decoding_len),
+                    '--num_prefixes', str(num_prefixes)
+                ] + strat['extra_args']
 
-            try:
-                # On capture la sortie pour éviter de polluer, sauf en cas d'erreur
-                subprocess.run(gen_cmd, check=True) #, capture_output=False)
-            except subprocess.CalledProcessError as e:
-                print(f"\n\033[31m[ERREUR CRITIQUE] La génération a échoué pour {strat['name']}.\033[0m")
-                print(f"\033[91mCode retour : {e.returncode}\033[0m")
-                # On enregistre l'erreur et on passe
-                errors_log.append({'config': config_name, 'step': 'GÉNÉRATION', 'details': f'Code erreur: {e.returncode}'})
-                continue
+                try:
+                    # On capture la sortie pour éviter de polluer, sauf en cas d'erreur
+                    subprocess.run(gen_cmd, check=True) #, capture_output=False)
+                except subprocess.CalledProcessError as e:
+                    print(f"\n\033[31m[ERREUR CRITIQUE] La génération a échoué pour {strat['name']}.\033[0m")
+                    print(f"\033[91mCode retour : {e.returncode}\033[0m")
+                    # On enregistre l'erreur et on passe
+                    errors_log.append({'config': config_name, 'step': 'GÉNÉRATION', 'details': f'Code erreur: {e.returncode}'})
+                    continue
 
             # Vérification que le fichier a bien été créé (parfois generate.py change légèrement le nom)
             # Si le fichier exact n'existe pas, on essaie de le trouver avec glob ou on avertit.
