@@ -174,7 +174,7 @@ def main():
             # Si le fichier exact n'existe pas, on essaie de le trouver avec glob ou on avertit.
             if not os.path.exists(jsonl_output_path):
                 # Fallback : essayer avec le suffixe _256 si generate.py l'a ajouté (comportement ancien script)
-                fallback_path = f'{output_dir}/{filename_base}_{decoding_len}.jsonl'
+                fallback_path = f'{output_dir}/{filename_base}.jsonl'
                 if os.path.exists(fallback_path):
                     jsonl_output_path = fallback_path
                     # Mise à jour du base name pour les résultats
@@ -202,7 +202,7 @@ def main():
             # --- C. ÉVALUATION (DIVERSITÉ & MAUVE) ---
             print(" 3. Diversité, MAUVE & Longueur...")
             # MODIFICATION ICI : Ajout de la longueur dans le nom du fichier de résultat
-            div_output_path = f'{output_dir}/{filename_base}_{decoding_len}_diversity_mauve_gen_length_result.json'
+            div_output_path = f'{output_dir}/{filename_base}_diversity_mauve_gen_length_result.json'
             
             div_cmd = [
                 python_exe, 'open_text_gen/measure_diversity_mauve_gen_length.py',
