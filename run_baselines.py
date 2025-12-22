@@ -80,8 +80,8 @@ def main():
     dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
-    num_prefixes = 100         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
-    decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
+    num_prefixes = 1         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
+    decoding_len = 16        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
     
     # DÉFINITION DES STRATÉGIES "BASELINE"
     # Ce sont les méthodes classiques auxquelles on se compare
@@ -128,7 +128,8 @@ def main():
     errors_log = [] 
 
     for model_name in gen_models:
-        safe_model_name = model_name.replace('/', '-')
+        safe_model_name = model_name.replace('/', '-')              
+        safe_model_name += f'_{decoding_len}'
         
         for strat in baselines:
             run_count += 1
@@ -143,7 +144,7 @@ def main():
             # Construction du nom de fichier attendu (format standard du projet)
             # Ex: wikitext_greedy_gpt2-xl_256.jsonl
             # Note: Le script generate.py construit souvent le nom lui-même, mais on doit le deviner pour l'étape suivante.
-            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}_{decoding_len}'
+            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}'
             jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
             print(f" 1. Génération du texte ({strat['name']})...")
@@ -173,17 +174,9 @@ def main():
             # Vérification que le fichier a bien été créé (parfois generate.py change légèrement le nom)
             # Si le fichier exact n'existe pas, on essaie de le trouver avec glob ou on avertit.
             if not os.path.exists(jsonl_output_path):
-                # Fallback : essayer avec le suffixe _256 si generate.py l'a ajouté (comportement ancien script)
-                fallback_path = f'{output_dir}/{filename_base}.jsonl'
-                if os.path.exists(fallback_path):
-                    jsonl_output_path = fallback_path
-                    # Mise à jour du base name pour les résultats
-                    # Si on trouve le fallback, on garde filename_base tel quel ou on ajuste selon besoin
-                    # Mais pour la demande, on suppose que le fichier SANS _256 est celui attendu
-                else:
-                    print(f"\033[33m[ATTENTION] Impossible de trouver le fichier généré attendu :\n{jsonl_output_path}\nPassage aux évaluations suivantes impossible pour cette config.\033[0m")
-                    errors_log.append({'config': config_name, 'step': 'FICHIER', 'details': 'Fichier JSONL introuvable'})
-                    continue
+                print(f"\033[33m[ATTENTION] Impossible de trouver le fichier généré attendu :\n{jsonl_output_path}\nPassage aux évaluations suivantes impossible pour cette config.\033[0m")
+                errors_log.append({'config': config_name, 'step': 'FICHIER', 'details': 'Fichier JSONL introuvable'})
+                continue
 
             # --- B. ÉVALUATION (COHÉRENCE) ---
             for coh_model in coherence_models:
