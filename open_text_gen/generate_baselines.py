@@ -49,7 +49,7 @@ def main():
     else:
         suffix = args.decoding_strategy
 
-    output_filename = f'{args.dataset_name}_{suffix}_{safe_model_name}.jsonl'
+    output_filename = f'{args.dataset_name}_{suffix}_{safe_model_name}_{args.decoding_len}.jsonl'
     output_path = os.path.join(args.output_dir, output_filename)
     print(f"Saving to: {output_path}")
 

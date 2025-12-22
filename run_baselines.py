@@ -17,10 +17,10 @@ def main():
     # Vous pouvez commenter ceux que vous ne voulez pas tester (ex: gpt2-xl si manque de RAM)
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
-        'gpt2',          # ~124M params (Très rapide)
+        # 'gpt2',          # ~124M params (Très rapide)
         # 'gpt2-medium',   # ~355M params
         # 'gpt2-large',    # ~774M params
-        # 'gpt2-xl'        # ~1.5B params (Lourd)
+        'gpt2-xl'        # ~1.5B params (Lourd)
 
         # # --- FAMILLE QWEN (Le top actuel en "petits" modèles) ---
         # # Très performants, souvent meilleurs que des modèles 10x plus gros d'il y a 2 ans.
@@ -80,8 +80,8 @@ def main():
     dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
-    num_prefixes = 1         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
-    decoding_len = 16        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
+    num_prefixes = 100         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
+    decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
     
     # DÉFINITION DES STRATÉGIES "BASELINE"
     # Ce sont les méthodes classiques auxquelles on se compare
@@ -128,7 +128,6 @@ def main():
     errors_log = [] 
 
     for model_name in gen_models:
-        model_name += f'_{decoding_len}'
         safe_model_name = model_name.replace('/', '-')              
         
         for strat in baselines:
@@ -144,7 +143,7 @@ def main():
             # Construction du nom de fichier attendu (format standard du projet)
             # Ex: wikitext_greedy_gpt2-xl_256.jsonl
             # Note: Le script generate.py construit souvent le nom lui-même, mais on doit le deviner pour l'étape suivante.
-            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}'
+            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}_{decoding_len}'
             jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
             print(f" 1. Génération du texte ({strat['name']})...")
