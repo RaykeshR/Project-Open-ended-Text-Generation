@@ -128,8 +128,8 @@ def main():
     errors_log = [] 
 
     for model_name in gen_models:
+        model_name += f'_{decoding_len}'
         safe_model_name = model_name.replace('/', '-')              
-        safe_model_name += f'_{decoding_len}'
         
         for strat in baselines:
             run_count += 1
