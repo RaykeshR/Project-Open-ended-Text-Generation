@@ -143,8 +143,7 @@ def main():
             # Construction du nom de fichier attendu (format standard du projet)
             # Ex: wikitext_greedy_gpt2-xl_256.jsonl
             # Note: Le script generate.py construit souvent le nom lui-même, mais on doit le deviner pour l'étape suivante.
-            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}'
-            # generate_baselines.py ne met PAS la longueur dans le nom par défaut, contrairement à l'ancien script
+            filename_base = f'{dataset_name}_{strat["file_suffix"]}_{safe_model_name}_{decoding_len}'
             jsonl_output_path = f'{output_dir}/{filename_base}.jsonl'
 
             print(f" 1. Génération du texte ({strat['name']})...")
@@ -179,7 +178,8 @@ def main():
                 if os.path.exists(fallback_path):
                     jsonl_output_path = fallback_path
                     # Mise à jour du base name pour les résultats
-                    filename_base = f'{filename_base}_{decoding_len}'
+                    # Si on trouve le fallback, on garde filename_base tel quel ou on ajuste selon besoin
+                    # Mais pour la demande, on suppose que le fichier SANS _256 est celui attendu
                 else:
                     print(f"\033[33m[ATTENTION] Impossible de trouver le fichier généré attendu :\n{jsonl_output_path}\nPassage aux évaluations suivantes impossible pour cette config.\033[0m")
                     errors_log.append({'config': config_name, 'step': 'FICHIER', 'details': 'Fichier JSONL introuvable'})
@@ -201,7 +201,8 @@ def main():
 
             # --- C. ÉVALUATION (DIVERSITÉ & MAUVE) ---
             print(" 3. Diversité, MAUVE & Longueur...")
-            div_output_path = f'{output_dir}/{filename_base}_diversity_mauve_gen_length_result.json'
+            # MODIFICATION ICI : Ajout de la longueur dans le nom du fichier de résultat
+            div_output_path = f'{output_dir}/{filename_base}_{decoding_len}_diversity_mauve_gen_length_result.json'
             
             div_cmd = [
                 python_exe, 'open_text_gen/measure_diversity_mauve_gen_length.py',
