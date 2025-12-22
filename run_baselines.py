@@ -18,7 +18,7 @@ def main():
     gen_models = [
         # --- FAMILLE GPT-2 (Les classiques) ---
         'gpt2',          # ~124M params (Très rapide)
-        # 'gpt2-medium',   # ~355M params
+        'gpt2-medium',   # ~355M params
         # 'gpt2-large',    # ~774M params
         # 'gpt2-xl'        # ~1.5B params (Lourd)
 
