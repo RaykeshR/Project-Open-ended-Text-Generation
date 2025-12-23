@@ -17,9 +17,9 @@
         },
         "mauve_dict": {
             "mauve_score_list": [
-                "4.047626480158546"
+                "5.459523209880998"
             ],
-            "mauve_mean": "4.05",
+            "mauve_mean": "5.46",
             "mauve_std": "0.0"
         }
     }
