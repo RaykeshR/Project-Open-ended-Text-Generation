@@ -14,8 +14,8 @@ def parse_text(reference_text, prediction_text, tokenizer):
     prediction_tokens = tokenizer.tokenize(prediction_text)
     min_len = min(len(reference_tokens), len(prediction_tokens)) # Non utilisé
     # On tronque à 128 maximum, mais on accepte les textes plus courts (ex: 50)
-    reference_tokens = reference_tokens[:min_len]
-    prediction_tokens = prediction_tokens[:min_len]
+    reference_tokens = reference_tokens[:128]#reference_tokens[:min_len] 
+    prediction_tokens = prediction_tokens[:128]#prediction_tokens[:min_len] 
     
     reference_text = decode(reference_tokens, tokenizer)
     prediction_text = decode(prediction_tokens, tokenizer)
