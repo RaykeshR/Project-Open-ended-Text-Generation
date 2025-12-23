@@ -66,14 +66,14 @@ def main():
     coherence_models = [
         'facebook/opt-125m',  # Très rapide, idéal pour tester
         # # # ###########'facebook/opt-350m',  # Bon compromis
-        'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
-        'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
+        # 'facebook/opt-1.3b', # Plus précis mais demande ~6Go VRAM/RAM
+        # 'facebook/opt-2.7b',  # Le plus précis (celui qui a fait planter mon PC avant)
 
-        # # --- FAMILLE GPT-2 (Les classiques) ---
-        'gpt2',          # ~124M params (Très rapide)
-        'gpt2-medium',   # ~355M params
-        'gpt2-large',    # ~774M params
-        'gpt2-xl',        # ~1.5B params (Lourd)
+        # # # --- FAMILLE GPT-2 (Les classiques) ---
+        # 'gpt2',          # ~124M params (Très rapide)
+        # 'gpt2-medium',   # ~355M params
+        # 'gpt2-large',    # ~774M params
+        # 'gpt2-xl',        # ~1.5B params (Lourd)
     ]
 
     # Paramètres globaux
