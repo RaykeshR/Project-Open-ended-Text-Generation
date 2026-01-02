@@ -21,7 +21,7 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 ## Résultat de l'analyse/évaluation : 
 
 ============================================================================================================================================
-| Model &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Method | Parameters | MAUVE | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_gpt2 | Coh_gpt2-large | Coh_gpt2-medium | Coh_gpt2-xl | Coh_opt-1.3b | Coh_opt-125m | Coh_opt-2.7b |
+| Model&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Method | Parameters | MAUVE | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_gpt2 | Coh_gpt2-large | Coh_gpt2-medium | Coh_gpt2-xl | Coh_opt-1.3b | Coh_opt-125m | Coh_opt-2.7b |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{3.4200}$ | $\textsf{90.3600}$ | $\textsf{0.8533}$ | $\textsf{0.8090}$ | $\textsf{0.7745}$ | $\textsf{-1.1207}$ | $\textsf{-1.6835}$ | $\textsf{-1.1248}$ | $\textsf{-1.4209}$ | $\textsf{-0.9934}$ | $\textsf{-1.1265}$ | $\textsf{-0.9605}$ |
 | $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{1.4400}$ | $\textsf{60.0000}$ | $\textsf{0.7459}$ | $\textsf{0.6839}$ | $\textsf{0.6413}$ | $\textsf{-1.1724}$ | $\textsf{-2.0421}$ | $\textsf{-1.1640}$ | $\textsf{-1.6741}$ | $\textsf{-1.0013}$ | $\textsf{-1.1750}$ | $\textsf{-0.9624}$ |
