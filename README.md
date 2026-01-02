@@ -59,6 +59,7 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 | $\textsf{gpt2-xl}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{5.0200}$ | $\textsf{196.5400}$ | $\textsf{0.7559}$ | $\textsf{0.7182}$ | $\textsf{0.6913}$ | $\textsf{-0.5588}$ | $\textsf{-0.4263}$ | $\textsf{-0.4982}$ | $\textsf{-0.3774}$ | $\textsf{-0.4278}$ | $\textsf{-0.5575}$ | $\textsf{-0.4267}$ |
 | $\color{blue}{\textsf{gpt2-xl}}$ | $\color{blue}{\textsf{Nucleus}}$ | $\color{blue}{\textsf{p=0.95}}$ | $\color{blue}{\textsf{50.9000}}$ | $\color{blue}{\textsf{178.9200}}$ | $\color{blue}{\textsf{0.1125}}$ | $\color{blue}{\textsf{0.0475}}$ | $\color{blue}{\textsf{0.0296}}$ | $\color{blue}{\textsf{-2.5551}}$ | $\color{blue}{\textsf{-2.1907}}$ | $\color{blue}{\textsf{-2.3259}}$ | $\color{blue}{\textsf{-1.9738}}$ | $\color{blue}{\textsf{-2.2540}}$ | $\color{blue}{\textsf{-2.6280}}$ | $\color{blue}{\textsf{-2.2513}}$ |
 | $\textsf{gpt2-xl}$ | $\textsf{Typical}$ | $\textsf{p=0.95}$ | $\textsf{38.7700}$ | $\textsf{183.0500}$ | $\textsf{0.1208}$ | $\textsf{0.0552}$ | $\textsf{0.0386}$ | $\textsf{-2.5367}$ | $\textsf{-2.1636}$ | $\textsf{-2.3012}$ | $\textsf{-1.9591}$ | $\textsf{-2.2234}$ | $\textsf{-2.6208}$ | $\textsf{-2.2264}$ |
+
 ============================================================================================================================================
 
 ## Generation
