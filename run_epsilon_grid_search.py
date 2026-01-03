@@ -44,7 +44,7 @@ def main():
     dataset_name = 'wikitext' # wikitext | cc_news | bookcorpus
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
-    num_prefixes = 10         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
+    num_prefixes = 100         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
     decoding_len = 256        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
     
     # GRILLE DE RECHERCHE EPSILON GREEDY
@@ -147,8 +147,8 @@ def main():
                 try:
                     subprocess.run(div_cmd, check=True)
                 except subprocess.CalledProcessError:
-                     print(f"\033[91m -> Erreur Diversité/MAUVE\033[0m")
-                     errors_log.append({'config': config_name, 'step': 'MAUVE/DIV', 'details': 'Script mesure échoué'})
+                    print(f"\033[91m -> Erreur Diversité/MAUVE\033[0m")
+                    errors_log.append({'config': config_name, 'step': 'MAUVE/DIV', 'details': 'Script mesure échoué'})
 
                 # --- CALCULS DE TEMPS ---
                 iter_end_time = time.time()
