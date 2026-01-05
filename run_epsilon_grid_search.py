@@ -45,12 +45,12 @@ def main():
     dataset_config = 'wikitext-103-raw-v1' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'test' # test | train | train
     num_prefixes = 50         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
-    decoding_len = 64        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
+    decoding_len = 32        # Longueur du texte généré (256 est standard utilisé pour 'gpt2...'~124M-~1.5B  params  sinon 16)
     
     # GRILLE DE RECHERCHE EPSILON GREEDY
     # On va tester toutes les combinaisons de ces listes
-    alphas = [0.4]#[0.2, 0.4, 0.6, 0.8]
-    ks = [5]#[5, 10, 50]
+    alphas = [0.2, 0.4, 0.6, 0.8]
+    ks = [5, 10]#[5, 10, 50]
 
     # =========================================================================
     # 2. EXÉCUTION

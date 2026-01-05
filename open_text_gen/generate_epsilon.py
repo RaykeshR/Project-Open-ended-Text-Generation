@@ -87,6 +87,7 @@ def main():
 
             # --- Epsilon Greedy Generation Loop ---
             curr_input_ids = input_ids.clone()
+            nll_sum = 0.0  # AJOUT : Initialisation de la somme des NLL
             
             with torch.no_grad():
                 for _ in range(args.decoding_len):
@@ -94,12 +95,16 @@ def main():
                     outputs = hf_model(curr_input_ids)
                     next_token_logits = outputs.logits[:, -1, :] # (batch_size, vocab_size)
                     
+                    # AJOUT : On calcule les probabilités complètes ici pour la PPL
+                    # (et on s'en servira pour l'exploration aussi)
+                    probs = torch.softmax(next_token_logits, dim=-1)
+
                     # Epsilon Logic
                     epsilon = random.random()
                     
                     if epsilon < args.alpha:
                         # Exploration: Top-K Sampling
-                        probs = torch.softmax(next_token_logits, dim=-1)
+                        # On utilise les probs déjà calculées
                         top_k_probs, top_k_indices = torch.topk(probs, args.k, dim=-1)
                         
                         # Re-normalize probabilities
@@ -112,6 +117,15 @@ def main():
                         # Exploitation: Greedy (Argmax)
                         next_token = torch.argmax(next_token_logits, dim=-1).unsqueeze(-1)
                     
+                    # AJOUT : Calcul de la NLL pour le token choisi
+                    # On récupère l'ID du token qui vient d'être décidé (exploration ou exploitation)
+                    chosen_token_id = next_token.item()
+                    # On récupère sa probabilité selon le modèle
+                    token_prob = probs[0, chosen_token_id]
+                    # On accumule -log(P)
+                    # On ajoute une petite valeur 1e-10 pour éviter log(0) par sécurité
+                    nll_sum += -torch.log(token_prob + 1e-10).item()
+
                     # Append prediction
                     curr_input_ids = torch.cat([curr_input_ids, next_token], dim=-1)
             
@@ -119,6 +133,10 @@ def main():
             output_full_tokens = curr_input_ids[0].tolist()
             gen_tokens = output_full_tokens[prefix_len:]
             generated_text = tokenizer.decode(gen_tokens, skip_special_tokens=True)
+
+            # AJOUT : Calcul final de la Perplexité
+            # PPL = exp(somme_NLL / nombre_de_tokens)
+            ppl = torch.exp(torch.tensor(nll_sum / len(gen_tokens))).item()
 
             # Result object
             result = {
@@ -128,7 +146,7 @@ def main():
                 "gen_text": generated_text,
                 "len": len(gen_tokens),
                 "nll4tok": [], 
-                "ppl": 0,
+                "ppl": ppl, # AJOUT : On stocke la vraie valeur
                 "gold_ref": gold_text,
             }
             
