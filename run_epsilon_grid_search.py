@@ -49,8 +49,8 @@ def main():
     
     # GRILLE DE RECHERCHE EPSILON GREEDY
     # On va tester toutes les combinaisons de ces listes
-    alphas = [0.6]#[0.2, 0.4, 0.6, 0.8]
-    ks = [5]#[5, 10, 50]
+    alphas = [0.2, 0.4, 0.6, 0.8]
+    ks = [5, 10, 50]
 
     # =========================================================================
     # 2. EXÉCUTION
