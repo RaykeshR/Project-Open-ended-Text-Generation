@@ -16,7 +16,6 @@ def load_json(path):
         except: return {}
 
 def get_val(data, *keys):
-    """Récupère une valeur profonde dans une structure dict/list"""
     curr = data
     if isinstance(curr, list) and curr: curr = curr[0]
     for k in keys:
@@ -24,7 +23,6 @@ def get_val(data, *keys):
             curr = curr.get(k, {})
         else:
             return None
-    
     if not isinstance(curr, (dict, list)):
         try: return float(curr)
         except: return None
@@ -36,18 +34,14 @@ def collect_data():
         'open_text_gen/wikitext_epsilon_grid_search',
         'open_text_gen/wikitext',
     ]
-    
     data_map = {} 
-
     for d in root_dirs:
         if not os.path.exists(d): continue
         files = glob.glob(os.path.join(d, '*.json'))
-        
         for f in files:
             fname = os.path.basename(f)
             key = None
             m_type = None
-            
             if '_simcse_result.json' in fname:
                 key = fname.replace('_simcse_result.json', '')
                 m_type = 'simcse'
@@ -57,7 +51,6 @@ def collect_data():
             elif '_perplexity_result.json' in fname:
                 key = fname.replace('_perplexity_result.json', '')
                 m_type = 'ppl'
-            
             if key and m_type:
                 if key not in data_map: data_map[key] = {}
                 data_map[key][m_type] = load_json(f)
@@ -74,7 +67,6 @@ def collect_data():
             'Perplexity': get_val(metrics.get('ppl', {}), 'mean_perplexity') or get_val(metrics.get('ppl', {}), 'ppl')
         }
         rows.append(row)
-        
     return pd.DataFrame(rows)
 
 # =============================================================================
@@ -83,14 +75,9 @@ def collect_data():
 
 def print_terminal_colored(df):
     if df.empty: return
-
-    # Couleurs ANSI pour le terminal
-    RED = '\033[91m'   # Meilleure valeur colonne
-    GREEN = '\033[92m' # Meilleure ligne (Winner)
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-
+    RED = '\033[91m'; GREEN = '\033[92m'; RESET = '\033[0m'; BOLD = '\033[1m'
     criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
+    
     best_vals = {}
     for col, crit in criteria.items():
         if col in df.columns:
@@ -106,7 +93,7 @@ def print_terminal_colored(df):
 
     header_str = "".join([h.ljust(widths[h]) for h in headers])
     print("\n" + "="*len(header_str))
-    print(BOLD + " RÉSULTATS TERMINAL" + RESET)
+    print(BOLD + " RÉSULTATS COMPARATIFS (TERMINAL)" + RESET)
     print("-" * len(header_str))
     print(BOLD + header_str + RESET)
     print("-" * len(header_str))
@@ -116,26 +103,22 @@ def print_terminal_colored(df):
         is_winner_row = (idx == best_idx)
         line_color = GREEN if is_winner_row else ""
         end_color = RESET if is_winner_row else ""
-
+        
         line_str += line_color + str(row['Model/Config']).ljust(widths['Model/Config']) + end_color
-
         for col in cols:
             val = row[col]
             cell_str = f"{val:.3f}" if pd.notna(val) else "N/A"
             is_best_col = False
-            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
-                is_best_col = True
+            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]): is_best_col = True
             
             padded = cell_str.ljust(widths[col])
-            if is_best_col:
-                line_str += f"{RED}{padded}{RESET}{line_color}" 
-            else:
-                line_str += f"{line_color}{padded}{end_color}"
+            if is_best_col: line_str += f"{RED}{padded}{RESET}{line_color}" 
+            else: line_str += f"{line_color}{padded}{end_color}"
         print(line_str)
     print("=" * len(header_str) + "\n")
 
 # =============================================================================
-# 3. GÉNÉRATION MARKDOWN (LATEX COLORS)
+# 3. GÉNÉRATION MARKDOWN (LATEX COLORS + FIX UNDERSCORES)
 # =============================================================================
 
 def generate_markdown_latex_colors(df):
@@ -163,23 +146,19 @@ def generate_markdown_latex_colors(df):
             val_str = f"{val:.3f}" if isinstance(val, float) else str(val)
             if pd.isna(val): val_str = "N/A"
 
-            # Colonne Modèle (Nom)
             if col == 'Model/Config':
+                safe_name = str(val_str).replace('_', '\\_') 
                 if is_winner_row:
-                    # Vert pour le nom du modèle gagnant
-                    row_cells.append(f"$\\color{{green}}{{\\textsf{{{val_str}}}}}$")
+                    row_cells.append(f"$\\color{{green}}{{\\textsf{{{safe_name}}}}}$")
                 else:
-                    row_cells.append(f"`{val_str}`")
+                    row_cells.append(f"`{val_str}`") # On garde le code block simple pour les non-gagnants
                 continue
 
-            # Colonnes Métriques (Chiffres)
             is_best = False
             if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
                 is_best = True
             
-            # Formatage LaTeX pour la couleur
             if is_best:
-                # ROUGE pour la meilleure valeur de la colonne
                 row_cells.append(f"$\\color{{red}}{{\\textsf{{{val_str}}}}}$")
             else:
                 row_cells.append(f"$\\textsf{{{val_str}}}$")

@@ -92,7 +92,6 @@ def main():
         # B. DIVERSITÉ / MAUVE / LONGUEUR
         raw_div = metrics.get('div_mauve', [])
         
-        # --- CORRECTION DES CLÉS ICI ---
         # Vos scripts utilisent 'prediction_div_mean', 'mauve_mean', 'gen_len_mean'
         div = get_value_from_nested(raw_div, 'diversity_dict', 'prediction_div_mean')
         mauve = get_value_from_nested(raw_div, 'mauve_dict', 'mauve_mean')
