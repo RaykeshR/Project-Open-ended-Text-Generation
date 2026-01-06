@@ -121,6 +121,11 @@ def print_terminal_colored(df):
 # 3. GÉNÉRATION MARKDOWN (LATEX COLORS + FIX UNDERSCORES)
 # =============================================================================
 
+def clean_latex(text):
+    """Échappe les caractères spéciaux pour LaTeX"""
+    if text is None: return "N/A"
+    return str(text).replace('_', '\\_')
+
 def generate_markdown_latex_colors(df):
     if df.empty: return
 
@@ -146,26 +151,31 @@ def generate_markdown_latex_colors(df):
             val_str = f"{val:.3f}" if isinstance(val, float) else str(val)
             if pd.isna(val): val_str = "N/A"
 
+            # Colonne Modèle (Nom)
             if col == 'Model/Config':
-                safe_name = str(val_str).replace('_', '\\_') 
+                safe_name = clean_latex(val_str)
                 if is_winner_row:
+                    # Plus de trophée, juste vert
                     row_cells.append(f"$\\color{{green}}{{\\textsf{{{safe_name}}}}}$")
                 else:
-                    row_cells.append(f"`{val_str}`") # On garde le code block simple pour les non-gagnants
+                    # Utilisation de backticks pour le code inline (plus sûr pour les underscores)
+                    row_cells.append(f"`{val_str}`") 
                 continue
 
+            # Colonnes Métriques (Chiffres)
             is_best = False
             if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
                 is_best = True
             
+            safe_val = clean_latex(val_str)
             if is_best:
-                row_cells.append(f"$\\color{{red}}{{\\textsf{{{val_str}}}}}$")
+                row_cells.append(f"$\\color{{red}}{{\\textsf{{{safe_val}}}}}$")
             else:
-                row_cells.append(f"$\\textsf{{{val_str}}}$")
+                row_cells.append(f"$\\textsf{{{safe_val}}}$")
         
         md_lines.append("| " + " | ".join(row_cells) + " |")
 
-    print("\n### CODE MARKDOWN (AVEC COULEURS) À COPIER DANS LE README\n")
+    print("\n### CODE MARKDOWN À COPIER DANS LE README\n")
     print("\n".join(md_lines))
     print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score de la colonne. $\\color{green}{\\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.")
 

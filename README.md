@@ -173,6 +173,7 @@ $$
 (Version avec couleur)
 
 
+
 | Model/Config | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | `beam-10_gpt2-xl_32` | $\color{red}{\textsf{0.812}}$ | $\textsf{61.040}$ | $\textsf{30.320}$ | $\textsf{23.980}$ | $\textsf{23.776}$ |
