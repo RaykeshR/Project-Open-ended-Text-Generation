@@ -6,7 +6,7 @@ import numpy as np
 from tabulate import tabulate
 
 # =============================================================================
-# 1. CHARGEMENT DES DONNÉES
+# 1. CHARGEMENT
 # =============================================================================
 
 def load_json(path):
@@ -70,7 +70,7 @@ def collect_data():
     return pd.DataFrame(rows)
 
 # =============================================================================
-# 2. AFFICHAGE TERMINAL (AVEC COULEURS ANSI - Toujours actif)
+# 2. AFFICHAGE TERMINAL (ANSI)
 # =============================================================================
 
 def print_terminal(df):
@@ -88,9 +88,7 @@ def print_terminal(df):
     
     print(f"\n{BOLD}RÉSULTATS (TERMINAL){RESET}")
     print("-" * 120)
-    # Header dynamique
-    header_str = f"{'Model/Config':<40} " + " ".join([f"{c:<12}" for c in cols])
-    print(header_str)
+    print(f"{'Model/Config':<40} " + " ".join([f"{c:<12}" for c in cols]))
     print("-" * 120)
 
     for idx, row in df.iterrows():
@@ -103,20 +101,16 @@ def print_terminal(df):
         for col in cols:
             val = row[col]
             txt = f"{val:.3f}" if pd.notna(val) else "N/A"
-            
             is_best = False
-            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
-                is_best = True
+            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]): is_best = True
             
-            if is_best:
-                line += f"{RED}{txt:<12}{RESET}"
-            else:
-                line += f"{color_line}{txt:<12}{RESET}"
+            if is_best: line += f"{RED}{txt:<12}{RESET}"
+            else: line += f"{color_line}{txt:<12}{RESET}"
         print(line)
     print("-" * 120)
 
 # =============================================================================
-# 3. GÉNÉRATION MARKDOWN (SAFE MODE - Pas de LaTeX sur les noms)
+# 3. GÉNÉRATION MARKDOWN (FULL COLOR + SAFE NAMES)
 # =============================================================================
 
 def generate_markdown(df):
@@ -132,45 +126,49 @@ def generate_markdown(df):
     headers = list(df.columns)
     
     md = []
-    # En-têtes
     md.append("| " + " | ".join(headers) + " |")
     md.append("| " + " | ".join([":---"] + [":---:"]*(len(headers)-1)) + " |")
 
     for idx, row in df.iterrows():
         cells = []
-        is_winner = (idx == best_idx)
+        is_winner_row = (idx == best_idx)
         
         for col in headers:
             val = row[col]
             txt = f"{val:.3f}" if isinstance(val, float) else str(val)
             if pd.isna(val): txt = "N/A"
 
-            # 1. NOM DU MODÈLE : PROTECTION TOTALE
+            # 1. NOM DU MODÈLE
             if col == 'Model/Config':
-                if is_winner:
-                    # Gras + Code Block (Zéro LaTeX, Zéro Emoji)
-                    cells.append(f"**`{txt}`**")
+                if is_winner_row:
+                    # ASTUCE : On remplace _ par espace pour que LaTeX accepte la couleur
+                    safe_name = txt.replace('_', ' ')
+                    cells.append(f"$\\color{{green}}{{\\textsf{{{safe_name}}}}}$")
                 else:
-                    # Code Block simple (Protège les underscores)
+                    # Nom normal protégé
                     cells.append(f"`{txt}`")
                 continue
 
-            # 2. CHIFFRES : COULEUR LATEX (Autorisé car sûr)
-            is_best = False
+            # 2. CHIFFRES
+            is_best_val = False
             if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
-                is_best = True
+                is_best_val = True
             
-            if is_best:
-                # Rouge uniquement sur les chiffres
+            if is_best_val:
+                # Rouge (Priorité absolue)
                 cells.append(f"$\\color{{red}}{{\\textsf{{{txt}}}}}$")
+            elif is_winner_row:
+                # Vert (Si ligne gagnante mais pas meilleur chiffre)
+                cells.append(f"$\\color{{green}}{{\\textsf{{{txt}}}}}$")
             else:
-                cells.append(f"{txt}") 
+                # Normal
+                cells.append(f"$\\textsf{{{txt}}}$")
         
         md.append("| " + " | ".join(cells) + " |")
 
-    print("\n### CODE MARKDOWN FINAL (COPIER CECI)\n")
+    print("\n### CODE MARKDOWN FINAL (LIGNE VERTE INCLUSE)\n")
     print("\n".join(md))
-    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).")
+    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. $\\color{green}{\\textsf{Vert}}$ = Configuration Gagnante (MAUVE).")
 
 # =============================================================================
 # MAIN
