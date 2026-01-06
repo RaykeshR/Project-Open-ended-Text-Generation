@@ -27,7 +27,10 @@ def print_highlighted_table(df):
         'mauve': 'max',
         'diversity': 'max',
         'coherence_score': 'max',
-        'gen_length': 'max' # Discutable, mais on va dire que plus long = mieux pour l'instant
+        'gen_length': 'max',
+        # AJOUT POUR LA PERPLEXITÉ : plus c'est bas, mieux c'est
+        'perplexity': 'min', 
+        'ppl': 'min'
     }
 
     # 2. Calculer les meilleures valeurs par colonne
@@ -38,7 +41,7 @@ def print_highlighted_table(df):
                 if col_criteria[col] == 'max':
                     best_values[col] = df[col].max()
                 else:
-                    best_values[col] = df[col].min()
+                    best_values[col] = df[col].min() # Cas 'min' pour perplexity
 
     # 3. Identifier la meilleure ligne (Gagnant selon MAUVE)
     best_overall_idx = -1
@@ -116,16 +119,19 @@ def analyze_epsilon_results(results_dir='open_text_gen/wikitext_epsilon_grid_sea
     print(f"🔍 Recherche des fichiers dans : {results_dir}")
     all_json_files = glob.glob(os.path.join(results_dir, '*.json'))
     
-    div_files = [f for f in all_json_files if ('diversity' in f or 'resuult' in f) and 'coherence' not in f]
+    # Séparation des fichiers par type
+    div_files = [f for f in all_json_files if ('diversity' in f or 'resuult' in f) and 'coherence' not in f and 'perplexity' not in f]
     coh_files = [f for f in all_json_files if 'coherence' in f]
+    # Ajout de la détection des fichiers perplexité (chercher 'perplexity' ou 'ppl')
+    ppl_files = [f for f in all_json_files if 'perplexity' in f or 'ppl' in f]
     
-    if not div_files:
-        print("⚠️ Aucun fichier de métriques (diversity/mauve) trouvé.")
+    if not div_files and not coh_files and not ppl_files:
+        print("⚠️ Aucun fichier de métriques trouvé.")
         return
 
     data_store = {}
 
-    # Parser les noms de fichiers
+    # Parser les noms de fichiers pour extraire k et alpha
     def get_params(filename):
         basename = os.path.basename(filename)
         k = 5 
@@ -140,7 +146,7 @@ def analyze_epsilon_results(results_dir='open_text_gen/wikitext_epsilon_grid_sea
                 except: pass
         return k, alpha
 
-    # Chargement métriques
+    # --- 1. Chargement Diversity / MAUVE / Gen Length ---
     for f in div_files:
         k, alpha = get_params(f)
         if alpha is not None:
@@ -167,30 +173,56 @@ def analyze_epsilon_results(results_dir='open_text_gen/wikitext_epsilon_grid_sea
                         data_store[key]['mauve'] = float(content['mauve'])
 
             except Exception as e:
-                print(f"Erreur lecture {f}: {e}")
+                print(f"Erreur lecture diversity {f}: {e}")
 
-    # Chargement Cohérence
+    # --- 2. Chargement Cohérence ---
     for f in coh_files:
         k, alpha = get_params(f)
         if alpha is not None:
             key = (k, alpha)
-            if key in data_store:
-                try:
-                    with open(f, 'r', encoding='utf-8') as file:
-                        content = json.load(file)
-                        if isinstance(content, list): content = content[0] if len(content) > 0 else {}
-                        
-                        if 'coherence_score' in content:
-                            data_store[key]['coherence_score'] = float(content['coherence_score'])
-                        elif 'mean_score' in content:
-                            data_store[key]['coherence_score'] = float(content['mean_score'])
-                except Exception as e:
-                    print(f"Erreur lecture {f}: {e}")
+            if key not in data_store: data_store[key] = {'k': k, 'alpha': alpha} # Créer l'entrée si elle n'existe pas
+            try:
+                with open(f, 'r', encoding='utf-8') as file:
+                    content = json.load(file)
+                    if isinstance(content, list): content = content[0] if len(content) > 0 else {}
+                    
+                    if 'coherence_score' in content:
+                        data_store[key]['coherence_score'] = float(content['coherence_score'])
+                    elif 'mean_score' in content:
+                        data_store[key]['coherence_score'] = float(content['mean_score'])
+                    elif 'coherence_mean' in content:
+                         data_store[key]['coherence_score'] = float(content['coherence_mean'])
+            except Exception as e:
+                print(f"Erreur lecture coherence {f}: {e}")
+
+    # --- 3. Chargement Perplexité ---
+    for f in ppl_files:
+        k, alpha = get_params(f)
+        if alpha is not None:
+            key = (k, alpha)
+            if key not in data_store: data_store[key] = {'k': k, 'alpha': alpha}
+            try:
+                with open(f, 'r', encoding='utf-8') as file:
+                    content = json.load(file)
+                    if isinstance(content, list): content = content[0] if len(content) > 0 else {}
+                    
+                    # Différentes clés possibles pour la perplexité
+                    if 'perplexity' in content:
+                        data_store[key]['perplexity'] = float(content['perplexity'])
+                    elif 'mean_perplexity' in content:
+                        data_store[key]['perplexity'] = float(content['mean_perplexity'])
+                    elif 'ppl' in content:
+                        data_store[key]['perplexity'] = float(content['ppl'])
+            except Exception as e:
+                print(f"Erreur lecture perplexity {f}: {e}")
 
     # Création DataFrame
     df = pd.DataFrame(list(data_store.values()))
     
-    target_cols = ['k', 'alpha', 'gen_length', 'coherence_score', 'diversity', 'mauve']
+    # Ajout de 'perplexity' dans les colonnes cibles
+    target_cols = ['k', 'alpha', 'gen_length', 'coherence_score', 'diversity', 'mauve', 'perplexity']
+    
+    # Filtrer uniquement les colonnes qui existent réellement dans le DF
     final_cols = [c for c in target_cols if c in df.columns]
     
     if not df.empty:
