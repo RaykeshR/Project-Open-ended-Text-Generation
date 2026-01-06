@@ -172,6 +172,24 @@ $$
 
 (Version avec couleur)
 
+> **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score de la colonne. $\color{green}{\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.
+
+1. **Test Couleur Simple (Chiffres)** : 
+   - Code : `$\color{red}{\textsf{0.758}}$`
+   - Rendu : $\color{red}{\textsf{0.758}}$
+
+2. **Test Couleur (Texte sans underscore)** :
+   - Code : `$\color{green}{\textsf{gpt2}}$`
+   - Rendu : $\color{green}{\textsf{gpt2}}$
+
+3. **Test Couleur (Texte AVEC underscore - Le suspect)** :
+   - Code : `$\color{green}{\textsf{gpt2_medium}}$`
+   - Rendu : $\color{green}{\textsf{gpt2_medium}}$
+
+4. **Test Couleur (Texte avec underscore ÉCHAPPÉ)** :
+   - Code : `$\color{green}{\textsf{gpt2\_medium}}$`
+   - Rendu : $\color{green}{\textsf{gpt2\_medium}}$
+
 
 
 | Model/Config | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
