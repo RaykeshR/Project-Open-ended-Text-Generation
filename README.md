@@ -139,14 +139,14 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 La métrique utilisée dans ce projet est la **Moyenne des Log-Probabilités (Average Log-Likelihood)**, calculée selon la formule suivante :
 
 $$
-\text{Score} = \frac{1}{T} \sum_{t=1}^{T} \log P_{\theta}(y_t \mid x, y_{<t})
+\text{Score} = \frac{1}{T} \sum_{t=1}^{T} \log P_{\theta}(y_t \mid x, y_{< t})
 $$
 
 **Où :**
 * $x$ : Le préfixe (le prompt donné au début).
 * $y$ : La séquence de texte générée, composée de $T$ tokens ($y_1, y_2, ..., y_T$).
-* $y_{<t}$ : Tous les tokens précédents (le contexte).
-* $P_{\theta}$ : La probabilité calculée par le modèle "Juge" (ex: OPT-2.7b).
+* $y_{< t}$ : Tous les tokens précédents (le contexte).
+* $P_{\theta}$ : La probabilité calculée par votre modèle "Juge" (ex: OPT-2.7b).
 * $\log$ : Le logarithme naturel.
 
 ### Métrique de Cohérence Sémantique (SimCSE) Utilisée (en bas)
