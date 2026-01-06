@@ -6,7 +6,7 @@ import numpy as np
 from tabulate import tabulate
 
 # =============================================================================
-# 1. CHARGEMENT
+# 1. CHARGEMENT ROBUSTE DES DONNÉES
 # =============================================================================
 
 def load_json(path):
@@ -57,9 +57,13 @@ def collect_data():
     
     rows = []
     for key, metrics in data_map.items():
+        # NETTOYAGE CRITIQUE : On remplace les underscores par des tirets
+        # pour éviter que LaTeX ne plante sur GitHub.
+        clean_name = key.replace('wikitext_', '').replace('_', '-')
+        
         dm = metrics.get('div_mauve', {})
         row = {
-            'Model/Config': key.replace('wikitext_', ''),
+            'Model/Config': clean_name,
             'SimCSE': get_val(metrics.get('simcse', {}), 'coherence_mean'),
             'Diversity': get_val(dm, 'diversity_dict', 'prediction_div_mean'),
             'MAUVE': get_val(dm, 'mauve_dict', 'mauve_mean'),
@@ -75,7 +79,7 @@ def collect_data():
 
 def print_terminal(df):
     if df.empty: return
-    RED, GREEN, RESET, BOLD = '\033[91m', '\033[92m', '\033[0m', '\033[1m'
+    RED = '\033[91m'; GREEN = '\033[92m'; RESET = '\033[0m'; BOLD = '\033[1m'
     
     criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
     best_vals = {}
@@ -110,7 +114,7 @@ def print_terminal(df):
     print("-" * 120)
 
 # =============================================================================
-# 3. GÉNÉRATION MARKDOWN (FULL COLOR + SAFE NAMES)
+# 3. GÉNÉRATION MARKDOWN (FULL COLOR LATEX - SAFE)
 # =============================================================================
 
 def generate_markdown(df):
@@ -131,22 +135,25 @@ def generate_markdown(df):
 
     for idx, row in df.iterrows():
         cells = []
-        is_winner_row = (idx == best_idx)
+        is_winner = (idx == best_idx)
         
         for col in headers:
             val = row[col]
-            txt = f"{val:.3f}" if isinstance(val, float) else str(val)
+            # Conversion en string propre
+            if isinstance(val, float):
+                txt = f"{val:.3f}"
+            else:
+                txt = str(val).replace('_', '-') # Double sécurité
+            
             if pd.isna(val): txt = "N/A"
 
             # 1. NOM DU MODÈLE
             if col == 'Model/Config':
-                if is_winner_row:
-                    # ASTUCE : On remplace _ par espace pour que LaTeX accepte la couleur
-                    safe_name = txt.replace('_', ' ')
-                    cells.append(f"$\\color{{green}}{{\\textsf{{{safe_name}}}}}$")
+                if is_winner:
+                    # Maintenant que c'est "dash-separated", la couleur passe !
+                    cells.append(f"$\\color{{green}}{{\\textsf{{{txt}}}}}$")
                 else:
-                    # Nom normal protégé
-                    cells.append(f"`{txt}`")
+                    cells.append(f"$\\textsf{{{txt}}}$")
                 continue
 
             # 2. CHIFFRES
@@ -155,20 +162,18 @@ def generate_markdown(df):
                 is_best_val = True
             
             if is_best_val:
-                # Rouge (Priorité absolue)
                 cells.append(f"$\\color{{red}}{{\\textsf{{{txt}}}}}$")
-            elif is_winner_row:
-                # Vert (Si ligne gagnante mais pas meilleur chiffre)
+            elif is_winner:
+                # Toute la ligne en vert si c'est le gagnant (sauf si record rouge)
                 cells.append(f"$\\color{{green}}{{\\textsf{{{txt}}}}}$")
             else:
-                # Normal
                 cells.append(f"$\\textsf{{{txt}}}$")
         
         md.append("| " + " | ".join(cells) + " |")
 
-    print("\n### CODE MARKDOWN FINAL (LIGNE VERTE INCLUSE)\n")
+    print("\n### CODE MARKDOWN FINAL (AVEC COULEURS)\n")
     print("\n".join(md))
-    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. $\\color{green}{\\textsf{Vert}}$ = Configuration Gagnante (MAUVE).")
+    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. $\\color{green}{\\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.")
 
 # =============================================================================
 # MAIN
