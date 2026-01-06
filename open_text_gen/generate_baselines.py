@@ -15,8 +15,9 @@ def main():
     parser.add_argument('--output_dir', type=str, default='.')
     
     # Stratégies
-    parser.add_argument('--decoding_strategy', type=str, required=True, help='greedy, nucleus, typical')
+    parser.add_argument('--decoding_strategy', type=str, required=True, help='greedy, nucleus, typical, beam')
     parser.add_argument('--probs', type=float, default=1.0, help='p value for nucleus/typical')
+    parser.add_argument('--num_beams', type=int, default=1, help='Beam size for beam search') 
     parser.add_argument('--decoding_len', type=int, default=256)
     parser.add_argument('--num_prefixes', type=int, default=100)
     
@@ -46,6 +47,8 @@ def main():
         suffix = f"p-{args.probs}"
     elif args.decoding_strategy == 'typical':
         suffix = f"typical-{args.probs}"
+    elif args.decoding_strategy == 'beam':
+        suffix = f"beam-{args.num_beams}"
     else:
         suffix = args.decoding_strategy
 
@@ -93,16 +96,42 @@ def main():
                 elif args.decoding_strategy == 'typical':
                     gen_kwargs["do_sample"] = True
                     gen_kwargs["typical_p"] = args.probs
+                elif args.decoding_strategy == 'beam': 
+                    gen_kwargs["do_sample"] = False
+                    gen_kwargs["num_beams"] = args.num_beams
+                    gen_kwargs["early_stopping"] = True
                 
                 # Génération
+                # output contient [prompt + generated_text]
                 output = model.generate(**gen_kwargs)[0]
                 
                 # Décodage
                 gen_tokens = output[prefix_len:]
                 generated_text = tokenizer.decode(gen_tokens, skip_special_tokens=True)
 
-                # --- FORMAT JSON STRICTEMENT IDENTIQUE À GENERATE.PY ---
-                # Cela garantit que measure_diversity.py ne plantera pas.
+                # =================================================================
+                # CALCUL DE LA PERPLEXITÉ (AJOUT)
+                # =================================================================
+                ppl_value = 0.0
+                if len(gen_tokens) > 0:
+                    with torch.no_grad():
+                        # On prépare les labels : ce sont les mêmes tokens que l'input
+                        target_ids = output.clone()
+                        # On remplace la partie "prompt" par -100 pour que la Loss l'ignore
+                        target_ids[:prefix_len] = -100
+                        
+                        # On remet en dimension [batch_size, seq_len] pour le modèle
+                        model_inputs = output.unsqueeze(0)
+                        target_ids = target_ids.unsqueeze(0)
+
+                        # Calcul de la loss
+                        outputs = model(model_inputs, labels=target_ids)
+                        
+                        # La loss renvoyée est la CrossEntropy moyenne sur les tokens valides
+                        neg_log_likelihood = outputs.loss
+                        ppl_value = torch.exp(neg_log_likelihood).item()
+
+                # --- FORMAT JSON ---
                 result = {
                     "ended": False,
                     "tokens": output.tolist(),     # Obligatoire pour certains scripts
@@ -110,7 +139,7 @@ def main():
                     "gen_text": generated_text,
                     "len": len(gen_tokens),
                     "nll4tok": [],                 # Champ vide pour compatibilité
-                    "ppl": 0.0,                    # Valeur dummy pour compatibilité
+                    "ppl": ppl_value,              # <--- Valeur calculée ici
                     "gold_ref": gold_text,
                     "strategy": args.decoding_strategy
                 }

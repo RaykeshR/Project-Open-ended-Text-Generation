@@ -103,7 +103,13 @@ def main():
             'strategy_flag': 'typical',
             'extra_args': ['--probs', '0.95'],
             'file_suffix': 'typical-0.95'
-        }
+        },
+        # {
+        #     'name': 'Beam Search (Beam Size=10)',
+        #     'strategy_flag': 'beam',
+        #     'extra_args': ['--num_beams', '10'],
+        #     'file_suffix': 'beam-10'
+        # },
     ]
 
     # =========================================================================
