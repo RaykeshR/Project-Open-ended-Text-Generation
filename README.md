@@ -134,6 +134,38 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
 <!-- **Note :** La longueur générée moyenne (~24 tokens) est inférieure à la cible de 128. C'est un comportement fréquent du Beam Search qui favorise des phrases courtes et "sûres", s'arrêtant souvent prématurément dès qu'un token de fin (`<eos>`) est probable. -->
 
+#### Métrique de Cohérence Utilisée (en haut)
+
+La métrique utilisée dans ce projet est la **Moyenne des Log-Probabilités (Average Log-Likelihood)**, calculée selon la formule suivante :
+
+$$
+\text{Score} = \frac{1}{T} \sum_{t=1}^{T} \log P_{\theta}(y_t \mid x, y_{<t})
+$$
+
+**Où :**
+* $x$ : Le préfixe (le prompt donné au début).
+* $y$ : La séquence de texte générée, composée de $T$ tokens ($y_1, y_2, ..., y_T$).
+* $y_{<t}$ : Tous les tokens précédents (le contexte).
+* $P_{\theta}$ : La probabilité calculée par le modèle "Juge" (ex: OPT-2.7b).
+* $\log$ : Le logarithme naturel.
+
+### Métrique de Cohérence Sémantique (SimCSE) Utilisée (en bas)
+
+Conformément aux consignes du projet, nous évaluons la pertinence du texte généré par rapport au préfixe en utilisant la **Similarité Cosinus des Embeddings SimCSE**.
+
+$$
+\text{Cohérence} = \frac{\mathbf{v}_{x} \cdot \mathbf{v}_{y}}{\|\mathbf{v}_{x}\| \cdot \|\mathbf{v}_{y}\|}
+$$
+
+**Où :**
+* $x$ : Le préfixe (prompt) donné en entrée.
+* $y$ : Le texte généré par le modèle.
+* $\mathbf{v}_{x}$ : Le vecteur d'embedding du préfixe, calculé par le modèle `princeton-nlp/sup-simcse-bert-base-uncased`.
+* $\mathbf{v}_{y}$ : Le vecteur d'embedding du texte généré.
+* Le résultat est compris entre -1 et 1 (plus il est proche de 1, plus les textes sont sémantiquement proches).
+
+> **Différence importante :** Contrairement à la *Log-Likelihood* (utilisée dans certaines baselines) qui mesure la **fluidité grammaticale** et la probabilité des mots (Juge la "Forme"), cette métrique SimCSE mesure la **préservation du sens et du sujet** (Juge le "Fond").
+
 ## Generation
 
 ```py
