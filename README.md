@@ -62,7 +62,8 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
 ============================================================================================================================================
 ### Resultats: Epsilon Sampling Grid Search
-### Resultats: Epsilon Sampling Grid Search
+
+(Version sans couleur : gpt2-xl/num_prefixes = 50/decoding_len = 32)
 
 | k | alpha | gen_length | coherence_score | diversity | mauve | perplexity |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -101,6 +102,8 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
  Légende : Rouge = Meilleur de la colonne | Vert = Meilleure configuration (selon MAUVE)
 ========================================================================================================================
+
+(Version avec couleur : gpt2-xl/num_prefixes = 50/decoding_len = 32)
 
 | k | alpha | MAUVE | Perplexity | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_opt-2.7b |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
