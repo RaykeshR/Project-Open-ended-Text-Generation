@@ -6,7 +6,7 @@ import numpy as np
 from tabulate import tabulate
 
 # =============================================================================
-# 1. CHARGEMENT ROBUSTE DES DONNÉES
+# 1. CHARGEMENT DES DONNÉES
 # =============================================================================
 
 def load_json(path):
@@ -57,13 +57,9 @@ def collect_data():
     
     rows = []
     for key, metrics in data_map.items():
-        # NETTOYAGE CRITIQUE : On remplace les underscores par des tirets
-        # pour éviter que LaTeX ne plante sur GitHub.
-        clean_name = key.replace('wikitext_', '').replace('_', '-')
-        
         dm = metrics.get('div_mauve', {})
         row = {
-            'Model/Config': clean_name,
+            'Model/Config': key.replace('wikitext_', ''),
             'SimCSE': get_val(metrics.get('simcse', {}), 'coherence_mean'),
             'Diversity': get_val(dm, 'diversity_dict', 'prediction_div_mean'),
             'MAUVE': get_val(dm, 'mauve_dict', 'mauve_mean'),
@@ -74,12 +70,12 @@ def collect_data():
     return pd.DataFrame(rows)
 
 # =============================================================================
-# 2. AFFICHAGE TERMINAL (ANSI)
+# 2. AFFICHAGE TERMINAL (AVEC COULEURS ANSI - Toujours actif)
 # =============================================================================
 
 def print_terminal(df):
     if df.empty: return
-    RED = '\033[91m'; GREEN = '\033[92m'; RESET = '\033[0m'; BOLD = '\033[1m'
+    RED, GREEN, RESET, BOLD = '\033[91m', '\033[92m', '\033[0m', '\033[1m'
     
     criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
     best_vals = {}
@@ -92,7 +88,9 @@ def print_terminal(df):
     
     print(f"\n{BOLD}RÉSULTATS (TERMINAL){RESET}")
     print("-" * 120)
-    print(f"{'Model/Config':<40} " + " ".join([f"{c:<12}" for c in cols]))
+    # Header dynamique
+    header_str = f"{'Model/Config':<40} " + " ".join([f"{c:<12}" for c in cols])
+    print(header_str)
     print("-" * 120)
 
     for idx, row in df.iterrows():
@@ -105,16 +103,20 @@ def print_terminal(df):
         for col in cols:
             val = row[col]
             txt = f"{val:.3f}" if pd.notna(val) else "N/A"
-            is_best = False
-            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]): is_best = True
             
-            if is_best: line += f"{RED}{txt:<12}{RESET}"
-            else: line += f"{color_line}{txt:<12}{RESET}"
+            is_best = False
+            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
+                is_best = True
+            
+            if is_best:
+                line += f"{RED}{txt:<12}{RESET}"
+            else:
+                line += f"{color_line}{txt:<12}{RESET}"
         print(line)
     print("-" * 120)
 
 # =============================================================================
-# 3. GÉNÉRATION MARKDOWN (FULL COLOR LATEX - SAFE)
+# 3. GÉNÉRATION MARKDOWN (SAFE MODE - Pas de LaTeX sur les noms)
 # =============================================================================
 
 def generate_markdown(df):
@@ -130,6 +132,7 @@ def generate_markdown(df):
     headers = list(df.columns)
     
     md = []
+    # En-têtes
     md.append("| " + " | ".join(headers) + " |")
     md.append("| " + " | ".join([":---"] + [":---:"]*(len(headers)-1)) + " |")
 
@@ -139,42 +142,35 @@ def generate_markdown(df):
         
         for col in headers:
             val = row[col]
-            # Conversion en string propre
-            if isinstance(val, float):
-                txt = f"{val:.3f}"
-            else:
-                txt = str(val).replace('_', '-') # Double sécurité
-            
+            txt = f"{val:.3f}" if isinstance(val, float) else str(val)
             if pd.isna(val): txt = "N/A"
 
-            # 1. NOM DU MODÈLE
+            # 1. NOM DU MODÈLE : PROTECTION TOTALE
             if col == 'Model/Config':
                 if is_winner:
-                    # Maintenant que c'est "dash-separated", la couleur passe !
-
-                    cells.append(f"$\\textsf{{{txt}}}$ <=")
+                    # Gras + Code Block (Zéro LaTeX, Zéro Emoji)
+                    cells.append(f"**`{txt}`**")
                 else:
-                    cells.append(f"$\\textsf{{{txt}}}$")
+                    # Code Block simple (Protège les underscores)
+                    cells.append(f"`{txt}`")
                 continue
 
-            # 2. CHIFFRES
-            is_best_val = False
+            # 2. CHIFFRES : COULEUR LATEX (Autorisé car sûr)
+            is_best = False
             if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
-                is_best_val = True
+                is_best = True
             
-            if is_best_val:
+            if is_best:
+                # Rouge uniquement sur les chiffres
                 cells.append(f"$\\color{{red}}{{\\textsf{{{txt}}}}}$")
-            elif is_winner:
-                # Toute la ligne en vert si c'est le gagnant (sauf si record rouge)
-                cells.append(f"$\\color{{green}}{{\\textsf{{{txt}}}}}$")
             else:
-                cells.append(f"$\\textsf{{{txt}}}$")
+                cells.append(f"{txt}") 
         
         md.append("| " + " | ".join(cells) + " |")
 
-    print("\n### CODE MARKDOWN FINAL (AVEC COULEURS)\n")
+    print("\n### CODE MARKDOWN FINAL (COPIER CECI)\n")
     print("\n".join(md))
-    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. $\\color{green}{\\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.")
+    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).")
 
 # =============================================================================
 # MAIN
