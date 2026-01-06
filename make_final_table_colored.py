@@ -6,7 +6,7 @@ import numpy as np
 from tabulate import tabulate
 
 # =============================================================================
-# 1. CHARGEMENT ROBUSTE DES DONNÉES
+# 1. CHARGEMENT DES DONNÉES
 # =============================================================================
 
 def load_json(path):
@@ -70,114 +70,107 @@ def collect_data():
     return pd.DataFrame(rows)
 
 # =============================================================================
-# 2. AFFICHAGE TERMINAL (ANSI COLORS)
+# 2. AFFICHAGE TERMINAL (AVEC COULEURS ANSI - Toujours actif)
 # =============================================================================
 
-def print_terminal_colored(df):
+def print_terminal(df):
     if df.empty: return
-    RED = '\033[91m'; GREEN = '\033[92m'; RESET = '\033[0m'; BOLD = '\033[1m'
-    criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
+    RED, GREEN, RESET, BOLD = '\033[91m', '\033[92m', '\033[0m', '\033[1m'
     
+    criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
     best_vals = {}
     for col, crit in criteria.items():
         if col in df.columns:
             best_vals[col] = df[col].max() if crit == 'max' else df[col].min()
 
-    best_idx = df['MAUVE'].idxmax() if 'MAUVE' in df.columns and not df['MAUVE'].isna().all() else -1
+    best_idx = df['MAUVE'].idxmax() if 'MAUVE' in df.columns else -1
     cols = [c for c in df.columns if c != 'Model/Config']
-    headers = ['Model/Config'] + cols
     
-    widths = {h: len(h) + 2 for h in headers}
-    max_name_len = df['Model/Config'].astype(str).map(len).max()
-    widths['Model/Config'] = max(widths['Model/Config'], max_name_len + 2)
-
-    header_str = "".join([h.ljust(widths[h]) for h in headers])
-    print("\n" + "="*len(header_str))
-    print(BOLD + " RÉSULTATS COMPARATIFS (TERMINAL)" + RESET)
-    print("-" * len(header_str))
-    print(BOLD + header_str + RESET)
-    print("-" * len(header_str))
+    print(f"\n{BOLD}RÉSULTATS (TERMINAL){RESET}")
+    print("-" * 120)
+    # Header dynamique
+    header_str = f"{'Model/Config':<40} " + " ".join([f"{c:<12}" for c in cols])
+    print(header_str)
+    print("-" * 120)
 
     for idx, row in df.iterrows():
-        line_str = ""
-        is_winner_row = (idx == best_idx)
-        line_color = GREEN if is_winner_row else ""
-        end_color = RESET if is_winner_row else ""
+        line = ""
+        is_winner = (idx == best_idx)
+        color_line = GREEN if is_winner else ""
         
-        line_str += line_color + str(row['Model/Config']).ljust(widths['Model/Config']) + end_color
+        line += f"{color_line}{str(row['Model/Config']):<40}{RESET} "
+        
         for col in cols:
             val = row[col]
-            cell_str = f"{val:.3f}" if pd.notna(val) else "N/A"
-            is_best_col = False
-            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]): is_best_col = True
+            txt = f"{val:.3f}" if pd.notna(val) else "N/A"
             
-            padded = cell_str.ljust(widths[col])
-            if is_best_col: line_str += f"{RED}{padded}{RESET}{line_color}" 
-            else: line_str += f"{line_color}{padded}{end_color}"
-        print(line_str)
-    print("=" * len(header_str) + "\n")
-
-# =============================================================================
-# 3. GÉNÉRATION MARKDOWN (LATEX COLORS + FIX UNDERSCORES)
-# =============================================================================
-
-def clean_latex(text):
-    """Échappe les caractères spéciaux pour LaTeX"""
-    if text is None: return "N/A"
-    return str(text).replace('_', '\\_')
-
-def generate_markdown_latex_colors(df):
-    if df.empty: return
-
-    criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
-    best_vals = {}
-    for col, crit in criteria.items():
-        if col in df.columns:
-            best_vals[col] = df[col].max() if crit == 'max' else df[col].min()
-
-    best_idx = df['MAUVE'].idxmax() if 'MAUVE' in df.columns and not df['MAUVE'].isna().all() else -1
-    headers = list(df.columns)
-    md_lines = []
-    
-    md_lines.append("| " + " | ".join(headers) + " |")
-    md_lines.append("| " + " | ".join([":---"] + [":---:"]*(len(headers)-1)) + " |")
-
-    for idx, row in df.iterrows():
-        row_cells = []
-        is_winner_row = (idx == best_idx)
-        
-        for col in headers:
-            val = row[col]
-            val_str = f"{val:.3f}" if isinstance(val, float) else str(val)
-            if pd.isna(val): val_str = "N/A"
-
-            # Colonne Modèle (Nom)
-            if col == 'Model/Config':
-                safe_name = clean_latex(val_str)
-                if is_winner_row:
-                    # Plus de trophée, juste vert
-                    row_cells.append(f"$\\color{{green}}{{\\textsf{{{safe_name}}}}}$")
-                else:
-                    # Utilisation de backticks pour le code inline (plus sûr pour les underscores)
-                    row_cells.append(f"`{val_str}`") 
-                continue
-
-            # Colonnes Métriques (Chiffres)
             is_best = False
             if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
                 is_best = True
             
-            safe_val = clean_latex(val_str)
             if is_best:
-                row_cells.append(f"$\\color{{red}}{{\\textsf{{{safe_val}}}}}$")
+                line += f"{RED}{txt:<12}{RESET}"
             else:
-                row_cells.append(f"$\\textsf{{{safe_val}}}$")
-        
-        md_lines.append("| " + " | ".join(row_cells) + " |")
+                line += f"{color_line}{txt:<12}{RESET}"
+        print(line)
+    print("-" * 120)
 
-    print("\n### CODE MARKDOWN À COPIER DANS LE README\n")
-    print("\n".join(md_lines))
-    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score de la colonne. $\\color{green}{\\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.")
+# =============================================================================
+# 3. GÉNÉRATION MARKDOWN (SAFE MODE - Pas de LaTeX sur les noms)
+# =============================================================================
+
+def generate_markdown(df):
+    if df.empty: return
+
+    criteria = {'SimCSE': 'max', 'Diversity': 'max', 'MAUVE': 'max', 'Gen_Length': 'max', 'Perplexity': 'min'}
+    best_vals = {}
+    for col, crit in criteria.items():
+        if col in df.columns:
+            best_vals[col] = df[col].max() if crit == 'max' else df[col].min()
+
+    best_idx = df['MAUVE'].idxmax() if 'MAUVE' in df.columns else -1
+    headers = list(df.columns)
+    
+    md = []
+    # En-têtes
+    md.append("| " + " | ".join(headers) + " |")
+    md.append("| " + " | ".join([":---"] + [":---:"]*(len(headers)-1)) + " |")
+
+    for idx, row in df.iterrows():
+        cells = []
+        is_winner = (idx == best_idx)
+        
+        for col in headers:
+            val = row[col]
+            txt = f"{val:.3f}" if isinstance(val, float) else str(val)
+            if pd.isna(val): txt = "N/A"
+
+            # 1. NOM DU MODÈLE : PROTECTION TOTALE
+            if col == 'Model/Config':
+                if is_winner:
+                    # Gras + Code Block (Zéro LaTeX, Zéro Emoji)
+                    cells.append(f"**`{txt}`**")
+                else:
+                    # Code Block simple (Protège les underscores)
+                    cells.append(f"`{txt}`")
+                continue
+
+            # 2. CHIFFRES : COULEUR LATEX (Autorisé car sûr)
+            is_best = False
+            if pd.notna(val) and col in best_vals and np.isclose(val, best_vals[col]):
+                is_best = True
+            
+            if is_best:
+                # Rouge uniquement sur les chiffres
+                cells.append(f"$\\color{{red}}{{\\textsf{{{txt}}}}}$")
+            else:
+                cells.append(f"{txt}") 
+        
+        md.append("| " + " | ".join(cells) + " |")
+
+    print("\n### CODE MARKDOWN FINAL (COPIER CECI)\n")
+    print("\n".join(md))
+    print("\n> **Légende :** $\\color{red}{\\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).")
 
 # =============================================================================
 # MAIN
@@ -188,8 +181,8 @@ def main():
     if not df.empty:
         df = df.sort_values('Model/Config').reset_index(drop=True)
     
-    print_terminal_colored(df)
-    generate_markdown_latex_colors(df)
+    print_terminal(df)
+    generate_markdown(df)
 
 if __name__ == "__main__":
     main()

@@ -172,96 +172,60 @@ $$
 
 (Version avec couleur)
 
-> **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score de la colonne. $\color{green}{\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.
-
-1. **Test Couleur Simple (Chiffres)** : 
-   - Code : `$\color{red}{\textsf{0.758}}$`
-   - Rendu : $\color{red}{\textsf{0.758}}$
-
-2. **Test Couleur (Texte sans underscore)** :
-   - Code : `$\color{green}{\textsf{gpt2}}$`
-   - Rendu : $\color{green}{\textsf{gpt2}}$
-
-3. **Test Couleur (Texte AVEC underscore - Le suspect)** :
-   - Code : `$\color{green}{\textsf{gpt2_medium}}$`
-   - Rendu : $\color{green}{\textsf{gpt2_medium}}$
-
-4. **Test Couleur (Texte avec underscore ÉCHAPPÉ)** :
-   - Code : `$\color{green}{\textsf{gpt2\_medium}}$`
-   - Rendu : $\color{green}{\textsf{gpt2\_medium}}$
-
-
-
 | Model/Config | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| `beam-10_gpt2-xl_32` | $\color{red}{\textsf{0.812}}$ | $\textsf{61.040}$ | $\textsf{30.320}$ | $\textsf{23.980}$ | $\textsf{23.776}$ |
-| `contrastive-alpha-0.6_gpt2_50` | $\textsf{N/A}$ | $\textsf{7.070}$ | $\textsf{27.810}$ | $\textsf{0.000}$ | $\textsf{N/A}$ |
-| `epsilon_k10_alpha0.2_gpt2-xl` | $\textsf{0.749}$ | $\textsf{87.350}$ | $\textsf{17.260}$ | $\textsf{24.040}$ | $\color{red}{\textsf{16.236}}$ |
-| `epsilon_k10_alpha0.4_gpt2-xl` | $\textsf{0.734}$ | $\textsf{87.690}$ | $\textsf{30.850}$ | $\textsf{25.600}$ | $\textsf{19.889}$ |   
-| `epsilon_k10_alpha0.6_gpt2-xl` | $\textsf{0.761}$ | $\textsf{90.820}$ | $\textsf{19.640}$ | $\textsf{25.460}$ | $\textsf{22.359}$ |   
-| `epsilon_k10_alpha0.8_gpt2-xl` | $\textsf{0.760}$ | $\textsf{95.930}$ | $\textsf{31.530}$ | $\textsf{25.700}$ | $\textsf{23.366}$ |   
-| `epsilon_k50_alpha0.2_gpt2-xl` | $\textsf{0.748}$ | $\textsf{85.040}$ | $\textsf{38.180}$ | $\textsf{25.080}$ | $\textsf{21.649}$ |   
-| `epsilon_k50_alpha0.4_gpt2-xl` | $\textsf{0.752}$ | $\textsf{92.050}$ | $\textsf{14.500}$ | $\textsf{25.180}$ | $\textsf{24.988}$ |   
-| `epsilon_k50_alpha0.6_gpt2-xl` | $\textsf{0.727}$ | $\textsf{89.800}$ | $\textsf{31.280}$ | $\textsf{24.960}$ | $\textsf{30.168}$ |   
-| `epsilon_k50_alpha0.8_gpt2-xl` | $\textsf{0.721}$ | $\textsf{97.250}$ | $\textsf{33.400}$ | $\textsf{24.720}$ | $\textsf{30.969}$ |   
-| `epsilon_k5_alpha0.2_gpt2-xl` | $\textsf{0.768}$ | $\textsf{79.490}$ | $\textsf{34.570}$ | $\textsf{25.200}$ | $\textsf{21.654}$ |    
-| `epsilon_k5_alpha0.4_gpt2-xl` | $\textsf{0.759}$ | $\textsf{84.160}$ | $\textsf{20.990}$ | $\textsf{25.820}$ | $\textsf{18.225}$ |    
-| `epsilon_k5_alpha0.6_gpt2-xl` | $\textsf{0.759}$ | $\textsf{91.740}$ | $\textsf{22.320}$ | $\textsf{25.760}$ | $\textsf{20.074}$ |    
-| `epsilon_k5_alpha0.8_gpt2-xl` | $\textsf{0.752}$ | $\textsf{94.750}$ | $\textsf{27.670}$ | $\textsf{25.680}$ | $\textsf{23.406}$ |    
-| `greedy_gpt2-large_256` | $\textsf{0.727}$ | $\textsf{1.410}$ | $\textsf{4.190}$ | $\textsf{196.720}$ | $\textsf{N/A}$ |
-| `greedy_gpt2-medium_256` | $\textsf{0.708}$ | $\textsf{0.990}$ | $\textsf{4.790}$ | $\textsf{200.880}$ | $\textsf{N/A}$ |
-| `greedy_gpt2-xl_256` | $\textsf{0.708}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ |
-| `greedy_gpt2_256` | $\textsf{0.711}$ | $\textsf{0.440}$ | $\textsf{2.290}$ | $\color{red}{\textsf{202.210}}$ | $\textsf{N/A}$ |       
-| `k10_a0.4_e0.0_gpt2` | $\textsf{0.493}$ | $\textsf{0.640}$ | $\textsf{3.420}$ | $\textsf{90.360}$ | $\textsf{N/A}$ |
-| `k10_a0.4_e0.0_gpt2-large` | $\textsf{0.399}$ | $\textsf{0.000}$ | $\textsf{2.360}$ | $\textsf{189.080}$ | $\textsf{N/A}$ |
-| `k10_a0.4_e0.0_gpt2-medium` | $\textsf{0.524}$ | $\textsf{0.340}$ | $\textsf{0.570}$ | $\textsf{7.600}$ | $\textsf{N/A}$ |
-| `k10_a0.4_e0.0_gpt2-xl` | $\textsf{0.567}$ | $\textsf{96.060}$ | $\textsf{4.430}$ | $\textsf{115.280}$ | $\textsf{N/A}$ |
-| `k10_a0.6_e0.0_gpt2` | $\textsf{0.512}$ | $\textsf{2.920}$ | $\textsf{1.440}$ | $\textsf{60.000}$ | $\textsf{N/A}$ |
-| `k10_a0.6_e0.0_gpt2-large` | $\textsf{0.410}$ | $\textsf{0.010}$ | $\textsf{3.600}$ | $\textsf{188.960}$ | $\textsf{N/A}$ |
-| `k10_a0.6_e0.0_gpt2-medium` | $\textsf{0.525}$ | $\textsf{5.940}$ | $\textsf{0.430}$ | $\textsf{3.030}$ | $\textsf{N/A}$ |
-| `k10_a0.6_e0.0_gpt2-xl` | $\textsf{0.567}$ | $\textsf{99.530}$ | $\textsf{4.510}$ | $\textsf{112.690}$ | $\textsf{N/A}$ |
-| `k10_a0.8_e0.0_gpt2` | $\textsf{0.514}$ | $\textsf{15.870}$ | $\textsf{0.730}$ | $\textsf{27.940}$ | $\textsf{N/A}$ |
-| `k10_a0.8_e0.0_gpt2-large` | $\textsf{0.422}$ | $\textsf{0.100}$ | $\textsf{6.910}$ | $\textsf{189.190}$ | $\textsf{N/A}$ |
-| `k10_a0.8_e0.0_gpt2-medium` | $\textsf{0.521}$ | $\color{red}{\textsf{100.000}}$ | $\textsf{0.640}$ | $\textsf{2.120}$ | $\textsf{N/A}$ |
-| `k10_a0.8_e0.0_gpt2-xl` | $\textsf{0.570}$ | $\textsf{99.850}$ | $\textsf{4.110}$ | $\textsf{113.210}$ | $\textsf{N/A}$ |
-| `k5_a0.4_e0.0_gpt2` | $\textsf{0.491}$ | $\textsf{0.470}$ | $\textsf{5.460}$ | $\textsf{90.620}$ | $\textsf{N/A}$ |
-| `k5_a0.4_e0.0_gpt2-large` | $\textsf{0.393}$ | $\textsf{0.000}$ | $\textsf{2.870}$ | $\textsf{189.790}$ | $\textsf{N/A}$ |
-| `k5_a0.4_e0.0_gpt2-medium` | $\textsf{0.516}$ | $\textsf{0.810}$ | $\textsf{0.640}$ | $\textsf{8.730}$ | $\textsf{N/A}$ |
-| `k5_a0.4_e0.0_gpt2-xl` | $\textsf{0.558}$ | $\textsf{67.720}$ | $\textsf{11.940}$ | $\textsf{120.310}$ | $\textsf{N/A}$ |
-| `k5_a0.6_e0.0_gpt2` | $\textsf{0.507}$ | $\textsf{7.070}$ | $\textsf{27.810}$ | $\textsf{0.000}$ | $\textsf{N/A}$ |
-| `k5_a0.6_e0.0_gpt2-large` | $\textsf{0.398}$ | $\textsf{0.000}$ | $\textsf{4.100}$ | $\textsf{188.910}$ | $\textsf{N/A}$ |
-| `k5_a0.6_e0.0_gpt2-medium` | $\textsf{0.518}$ | $\textsf{27.780}$ | $\textsf{0.460}$ | $\textsf{4.210}$ | $\textsf{N/A}$ |
-| `k5_a0.6_e0.0_gpt2-xl` | $\textsf{0.563}$ | $\textsf{84.290}$ | $\textsf{12.330}$ | $\textsf{116.280}$ | $\textsf{N/A}$ |
-| `k5_a0.8_e0.0_gpt2` | $\textsf{0.516}$ | $\textsf{4.840}$ | $\textsf{1.280}$ | $\textsf{45.510}$ | $\textsf{N/A}$ |
-| `k5_a0.8_e0.0_gpt2-large` | $\textsf{0.401}$ | $\textsf{0.020}$ | $\textsf{2.780}$ | $\textsf{189.340}$ | $\textsf{N/A}$ |
-| `k5_a0.8_e0.0_gpt2-medium` | $\textsf{0.523}$ | $\textsf{97.850}$ | $\textsf{0.450}$ | $\textsf{3.350}$ | $\textsf{N/A}$ |
-| `k5_a0.8_e0.0_gpt2-xl` | $\textsf{0.565}$ | $\textsf{93.860}$ | $\textsf{15.060}$ | $\textsf{114.570}$ | $\textsf{N/A}$ |
-| `p-0.95_gpt2-large_256` | $\textsf{0.763}$ | $\textsf{79.260}$ | $\textsf{49.320}$ | $\textsf{178.020}$ | $\textsf{N/A}$ |
-| p-95_$\color{green}{\textsf{gpt2-medium}}$_256 | $\textsf{0.748}$ | $\textsf{86.840}$ | $\color{red}{\textsf{56.120}}$ | $\textsf{183.740}$ | $\textsf{N/A}$ |
-| `p-0.95_gpt2-xl_256` | $\textsf{0.759}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ |
-| `p-0.95_gpt2_256` | $\textsf{0.733}$ | $\textsf{83.140}$ | $\textsf{34.760}$ | $\textsf{189.530}$ | $\textsf{N/A}$ |
-| `typical-0.95_gpt2-large_256` | $\textsf{0.755}$ | $\textsf{82.430}$ | $\textsf{38.730}$ | $\textsf{177.090}$ | $\textsf{N/A}$ |      
-| `typical-0.95_gpt2-medium_256` | $\textsf{0.762}$ | $\textsf{80.570}$ | $\textsf{44.280}$ | $\textsf{186.650}$ | $\textsf{N/A}$ |     
-| `typical-0.95_gpt2-xl_256` | $\textsf{0.758}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ |
-| `typical-0.95_gpt2_256` | $\textsf{0.738}$ | $\textsf{82.050}$ | $\textsf{43.030}$ | $\textsf{186.410}$ | $\textsf{N/A}$ |
+| `beam-10_gpt2-xl_32` | $\color{red}{\textsf{0.812}}$ | 61.040 | 30.320 | 23.980 | 23.776 |
+| `contrastive-alpha-0.6_gpt2_50` | N/A | 7.070 | 27.810 | 0.000 | N/A |
+| `epsilon_k10_alpha0.2_gpt2-xl` | 0.749 | 87.350 | 17.260 | 24.040 | $\color{red}{\textsf{16.236}}$ |
+| `epsilon_k10_alpha0.4_gpt2-xl` | 0.734 | 87.690 | 30.850 | 25.600 | 19.889 |
+| `epsilon_k10_alpha0.6_gpt2-xl` | 0.761 | 90.820 | 19.640 | 25.460 | 22.359 |
+| `epsilon_k10_alpha0.8_gpt2-xl` | 0.760 | 95.930 | 31.530 | 25.700 | 23.366 |
+| `epsilon_k50_alpha0.2_gpt2-xl` | 0.748 | 85.040 | 38.180 | 25.080 | 21.649 |
+| `epsilon_k50_alpha0.4_gpt2-xl` | 0.752 | 92.050 | 14.500 | 25.180 | 24.988 |
+| `epsilon_k50_alpha0.6_gpt2-xl` | 0.727 | 89.800 | 31.280 | 24.960 | 30.168 |
+| `epsilon_k50_alpha0.8_gpt2-xl` | 0.721 | 97.250 | 33.400 | 24.720 | 30.969 |
+| `epsilon_k5_alpha0.2_gpt2-xl` | 0.768 | 79.490 | 34.570 | 25.200 | 21.654 |
+| `epsilon_k5_alpha0.4_gpt2-xl` | 0.759 | 84.160 | 20.990 | 25.820 | 18.225 |
+| `epsilon_k5_alpha0.6_gpt2-xl` | 0.759 | 91.740 | 22.320 | 25.760 | 20.074 |
+| `epsilon_k5_alpha0.8_gpt2-xl` | 0.752 | 94.750 | 27.670 | 25.680 | 23.406 |
+| `greedy_gpt2-large_256` | 0.727 | 1.410 | 4.190 | 196.720 | N/A |
+| `greedy_gpt2-medium_256` | 0.708 | 0.990 | 4.790 | 200.880 | N/A |
+| `greedy_gpt2-xl_256` | 0.708 | N/A | N/A | N/A | N/A |
+| `greedy_gpt2_256` | 0.711 | 0.440 | 2.290 | $\color{red}{\textsf{202.210}}$ | N/A |
+| `k10_a0.4_e0.0_gpt2` | 0.493 | 0.640 | 3.420 | 90.360 | N/A |
+| `k10_a0.4_e0.0_gpt2-large` | 0.399 | 0.000 | 2.360 | 189.080 | N/A |
+| `k10_a0.4_e0.0_gpt2-medium` | 0.524 | 0.340 | 0.570 | 7.600 | N/A |
+| `k10_a0.4_e0.0_gpt2-xl` | 0.567 | 96.060 | 4.430 | 115.280 | N/A |
+| `k10_a0.6_e0.0_gpt2` | 0.512 | 2.920 | 1.440 | 60.000 | N/A |
+| `k10_a0.6_e0.0_gpt2-large` | 0.410 | 0.010 | 3.600 | 188.960 | N/A |
+| `k10_a0.6_e0.0_gpt2-medium` | 0.525 | 5.940 | 0.430 | 3.030 | N/A |
+| `k10_a0.6_e0.0_gpt2-xl` | 0.567 | 99.530 | 4.510 | 112.690 | N/A |
+| `k10_a0.8_e0.0_gpt2` | 0.514 | 15.870 | 0.730 | 27.940 | N/A |
+| `k10_a0.8_e0.0_gpt2-large` | 0.422 | 0.100 | 6.910 | 189.190 | N/A |
+| `k10_a0.8_e0.0_gpt2-medium` | 0.521 | $\color{red}{\textsf{100.000}}$ | 0.640 | 2.120 | N/A |
+| `k10_a0.8_e0.0_gpt2-xl` | 0.570 | 99.850 | 4.110 | 113.210 | N/A |
+| `k5_a0.4_e0.0_gpt2` | 0.491 | 0.470 | 5.460 | 90.620 | N/A |
+| `k5_a0.4_e0.0_gpt2-large` | 0.393 | 0.000 | 2.870 | 189.790 | N/A |
+| `k5_a0.4_e0.0_gpt2-medium` | 0.516 | 0.810 | 0.640 | 8.730 | N/A |
+| `k5_a0.4_e0.0_gpt2-xl` | 0.558 | 67.720 | 11.940 | 120.310 | N/A |
+| `k5_a0.6_e0.0_gpt2` | 0.507 | 7.070 | 27.810 | 0.000 | N/A |
+| `k5_a0.6_e0.0_gpt2-large` | 0.398 | 0.000 | 4.100 | 188.910 | N/A |
+| `k5_a0.6_e0.0_gpt2-medium` | 0.518 | 27.780 | 0.460 | 4.210 | N/A |
+| `k5_a0.6_e0.0_gpt2-xl` | 0.563 | 84.290 | 12.330 | 116.280 | N/A |
+| `k5_a0.8_e0.0_gpt2` | 0.516 | 4.840 | 1.280 | 45.510 | N/A |
+| `k5_a0.8_e0.0_gpt2-large` | 0.401 | 0.020 | 2.780 | 189.340 | N/A |
+| `k5_a0.8_e0.0_gpt2-medium` | 0.523 | 97.850 | 0.450 | 3.350 | N/A |
+| `k5_a0.8_e0.0_gpt2-xl` | 0.565 | 93.860 | 15.060 | 114.570 | N/A |
+| `p-0.95_gpt2-large_256` | 0.763 | 79.260 | 49.320 | 178.020 | N/A |
+| **`p-0.95_gpt2-medium_256`** | 0.748 | 86.840 | $\color{red}{\textsf{56.120}}$ | 183.740 | N/A |
+| `p-0.95_gpt2-xl_256` | 0.759 | N/A | N/A | N/A | N/A |
+| `p-0.95_gpt2_256` | 0.733 | 83.140 | 34.760 | 189.530 | N/A |
+| `typical-0.95_gpt2-large_256` | 0.755 | 82.430 | 38.730 | 177.090 | N/A |
+| `typical-0.95_gpt2-medium_256` | 0.762 | 80.570 | 44.280 | 186.650 | N/A |
+| `typical-0.95_gpt2-xl_256` | 0.758 | N/A | N/A | N/A | N/A |
+| `typical-0.95_gpt2_256` | 0.738 | 82.050 | 43.030 | 186.410 | N/A |
 
-> **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score de la colonne. $\color{green}{\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.
-
-1. **Test Couleur Simple (Chiffres)** : 
-   - Code : `$\color{red}{\textsf{0.758}}$`
-   - Rendu : $\color{red}{\textsf{0.758}}$
-
-2. **Test Couleur (Texte sans underscore)** :
-   - Code : `$\color{green}{\textsf{gpt2}}$`
-   - Rendu : $\color{green}{\textsf{gpt2}}$
-
-3. **Test Couleur (Texte AVEC underscore - Le suspect)** :
-   - Code : `$\color{green}{\textsf{gpt2_medium}}$`
-   - Rendu : $\color{green}{\textsf{gpt2_medium}}$
-
-4. **Test Couleur (Texte avec underscore ÉCHAPPÉ)** :
-   - Code : `$\color{green}{\textsf{gpt2\_medium}}$`
-   - Rendu : $\color{green}{\textsf{gpt2\_medium}}$
+> **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).
 
 (Version sans couleur)
 
