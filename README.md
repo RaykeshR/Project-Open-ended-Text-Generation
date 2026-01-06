@@ -93,7 +93,33 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 | 50.0  | 0.40  |    25.18   |      -2.01      |   92.05   |   14.50   |   24.99   |
 | 50.0  | 0.60  |    24.96   |      -2.17      |   89.80   |   31.28   |   30.17   |
 | 50.0  | 0.80  |    24.72   |      -2.59      | **97.25** |   33.40   |   30.97   | -->
-============================================================================================================================================
+
+
+========================================================================================================================
+
+ RÉSULTATS : EPSILON SAMPLING (Avec Perplexité)
+
+ Légende : Rouge = Meilleur de la colonne | Vert = Meilleure configuration (selon MAUVE)
+========================================================================================================================
+
+| k | alpha | MAUVE | Perplexity | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_opt-2.7b |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $\textsf{5.0000}$ | $\textsf{0.2000}$ | $\textsf{34.5700}$ | $\textsf{21.6543}$ | $\textsf{25.2000}$ | $\textsf{0.1009}$ | $\textsf{0.0685}$ | $\textsf{0.0509}$ | $\color{red}{\textsf{-1.5643}}$ |
+| $\textsf{5.0000}$ | $\textsf{0.4000}$ | $\textsf{20.9900}$ | $\textsf{18.2247}$ | $\color{red}{\textsf{25.8200}}$ | $\textsf{0.0771}$ | $\textsf{0.0516}$ | $\textsf{0.0411}$ | $\textsf{-1.5939}$ |
+| $\textsf{5.0000}$ | $\textsf{0.6000}$ | $\textsf{22.3200}$ | $\textsf{20.0740}$ | $\textsf{25.7600}$ | $\textsf{0.0480}$ | $\textsf{0.0237}$ | $\textsf{0.0129}$ | $\textsf{-1.7818}$ |
+| $\textsf{5.0000}$ | $\textsf{0.8000}$ | $\textsf{27.6700}$ | $\textsf{23.4062}$ | $\textsf{25.6800}$ | $\textsf{0.0363}$ | $\textsf{0.0132}$ | $\textsf{0.0037}$ | $\textsf{-1.8793}$ |
+| $\textsf{10.0000}$ | $\textsf{0.2000}$ | $\textsf{17.2600}$ | $\color{red}{\textsf{16.2361}}$ | $\textsf{24.0400}$ | $\textsf{0.0734}$ | $\textsf{0.0370}$ | $\textsf{0.0239}$ | $\textsf{-1.6323}$ |
+| $\textsf{10.0000}$ | $\textsf{0.4000}$ | $\textsf{30.8500}$ | $\textsf{19.8886}$ | $\textsf{25.6000}$ | $\textsf{0.0729}$ | $\textsf{0.0354}$ | $\textsf{0.0194}$ | $\textsf{-1.7791}$ |
+| $\textsf{10.0000}$ | $\textsf{0.6000}$ | $\textsf{19.6400}$ | $\textsf{22.3595}$ | $\textsf{25.4600}$ | $\textsf{0.0563}$ | $\textsf{0.0240}$ | $\textsf{0.0140}$ | $\textsf{-1.9432}$ |
+| $\textsf{10.0000}$ | $\textsf{0.8000}$ | $\textsf{31.5300}$ | $\textsf{23.3664}$ | $\textsf{25.7000}$ | $\textsf{0.0295}$ | $\textsf{0.0088}$ | $\textsf{0.0028}$ | $\textsf{-2.1024}$ |
+| $\color{green}{\textsf{50.0000}}$ | $\color{green}{\textsf{0.2000}}$ | $\color{red}{\textsf{38.1800}}$ | $\color{green}{\textsf{21.6485}}$ | $\color{green}{\textsf{25.0800}}$ | $\color{green}{\textsf{0.0858}}$ | $\color{green}{\textsf{0.0444}}$ | $\color{green}{\textsf{0.0266}}$ | $\color{green}{\textsf{-1.6863}}$ |
+| $\textsf{50.0000}$ | $\textsf{0.4000}$ | $\textsf{14.5000}$ | $\textsf{24.9877}$ | $\textsf{25.1800}$ | $\textsf{0.0492}$ | $\textsf{0.0198}$ | $\textsf{0.0123}$ | $\textsf{-2.0140}$ |
+| $\textsf{50.0000}$ | $\textsf{0.6000}$ | $\textsf{31.2800}$ | $\textsf{30.1679}$ | $\textsf{24.9600}$ | $\textsf{0.0488}$ | $\textsf{0.0328}$ | $\textsf{0.0239}$ | $\textsf{-2.1723}$ |
+| $\textsf{50.0000}$ | $\textsf{0.8000}$ | $\textsf{33.4000}$ | $\textsf{30.9690}$ | $\textsf{24.7200}$ | $\color{red}{\textsf{0.0211}}$ | $\color{red}{\textsf{0.0046}}$ | $\color{red}{\textsf{0.0019}}$ | $\textsf{-2.5857}$ |
+
+---
+
+========================================================================================================================
 
 ## Generation
 
