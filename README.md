@@ -172,7 +172,6 @@ $$
 
 (Version avec couleur)
 
-
 | Model/Config | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | $\textsf{beam-10-gpt2-xl-32}$ | $\color{red}{\textsf{0.812}}$ | $\textsf{61.040}$ | $\textsf{30.320}$ | $\textsf{23.980}$ | $\textsf{23.776}$ |
@@ -219,7 +218,7 @@ $$
 | $\textsf{k5-a0.8-e0.0-gpt2-xl}$ | $\textsf{0.565}$ | $\textsf{93.860}$ | $\textsf{15.060}$ | $\textsf{114.570}$ | $\textsf{N/A}$ |    
 | $\textsf{p-0.95-gpt2-256}$ | $\textsf{0.733}$ | $\textsf{83.140}$ | $\textsf{34.760}$ | $\textsf{189.530}$ | $\textsf{N/A}$ |
 | $\textsf{p-0.95-gpt2-large-256}$ | $\textsf{0.763}$ | $\textsf{79.260}$ | $\textsf{49.320}$ | $\textsf{178.020}$ | $\textsf{N/A}$ |   
-| $\color{green}{\textsf{p-0}}$$\color{green}{\textsf{95-gpt2-medium-256}}$ | $\color{green}{\textsf{0.748}}$ | $\color{green}{\textsf{86.840}}$ | $\color{red}{\textsf{56.120}}$ | $\color{green}{\textsf{183.740}}$ | $\color{green}{\textsf{N/A}}$ |
+| $\textsf{p-0.95-gpt2-medium-256}$ <= | $\color{green}{\textsf{0.748}}$ | $\color{green}{\textsf{86.840}}$ | $\color{red}{\textsf{56.120}}$ | $\color{green}{\textsf{183.740}}$ | $\color{green}{\textsf{N/A}}$ |
 | $\textsf{p-0.95-gpt2-xl-256}$ | $\textsf{0.759}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ |
 | $\textsf{typical-0.95-gpt2-256}$ | $\textsf{0.738}$ | $\textsf{82.050}$ | $\textsf{43.030}$ | $\textsf{186.410}$ | $\textsf{N/A}$ |   
 | $\textsf{typical-0.95-gpt2-large-256}$ | $\textsf{0.755}$ | $\textsf{82.430}$ | $\textsf{38.730}$ | $\textsf{177.090}$ | $\textsf{N/A}$ |

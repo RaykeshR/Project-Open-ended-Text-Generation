@@ -151,10 +151,8 @@ def generate_markdown(df):
             if col == 'Model/Config':
                 if is_winner:
                     # Maintenant que c'est "dash-separated", la couleur passe !
-                    a=''
-                    for i in txt.split('.'):
-                        a+=f"$\\color{{green}}{{\\textsf{{{i}}}}}$"
-                    cells.append(a)
+
+                    cells.append(f"$\\textsf{{{txt}}}$ <=")
                 else:
                     cells.append(f"$\\textsf{{{txt}}}$")
                 continue
