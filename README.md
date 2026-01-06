@@ -124,6 +124,16 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
 ========================================================================================================================
 
+### Résultats Beam Search (GPT-2 XL)
+
+(Version sans couleur : gpt2-xl / num_prefixes = 50 / decoding_len = 32)
+
+| Configuration | Beam Size | Gen Length | Coherence | Diversity | MAUVE | Perplexity |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **gpt2-xl (Beam)** | 10 | 23.98 | -0.939 | 61.04 | 30.32 | 23.776 |
+
+<!-- **Note :** La longueur générée moyenne (~24 tokens) est inférieure à la cible de 128. C'est un comportement fréquent du Beam Search qui favorise des phrases courtes et "sûres", s'arrêtant souvent prématurément dès qu'un token de fin (`<eos>`) est probable. -->
+
 ## Generation
 
 ```py
