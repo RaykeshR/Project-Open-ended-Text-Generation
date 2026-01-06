@@ -219,7 +219,7 @@ $$
 | `k5_a0.8_e0.0_gpt2-medium` | $\textsf{0.523}$ | $\textsf{97.850}$ | $\textsf{0.450}$ | $\textsf{3.350}$ | $\textsf{N/A}$ |
 | `k5_a0.8_e0.0_gpt2-xl` | $\textsf{0.565}$ | $\textsf{93.860}$ | $\textsf{15.060}$ | $\textsf{114.570}$ | $\textsf{N/A}$ |
 | `p-0.95_gpt2-large_256` | $\textsf{0.763}$ | $\textsf{79.260}$ | $\textsf{49.320}$ | $\textsf{178.020}$ | $\textsf{N/A}$ |
-| `p-0.95_gpt2-medium_256` | $\textsf{0.748}$ | $\textsf{86.840}$ | $\color{red}{\textsf{56.120}}$ | $\textsf{183.740}$ | $\textsf{N/A}$ |
+| p-95_$\color{green}{\textsf{gpt2-medium}}$_256 | $\textsf{0.748}$ | $\textsf{86.840}$ | $\color{red}{\textsf{56.120}}$ | $\textsf{183.740}$ | $\textsf{N/A}$ |
 | `p-0.95_gpt2-xl_256` | $\textsf{0.759}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ | $\textsf{N/A}$ |
 | `p-0.95_gpt2_256` | $\textsf{0.733}$ | $\textsf{83.140}$ | $\textsf{34.760}$ | $\textsf{189.530}$ | $\textsf{N/A}$ |
 | `typical-0.95_gpt2-large_256` | $\textsf{0.755}$ | $\textsf{82.430}$ | $\textsf{38.730}$ | $\textsf{177.090}$ | $\textsf{N/A}$ |      
@@ -228,6 +228,22 @@ $$
 | `typical-0.95_gpt2_256` | $\textsf{0.738}$ | $\textsf{82.050}$ | $\textsf{43.030}$ | $\textsf{186.410}$ | $\textsf{N/A}$ |
 
 > **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score de la colonne. $\color{green}{\textsf{Vert}}$ = Modèle avec le meilleur score MAUVE global.
+
+1. **Test Couleur Simple (Chiffres)** : 
+   - Code : `$\color{red}{\textsf{0.758}}$`
+   - Rendu : $\color{red}{\textsf{0.758}}$
+
+2. **Test Couleur (Texte sans underscore)** :
+   - Code : `$\color{green}{\textsf{gpt2}}$`
+   - Rendu : $\color{green}{\textsf{gpt2}}$
+
+3. **Test Couleur (Texte AVEC underscore - Le suspect)** :
+   - Code : `$\color{green}{\textsf{gpt2_medium}}$`
+   - Rendu : $\color{green}{\textsf{gpt2_medium}}$
+
+4. **Test Couleur (Texte avec underscore ÉCHAPPÉ)** :
+   - Code : `$\color{green}{\textsf{gpt2\_medium}}$`
+   - Rendu : $\color{green}{\textsf{gpt2\_medium}}$
 
 (Version sans couleur)
 
