@@ -10,16 +10,16 @@
         },
         "gen_length_dict": {
             "gen_len_list": [
-                "0.0"
+                "128.6578947368421"
             ],
-            "gen_len_mean": "0.0",
+            "gen_len_mean": "128.66",
             "gen_len_std": "0.0"
         },
         "mauve_dict": {
             "mauve_score_list": [
-                "26.832683862299696"
+                "97.02356559266892"
             ],
-            "mauve_mean": "26.83",
+            "mauve_mean": "97.02",
             "mauve_std": "0.0"
         }
     }
