@@ -23,42 +23,42 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 ============================================================================================================================================
 | Model&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Method | Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MAUVE | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_gpt2 | Coh_gpt2-large | Coh_gpt2-medium | Coh_gpt2-xl | Coh_opt-1.3b | Coh_opt-125m | Coh_opt-2.7b |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{3.4200}$ | $\textsf{90.3600}$ | $\textsf{0.8533}$ | $\textsf{0.8090}$ | $\textsf{0.7745}$ | $\textsf{-1.1207}$ | $\textsf{-1.6835}$ | $\textsf{-1.1248}$ | $\textsf{-1.4209}$ | $\textsf{-0.9934}$ | $\textsf{-1.1265}$ | $\textsf{-0.9605}$ |
-| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{1.4400}$ | $\textsf{60.0000}$ | $\textsf{0.7459}$ | $\textsf{0.6839}$ | $\textsf{0.6413}$ | $\textsf{-1.1724}$ | $\textsf{-2.0421}$ | $\textsf{-1.1640}$ | $\textsf{-1.6741}$ | $\textsf{-1.0013}$ | $\textsf{-1.1750}$ | $\textsf{-0.9624}$ |
-| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{0.7300}$ | $\textsf{27.9400}$ | $\textsf{0.5571}$ | $\textsf{0.4497}$ | $\textsf{0.3753}$ | $\textsf{-1.2079}$ | $\textsf{-2.4594}$ | $\textsf{-1.2093}$ | $\textsf{-1.9477}$ | $\textsf{-1.0027}$ | $\textsf{-1.2069}$ | $\textsf{-0.9582}$ |
-| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{5.4600}$ | $\textsf{90.6200}$ | $\textsf{0.8682}$ | $\textsf{0.8268}$ | $\textsf{0.7954}$ | $\textsf{-1.0036}$ | $\textsf{-1.5675}$ | $\textsf{-1.0137}$ | $\textsf{-1.2978}$ | $\textsf{-0.8858}$ | $\textsf{-1.0346}$ | $\textsf{-0.8588}$ |
-| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{1.1900}$ | $\textsf{71.0900}$ | $\textsf{0.8159}$ | $\textsf{0.7629}$ | $\textsf{0.7170}$ | $\textsf{-1.0707}$ | $\textsf{-1.8471}$ | $\textsf{-1.0742}$ | $\textsf{-1.4810}$ | $\textsf{-0.9282}$ | $\textsf{-1.0877}$ | $\textsf{-0.8988}$ |
-| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{1.2800}$ | $\textsf{45.5100}$ | $\textsf{0.7165}$ | $\textsf{0.6293}$ | $\textsf{0.5512}$ | $\textsf{-1.1255}$ | $\textsf{-2.1786}$ | $\textsf{-1.1388}$ | $\textsf{-1.7167}$ | $\textsf{-0.9486}$ | $\textsf{-1.1303}$ | $\textsf{-0.9136}$ |
-| $\textsf{gpt2}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{2.2900}$ | $\color{red}{\textsf{202.2100}}$ | $\textsf{0.8519}$ | $\textsf{0.8349}$ | $\textsf{0.8215}$ | $\color{red}{\textsf{-0.2882}}$ | $\color{red}{\textsf{-0.3184}}$ | $\color{red}{\textsf{-0.3393}}$ | $\color{red}{\textsf{-0.3353}}$ | $\color{red}{\textsf{-0.3126}}$ | $\color{red}{\textsf{-0.3192}}$ | $\color{red}{\textsf{-0.3244}}$ |
-| $\textsf{gpt2}$ | $\textsf{Nucleus}$ | $\textsf{p=0.95}$ | $\textsf{34.7600}$ | $\textsf{189.5300}$ | $\textsf{0.1092}$ | $\textsf{0.0430}$ | $\textsf{0.0251}$ | $\textsf{-2.4129}$ | $\textsf{-2.7282}$ | $\textsf{-2.7004}$ | $\textsf{-2.8097}$ | $\textsf{-2.7949}$ | $\textsf{-2.6613}$ | $\textsf{-2.8488}$ |
-| $\color{blue}{\textsf{gpt2}}$ | $\color{blue}{\textsf{Typical}}$ | $\color{blue}{\textsf{p=0.95}}$ | $\color{blue}{\textsf{43.0300}}$ | $\color{blue}{\textsf{186.4100}}$ | $\color{blue}{\textsf{0.1138}}$ | $\color{blue}{\textsf{0.0472}}$ | $\color{blue}{\textsf{0.0283}}$ | $\color{blue}{\textsf{-2.3452}}$ | $\color{blue}{\textsf{-2.6646}}$ | $\color{blue}{\textsf{-2.6464}}$ | $\color{blue}{\textsf{-2.7366}}$ | $\color{blue}{\textsf{-2.7316}}$ | $\color{blue}{\textsf{-2.6207}}$ | $\color{blue}{\textsf{-2.7927}}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{2.3600}$ | $\textsf{189.0800}$ | $\textsf{0.9708}$ | $\textsf{0.9676}$ | $\textsf{0.9647}$ | $\textsf{-0.6488}$ | $\textsf{-0.7385}$ | $\textsf{-0.6842}$ | $\textsf{-0.7371}$ | $\textsf{-0.6042}$ | $\textsf{-0.7388}$ | $\textsf{-0.5656}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{3.6000}$ | $\textsf{188.9600}$ | $\textsf{0.9546}$ | $\textsf{0.9515}$ | $\textsf{0.9487}$ | $\textsf{-0.7825}$ | $\textsf{-0.8729}$ | $\textsf{-0.8137}$ | $\textsf{-0.8556}$ | $\textsf{-0.7604}$ | $\textsf{-0.8439}$ | $\textsf{-0.7069}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{6.9100}$ | $\textsf{189.1900}$ | $\textsf{0.9121}$ | $\textsf{0.8972}$ | $\textsf{0.8840}$ | $\textsf{-1.0900}$ | $\textsf{-1.1803}$ | $\textsf{-1.1144}$ | $\textsf{-1.1585}$ | $\textsf{-1.0978}$ | $\textsf{-1.1620}$ | $\textsf{-1.0279}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{2.8700}$ | $\textsf{189.7900}$ | $\textsf{0.9780}$ | $\textsf{0.9754}$ | $\textsf{0.9728}$ | $\textsf{-0.6090}$ | $\textsf{-0.7141}$ | $\textsf{-0.6508}$ | $\textsf{-0.6746}$ | $\textsf{-0.5592}$ | $\textsf{-0.7036}$ | $\textsf{-0.5281}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{4.1000}$ | $\textsf{188.9100}$ | $\textsf{0.9686}$ | $\textsf{0.9666}$ | $\textsf{0.9648}$ | $\textsf{-0.6502}$ | $\textsf{-0.7452}$ | $\textsf{-0.6863}$ | $\textsf{-0.7246}$ | $\textsf{-0.6259}$ | $\textsf{-0.7281}$ | $\textsf{-0.5894}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{2.7800}$ | $\textsf{189.3400}$ | $\textsf{0.9483}$ | $\textsf{0.9383}$ | $\textsf{0.9304}$ | $\textsf{-0.8139}$ | $\textsf{-0.8748}$ | $\textsf{-0.8343}$ | $\textsf{-0.8445}$ | $\textsf{-0.7959}$ | $\textsf{-0.8881}$ | $\textsf{-0.7436}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{4.1900}$ | $\textsf{196.7200}$ | $\textsf{0.7823}$ | $\textsf{0.7549}$ | $\textsf{0.7366}$ | $\textsf{-0.5233}$ | $\textsf{-0.3784}$ | $\textsf{-0.4736}$ | $\textsf{-0.4237}$ | $\textsf{-0.4219}$ | $\textsf{-0.5082}$ | $\textsf{-0.4303}$ |
-| $\color{blue}{\textsf{gpt2-large}}$ | $\color{blue}{\textsf{Nucleus}}$ | $\color{blue}{\textsf{p=0.95}}$ | $\color{blue}{\textsf{49.3200}}$ | $\color{blue}{\textsf{178.0200}}$ | $\color{blue}{\textsf{0.1232}}$ | $\color{blue}{\textsf{0.0582}}$ | $\color{blue}{\textsf{0.0403}}$ | $\color{blue}{\textsf{-2.4388}}$ | $\color{blue}{\textsf{-1.9818}}$ | $\color{blue}{\textsf{-2.2595}}$ | $\color{blue}{\textsf{-2.1908}}$ | $\color{blue}{\textsf{-2.2350}}$ | $\color{blue}{\textsf{-2.5068}}$ | $\color{blue}{\textsf{-2.2520}}$ |
-| $\textsf{gpt2-large}$ | $\textsf{Typical}$ | $\textsf{p=0.95}$ | $\textsf{38.7300}$ | $\textsf{177.0900}$ | $\textsf{0.1099}$ | $\textsf{0.0458}$ | $\textsf{0.0297}$ | $\textsf{-2.4777}$ | $\textsf{-2.0221}$ | $\textsf{-2.2933}$ | $\textsf{-2.2131}$ | $\textsf{-2.2732}$ | $\textsf{-2.5692}$ | $\textsf{-2.2969}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{0.5700}$ | $\textsf{7.6000}$ | $\textsf{0.8389}$ | $\textsf{0.8705}$ | $\textsf{0.8892}$ | $\textsf{-0.7574}$ | $\textsf{-1.9972}$ | $\textsf{-0.7951}$ | $\textsf{-1.2896}$ | $\textsf{-0.5582}$ | $\textsf{-0.7654}$ | $\textsf{-0.5176}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{0.4300}$ | $\textsf{3.0300}$ | $\textsf{0.6667}$ | $\textsf{0.7628}$ | $\textsf{0.8235}$ | $\textsf{-0.7710}$ | $\textsf{-2.0161}$ | $\textsf{-0.8122}$ | $\textsf{-1.3115}$ | $\textsf{-0.5664}$ | $\textsf{-0.7814}$ | $\textsf{-0.5275}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{0.6400}$ | $\textsf{2.1200}$ | $\textsf{0.5135}$ | $\textsf{0.6418}$ | $\textsf{0.7344}$ | $\textsf{-0.7648}$ | $\textsf{-2.0037}$ | $\textsf{-0.8040}$ | $\textsf{-1.2945}$ | $\textsf{-0.5659}$ | $\textsf{-0.7791}$ | $\textsf{-0.5256}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{0.6400}$ | $\textsf{8.7300}$ | $\textsf{0.7828}$ | $\textsf{0.8184}$ | $\textsf{0.8469}$ | $\textsf{-0.8337}$ | $\textsf{-2.0271}$ | $\textsf{-0.8632}$ | $\textsf{-1.3272}$ | $\textsf{-0.6256}$ | $\textsf{-0.8376}$ | $\textsf{-0.5873}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{0.4600}$ | $\textsf{4.2100}$ | $\textsf{0.4438}$ | $\textsf{0.5033}$ | $\textsf{0.5552}$ | $\textsf{-0.8536}$ | $\textsf{-2.0994}$ | $\textsf{-0.8846}$ | $\textsf{-1.3672}$ | $\textsf{-0.6413}$ | $\textsf{-0.8649}$ | $\textsf{-0.6106}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{0.4500}$ | $\textsf{3.3500}$ | $\textsf{0.2720}$ | $\textsf{0.3450}$ | $\textsf{0.4028}$ | $\textsf{-0.8519}$ | $\textsf{-2.1414}$ | $\textsf{-0.8979}$ | $\textsf{-1.3862}$ | $\textsf{-0.6460}$ | $\textsf{-0.8669}$ | $\textsf{-0.6110}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{4.7900}$ | $\textsf{200.8800}$ | $\textsf{0.8095}$ | $\textsf{0.7816}$ | $\textsf{0.7619}$ | $\textsf{-0.4620}$ | $\textsf{-0.3970}$ | $\textsf{-0.3899}$ | $\textsf{-0.4167}$ | $\textsf{-0.3996}$ | $\textsf{-0.4584}$ | $\textsf{-0.4142}$ |
-| $\color{green}{\textsf{gpt2-medium}}$ | $\color{green}{\textsf{Nucleus}}$ | $\color{green}{\textsf{p=0.95}}$ | $\color{red}{\textsf{56.1200}}$ | $\color{green}{\textsf{183.7400}}$ | $\color{green}{\textsf{0.0876}}$ | $\color{green}{\textsf{0.0310}}$ | $\color{green}{\textsf{0.0178}}$ | $\color{green}{\textsf{-2.6471}}$ | $\color{green}{\textsf{-2.4792}}$ | $\color{green}{\textsf{-2.3126}}$ | $\color{green}{\textsf{-2.5317}}$ | $\color{green}{\textsf{-2.5636}}$ | $\color{green}{\textsf{-2.7203}}$ | $\color{green}{\textsf{-2.6041}}$ |
-| $\textsf{gpt2-medium}$ | $\textsf{Typical}$ | $\textsf{p=0.95}$ | $\textsf{44.2800}$ | $\textsf{186.6500}$ | $\textsf{0.1128}$ | $\textsf{0.0539}$ | $\textsf{0.0401}$ | $\textsf{-2.5455}$ | $\textsf{-2.3962}$ | $\textsf{-2.2376}$ | $\textsf{-2.4516}$ | $\textsf{-2.4820}$ | $\textsf{-2.6267}$ | $\textsf{-2.5244}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{4.4300}$ | $\textsf{115.2800}$ | $\textsf{0.0169}$ | $\textsf{0.0119}$ | $\textsf{0.0111}$ | $\textsf{-9.1670}$ | $\textsf{-9.0882}$ | $\textsf{-9.0463}$ | $\textsf{-8.8964}$ | $\textsf{-8.8832}$ | $\textsf{-9.1991}$ | $\textsf{-8.8201}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{4.5100}$ | $\textsf{112.6900}$ | $\textsf{0.0030}$ | $\textsf{0.0010}$ | $\textsf{0.0007}$ | $\textsf{-9.2562}$ | $\textsf{-9.1617}$ | $\textsf{-9.1262}$ | $\textsf{-8.9895}$ | $\textsf{-8.9678}$ | $\textsf{-9.2803}$ | $\textsf{-8.8993}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{4.1100}$ | $\textsf{113.2100}$ | $\color{red}{\textsf{0.0015}}$ | $\color{red}{\textsf{0.0000}}$ | $\color{red}{\textsf{0.0000}}$ | $\textsf{-9.2842}$ | $\textsf{-9.1628}$ | $\textsf{-9.1348}$ | $\textsf{-8.9875}$ | $\textsf{-8.9932}$ | $\textsf{-9.3025}$ | $\textsf{-8.9280}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{11.9400}$ | $\textsf{120.3100}$ | $\textsf{0.1386}$ | $\textsf{0.1170}$ | $\textsf{0.1097}$ | $\textsf{-8.3395}$ | $\textsf{-8.3691}$ | $\textsf{-8.3028}$ | $\textsf{-8.0903}$ | $\textsf{-7.9099}$ | $\textsf{-8.3573}$ | $\textsf{-7.8405}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{12.3300}$ | $\textsf{116.2800}$ | $\textsf{0.0709}$ | $\textsf{0.0508}$ | $\textsf{0.0442}$ | $\textsf{-8.7235}$ | $\textsf{-8.6956}$ | $\textsf{-8.6602}$ | $\textsf{-8.4190}$ | $\textsf{-8.2650}$ | $\textsf{-8.7586}$ | $\textsf{-8.2096}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{15.0600}$ | $\textsf{114.5700}$ | $\textsf{0.0355}$ | $\textsf{0.0158}$ | $\textsf{0.0112}$ | $\textsf{-8.8671}$ | $\textsf{-8.8114}$ | $\textsf{-8.7565}$ | $\textsf{-8.5626}$ | $\textsf{-8.4016}$ | $\textsf{-8.9393}$ | $\textsf{-8.3589}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{5.0200}$ | $\textsf{196.5400}$ | $\textsf{0.7559}$ | $\textsf{0.7182}$ | $\textsf{0.6913}$ | $\textsf{-0.5588}$ | $\textsf{-0.4263}$ | $\textsf{-0.4982}$ | $\textsf{-0.3774}$ | $\textsf{-0.4278}$ | $\textsf{-0.5575}$ | $\textsf{-0.4267}$ |
-| $\color{blue}{\textsf{gpt2-xl}}$ | $\color{blue}{\textsf{Nucleus}}$ | $\color{blue}{\textsf{p=0.95}}$ | $\color{blue}{\textsf{50.9000}}$ | $\color{blue}{\textsf{178.9200}}$ | $\color{blue}{\textsf{0.1125}}$ | $\color{blue}{\textsf{0.0475}}$ | $\color{blue}{\textsf{0.0296}}$ | $\color{blue}{\textsf{-2.5551}}$ | $\color{blue}{\textsf{-2.1907}}$ | $\color{blue}{\textsf{-2.3259}}$ | $\color{blue}{\textsf{-1.9738}}$ | $\color{blue}{\textsf{-2.2540}}$ | $\color{blue}{\textsf{-2.6280}}$ | $\color{blue}{\textsf{-2.2513}}$ |
-| $\textsf{gpt2-xl}$ | $\textsf{Typical}$ | $\textsf{p=0.95}$ | $\textsf{38.7700}$ | $\textsf{183.0500}$ | $\textsf{0.1208}$ | $\textsf{0.0552}$ | $\textsf{0.0386}$ | $\textsf{-2.5367}$ | $\textsf{-2.1636}$ | $\textsf{-2.3012}$ | $\textsf{-1.9591}$ | $\textsf{-2.2234}$ | $\textsf{-2.6208}$ | $\textsf{-2.2264}$ |
+| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{35.4600}$ | $\textsf{90.3600}$ | $\textsf{0.8533}$ | $\textsf{0.8090}$ | $\textsf{0.7745}$ | $\textsf{-1.1207}$ | $\textsf{-1.6835}$ | $\textsf{-1.1248}$ | $\textsf{-1.4209}$ | $\textsf{-0.9934}$ | $\textsf{-1.1265}$ | $\textsf{-0.9605}$ |
+| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{61.0100}$ | $\textsf{60.0000}$ | $\textsf{0.7459}$ | $\textsf{0.6839}$ | $\textsf{0.6413}$ | $\textsf{-1.1724}$ | $\textsf{-2.0421}$ | $\textsf{-1.1640}$ | $\textsf{-1.6741}$ | $\textsf{-1.0013}$ | $\textsf{-1.1750}$ | $\textsf{-0.9624}$ |
+| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{22.9100}$ | $\textsf{27.9400}$ | $\textsf{0.5571}$ | $\textsf{0.4497}$ | $\textsf{0.3753}$ | $\textsf{-1.2079}$ | $\textsf{-2.4594}$ | $\textsf{-1.2093}$ | $\textsf{-1.9477}$ | $\textsf{-1.0027}$ | $\textsf{-1.2069}$ | $\textsf{-0.9582}$ |
+| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{37.3700}$ | $\textsf{90.6200}$ | $\textsf{0.8682}$ | $\textsf{0.8268}$ | $\textsf{0.7954}$ | $\textsf{-1.0036}$ | $\textsf{-1.5675}$ | $\textsf{-1.0137}$ | $\textsf{-1.2978}$ | $\textsf{-0.8858}$ | $\textsf{-1.0346}$ | $\textsf{-0.8588}$ |
+| $\textsf{gpt2}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{64.7500}$ | $\textsf{71.0900}$ | $\textsf{0.8159}$ | $\textsf{0.7629}$ | $\textsf{0.7170}$ | $\textsf{-1.0707}$ | $\textsf{-1.8471}$ | $\textsf{-1.0742}$ | $\textsf{-1.4810}$ | $\textsf{-0.9282}$ | $\textsf{-1.0877}$ | $\textsf{-0.8988}$ |
+| $\color{blue}{\textsf{gpt2}}$ | $\color{blue}{\textsf{Contrastive}}$ | $\color{blue}{\textsf{k=5, a=0.8}}$ | $\color{blue}{\textsf{78.2400}}$ | $\color{blue}{\textsf{45.5100}}$ | $\color{blue}{\textsf{0.7165}}$ | $\color{blue}{\textsf{0.6293}}$ | $\color{blue}{\textsf{0.5512}}$ | $\color{blue}{\textsf{-1.1255}}$ | $\color{blue}{\textsf{-2.1786}}$ | $\color{blue}{\textsf{-1.1388}}$ | $\color{blue}{\textsf{-1.7167}}$ | $\color{blue}{\textsf{-0.9486}}$ | $\color{blue}{\textsf{-1.1303}}$ | $\color{blue}{\textsf{-0.9136}}$ |
+| $\textsf{gpt2}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{1.0400}$ | $\color{red}{\textsf{202.2100}}$ | $\textsf{0.8519}$ | $\textsf{0.8349}$ | $\textsf{0.8215}$ | $\color{red}{\textsf{-0.2882}}$ | $\color{red}{\textsf{-0.3184}}$ | $\color{red}{\textsf{-0.3393}}$ | $\color{red}{\textsf{-0.3353}}$ | $\color{red}{\textsf{-0.3126}}$ | $\color{red}{\textsf{-0.3192}}$ | $\color{red}{\textsf{-0.3244}}$ |
+| $\textsf{gpt2}$ | $\textsf{Nucleus}$ | $\textsf{p=0.95}$ | $\textsf{67.6100}$ | $\textsf{189.5300}$ | $\textsf{0.1092}$ | $\textsf{0.0430}$ | $\textsf{0.0251}$ | $\textsf{-2.4129}$ | $\textsf{-2.7282}$ | $\textsf{-2.7004}$ | $\textsf{-2.8097}$ | $\textsf{-2.7949}$ | $\textsf{-2.6613}$ | $\textsf{-2.8488}$ |
+| $\textsf{gpt2}$ | $\textsf{Typical}$ | $\textsf{p=0.95}$ | $\textsf{60.7900}$ | $\textsf{186.4100}$ | $\textsf{0.1138}$ | $\textsf{0.0472}$ | $\textsf{0.0283}$ | $\textsf{-2.3452}$ | $\textsf{-2.6646}$ | $\textsf{-2.6464}$ | $\textsf{-2.7366}$ | $\textsf{-2.7316}$ | $\textsf{-2.6207}$ | $\textsf{-2.7927}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{13.5000}$ | $\textsf{189.0800}$ | $\textsf{0.9708}$ | $\textsf{0.9676}$ | $\textsf{0.9647}$ | $\textsf{-0.6488}$ | $\textsf{-0.7385}$ | $\textsf{-0.6842}$ | $\textsf{-0.7371}$ | $\textsf{-0.6042}$ | $\textsf{-0.7388}$ | $\textsf{-0.5656}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{6.8400}$ | $\textsf{188.9600}$ | $\textsf{0.9546}$ | $\textsf{0.9515}$ | $\textsf{0.9487}$ | $\textsf{-0.7825}$ | $\textsf{-0.8729}$ | $\textsf{-0.8137}$ | $\textsf{-0.8556}$ | $\textsf{-0.7604}$ | $\textsf{-0.8439}$ | $\textsf{-0.7069}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{4.8400}$ | $\textsf{189.1900}$ | $\textsf{0.9121}$ | $\textsf{0.8972}$ | $\textsf{0.8840}$ | $\textsf{-1.0900}$ | $\textsf{-1.1803}$ | $\textsf{-1.1144}$ | $\textsf{-1.1585}$ | $\textsf{-1.0978}$ | $\textsf{-1.1620}$ | $\textsf{-1.0279}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{5.5500}$ | $\textsf{189.7900}$ | $\textsf{0.9780}$ | $\textsf{0.9754}$ | $\textsf{0.9728}$ | $\textsf{-0.6090}$ | $\textsf{-0.7141}$ | $\textsf{-0.6508}$ | $\textsf{-0.6746}$ | $\textsf{-0.5592}$ | $\textsf{-0.7036}$ | $\textsf{-0.5281}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{11.2500}$ | $\textsf{188.9100}$ | $\textsf{0.9686}$ | $\textsf{0.9666}$ | $\textsf{0.9648}$ | $\textsf{-0.6502}$ | $\textsf{-0.7452}$ | $\textsf{-0.6863}$ | $\textsf{-0.7246}$ | $\textsf{-0.6259}$ | $\textsf{-0.7281}$ | $\textsf{-0.5894}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{5.1800}$ | $\textsf{189.3400}$ | $\textsf{0.9483}$ | $\textsf{0.9383}$ | $\textsf{0.9304}$ | $\textsf{-0.8139}$ | $\textsf{-0.8748}$ | $\textsf{-0.8343}$ | $\textsf{-0.8445}$ | $\textsf{-0.7959}$ | $\textsf{-0.8881}$ | $\textsf{-0.7436}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{2.1100}$ | $\textsf{196.7200}$ | $\textsf{0.7823}$ | $\textsf{0.7549}$ | $\textsf{0.7366}$ | $\textsf{-0.5233}$ | $\textsf{-0.3784}$ | $\textsf{-0.4736}$ | $\textsf{-0.4237}$ | $\textsf{-0.4219}$ | $\textsf{-0.5082}$ | $\textsf{-0.4303}$ |
+| $\textsf{gpt2-large}$ | $\textsf{Nucleus}$ | $\textsf{p=0.95}$ | $\textsf{54.4000}$ | $\textsf{178.0200}$ | $\textsf{0.1232}$ | $\textsf{0.0582}$ | $\textsf{0.0403}$ | $\textsf{-2.4388}$ | $\textsf{-1.9818}$ | $\textsf{-2.2595}$ | $\textsf{-2.1908}$ | $\textsf{-2.2350}$ | $\textsf{-2.5068}$ | $\textsf{-2.2520}$ |
+| $\color{blue}{\textsf{gpt2-large}}$ | $\color{blue}{\textsf{Typical}}$ | $\color{blue}{\textsf{p=0.95}}$ | $\color{blue}{\textsf{71.0700}}$ | $\color{blue}{\textsf{177.0900}}$ | $\color{blue}{\textsf{0.1099}}$ | $\color{blue}{\textsf{0.0458}}$ | $\color{blue}{\textsf{0.0297}}$ | $\color{blue}{\textsf{-2.4777}}$ | $\color{blue}{\textsf{-2.0221}}$ | $\color{blue}{\textsf{-2.2933}}$ | $\color{blue}{\textsf{-2.2131}}$ | $\color{blue}{\textsf{-2.2732}}$ | $\color{blue}{\textsf{-2.5692}}$ | $\color{blue}{\textsf{-2.2969}}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{14.8600}$ | $\textsf{7.6000}$ | $\textsf{0.8389}$ | $\textsf{0.8705}$ | $\textsf{0.8892}$ | $\textsf{-0.7574}$ | $\textsf{-1.9972}$ | $\textsf{-0.7951}$ | $\textsf{-1.2896}$ | $\textsf{-0.5582}$ | $\textsf{-0.7654}$ | $\textsf{-0.5176}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{10.9400}$ | $\textsf{3.0300}$ | $\textsf{0.6667}$ | $\textsf{0.7628}$ | $\textsf{0.8235}$ | $\textsf{-0.7710}$ | $\textsf{-2.0161}$ | $\textsf{-0.8122}$ | $\textsf{-1.3115}$ | $\textsf{-0.5664}$ | $\textsf{-0.7814}$ | $\textsf{-0.5275}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{15.8200}$ | $\textsf{2.1200}$ | $\textsf{0.5135}$ | $\textsf{0.6418}$ | $\textsf{0.7344}$ | $\textsf{-0.7648}$ | $\textsf{-2.0037}$ | $\textsf{-0.8040}$ | $\textsf{-1.2945}$ | $\textsf{-0.5659}$ | $\textsf{-0.7791}$ | $\textsf{-0.5256}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{12.6800}$ | $\textsf{8.7300}$ | $\textsf{0.7828}$ | $\textsf{0.8184}$ | $\textsf{0.8469}$ | $\textsf{-0.8337}$ | $\textsf{-2.0271}$ | $\textsf{-0.8632}$ | $\textsf{-1.3272}$ | $\textsf{-0.6256}$ | $\textsf{-0.8376}$ | $\textsf{-0.5873}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{11.5500}$ | $\textsf{4.2100}$ | $\textsf{0.4438}$ | $\textsf{0.5033}$ | $\textsf{0.5552}$ | $\textsf{-0.8536}$ | $\textsf{-2.0994}$ | $\textsf{-0.8846}$ | $\textsf{-1.3672}$ | $\textsf{-0.6413}$ | $\textsf{-0.8649}$ | $\textsf{-0.6106}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{13.4300}$ | $\textsf{3.3500}$ | $\textsf{0.2720}$ | $\textsf{0.3450}$ | $\textsf{0.4028}$ | $\textsf{-0.8519}$ | $\textsf{-2.1414}$ | $\textsf{-0.8979}$ | $\textsf{-1.3862}$ | $\textsf{-0.6460}$ | $\textsf{-0.8669}$ | $\textsf{-0.6110}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{1.3900}$ | $\textsf{200.8800}$ | $\textsf{0.8095}$ | $\textsf{0.7816}$ | $\textsf{0.7619}$ | $\textsf{-0.4620}$ | $\textsf{-0.3970}$ | $\textsf{-0.3899}$ | $\textsf{-0.4167}$ | $\textsf{-0.3996}$ | $\textsf{-0.4584}$ | $\textsf{-0.4142}$ |
+| $\textsf{gpt2-medium}$ | $\textsf{Nucleus}$ | $\textsf{p=0.95}$ | $\textsf{67.9400}$ | $\textsf{183.7400}$ | $\textsf{0.0876}$ | $\textsf{0.0310}$ | $\textsf{0.0178}$ | $\textsf{-2.6471}$ | $\textsf{-2.4792}$ | $\textsf{-2.3126}$ | $\textsf{-2.5317}$ | $\textsf{-2.5636}$ | $\textsf{-2.7203}$ | $\textsf{-2.6041}$ |
+| $\color{blue}{\textsf{gpt2-medium}}$ | $\color{blue}{\textsf{Typical}}$ | $\color{blue}{\textsf{p=0.95}}$ | $\color{blue}{\textsf{79.9200}}$ | $\color{blue}{\textsf{186.6500}}$ | $\color{blue}{\textsf{0.1128}}$ | $\color{blue}{\textsf{0.0539}}$ | $\color{blue}{\textsf{0.0401}}$ | $\color{blue}{\textsf{-2.5455}}$ | $\color{blue}{\textsf{-2.3962}}$ | $\color{blue}{\textsf{-2.2376}}$ | $\color{blue}{\textsf{-2.4516}}$ | $\color{blue}{\textsf{-2.4820}}$ | $\color{blue}{\textsf{-2.6267}}$ | $\color{blue}{\textsf{-2.5244}}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.4}$ | $\textsf{2.6700}$ | $\textsf{115.2800}$ | $\textsf{0.0169}$ | $\textsf{0.0119}$ | $\textsf{0.0111}$ | $\textsf{-9.1670}$ | $\textsf{-9.0882}$ | $\textsf{-9.0463}$ | $\textsf{-8.8964}$ | $\textsf{-8.8832}$ | $\textsf{-9.1991}$ | $\textsf{-8.8201}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.6}$ | $\textsf{4.0000}$ | $\textsf{112.6900}$ | $\textsf{0.0030}$ | $\textsf{0.0010}$ | $\textsf{0.0007}$ | $\textsf{-9.2562}$ | $\textsf{-9.1617}$ | $\textsf{-9.1262}$ | $\textsf{-8.9895}$ | $\textsf{-8.9678}$ | $\textsf{-9.2803}$ | $\textsf{-8.8993}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=10, a=0.8}$ | $\textsf{1.7100}$ | $\textsf{113.2100}$ | $\color{red}{\textsf{0.0015}}$ | $\color{red}{\textsf{0.0000}}$ | $\color{red}{\textsf{0.0000}}$ | $\textsf{-9.2842}$ | $\textsf{-9.1628}$ | $\textsf{-9.1348}$ | $\textsf{-8.9875}$ | $\textsf{-8.9932}$ | $\textsf{-9.3025}$ | $\textsf{-8.9280}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.4}$ | $\textsf{9.2700}$ | $\textsf{120.3100}$ | $\textsf{0.1386}$ | $\textsf{0.1170}$ | $\textsf{0.1097}$ | $\textsf{-8.3395}$ | $\textsf{-8.3691}$ | $\textsf{-8.3028}$ | $\textsf{-8.0903}$ | $\textsf{-7.9099}$ | $\textsf{-8.3573}$ | $\textsf{-7.8405}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.6}$ | $\textsf{3.2400}$ | $\textsf{116.2800}$ | $\textsf{0.0709}$ | $\textsf{0.0508}$ | $\textsf{0.0442}$ | $\textsf{-8.7235}$ | $\textsf{-8.6956}$ | $\textsf{-8.6602}$ | $\textsf{-8.4190}$ | $\textsf{-8.2650}$ | $\textsf{-8.7586}$ | $\textsf{-8.2096}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Contrastive}$ | $\textsf{k=5, a=0.8}$ | $\textsf{3.7600}$ | $\textsf{114.5700}$ | $\textsf{0.0355}$ | $\textsf{0.0158}$ | $\textsf{0.0112}$ | $\textsf{-8.8671}$ | $\textsf{-8.8114}$ | $\textsf{-8.7565}$ | $\textsf{-8.5626}$ | $\textsf{-8.4016}$ | $\textsf{-8.9393}$ | $\textsf{-8.3589}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Greedy}$ | $\textsf{N/A}$ | $\textsf{3.3400}$ | $\textsf{196.5400}$ | $\textsf{0.7559}$ | $\textsf{0.7182}$ | $\textsf{0.6913}$ | $\textsf{-0.5588}$ | $\textsf{-0.4263}$ | $\textsf{-0.4982}$ | $\textsf{-0.3774}$ | $\textsf{-0.4278}$ | $\textsf{-0.5575}$ | $\textsf{-0.4267}$ |
+| $\textsf{gpt2-xl}$ | $\textsf{Nucleus}$ | $\textsf{p=0.95}$ | $\textsf{62.4100}$ | $\textsf{178.9200}$ | $\textsf{0.1125}$ | $\textsf{0.0475}$ | $\textsf{0.0296}$ | $\textsf{-2.5551}$ | $\textsf{-2.1907}$ | $\textsf{-2.3259}$ | $\textsf{-1.9738}$ | $\textsf{-2.2540}$ | $\textsf{-2.6280}$ | $\textsf{-2.2513}$ |
+| $\color{green}{\textsf{gpt2-xl}}$ | $\color{green}{\textsf{Typical}}$ | $\color{green}{\textsf{p=0.95}}$ | $\color{red}{\textsf{86.2900}}$ | $\color{green}{\textsf{183.0500}}$ | $\color{green}{\textsf{0.1208}}$ | $\color{green}{\textsf{0.0552}}$ | $\color{green}{\textsf{0.0386}}$ | $\color{green}{\textsf{-2.5367}}$ | $\color{green}{\textsf{-2.1636}}$ | $\color{green}{\textsf{-2.3012}}$ | $\color{green}{\textsf{-1.9591}}$ | $\color{green}{\textsf{-2.2234}}$ | $\color{green}{\textsf{-2.6208}}$ | $\color{green}{\textsf{-2.2264}}$ |
 
 ============================================================================================================================================
 ### Resultats: Epsilon Sampling Grid Search
@@ -67,15 +67,15 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
 | k | alpha | gen_length | coherence_score | diversity | mauve | perplexity |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 5.0 | 0.20 | 25.20 | **-1.56** | 79.49 | 34.57 | 21.65 |
-| 5.0 | 0.40 | 25.82 | -1.59 | 84.16 | 20.99 | 18.22 |
-| 5.0 | 0.60 | 25.76 | -1.78 | 91.74 | 22.32 | 20.07 |
-| 5.0 | 0.80 | 25.68 | -1.88 | 94.75 | 27.67 | 23.41 |
-| 10.0 | 0.20 | 24.04 | -1.63 | 87.35 | 17.26 | **16.24** |
-| 10.0 | 0.40 | 25.60 | -1.78 | 87.69 | 30.85 | 19.89 |
-| 10.0 | 0.60 | 25.46 | -1.94 | 90.82 | 19.64 | 22.36 |
-| 10.0 | 0.80 | 25.70 | -2.10 | 95.93 | 31.53 | 23.37 |
-| 50.0 | 0.20 | 25.08 | -1.69 | 85.04 | **38.18** | 21.65 |
+| 5.0 | 0.20 | 25.20 | **-1.56** | 79.49 | 46.29 | 21.65 |
+| 5.0 | 0.40 | 25.82 | -1.59 | 84.16 | **78.97** | 18.22 |
+| 5.0 | 0.60 | 25.76 | -1.78 | 91.74 | 47.96 | 20.07 |
+| 5.0 | 0.80 | 25.68 | -1.88 | 94.75 | 63.11 | 23.41 |
+| 10.0 | 0.20 | 24.04 | -1.63 | 87.35 | 38.75 | **16.24** |
+| 10.0 | 0.40 | 25.60 | -1.78 | 87.69 | 67.39 | 19.89 |
+| 10.0 | 0.60 | 25.46 | -1.94 | 90.82 | 46.51 | 22.36 |
+| 10.0 | 0.80 | 25.70 | -2.10 | 95.93 | 45.94 | 23.37 |
+| 50.0 | 0.20 | 25.08 | -1.69 | 85.04 | 38.18 | 21.65 |
 | 50.0 | 0.40 | 25.18 | -2.01 | 92.05 | 14.50 | 24.99 |
 | 50.0 | 0.60 | 24.96 | -2.17 | 89.80 | 31.28 | 30.17 |
 | 50.0 | 0.80 | 24.72 | -2.59 | **97.25** | 33.40 | 30.97 |
@@ -107,15 +107,15 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
 | k | alpha | MAUVE | Perplexity | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_opt-2.7b |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| $\textsf{5.0000}$ | $\textsf{0.2000}$ | $\textsf{34.5700}$ | $\textsf{21.6543}$ | $\textsf{25.2000}$ | $\textsf{0.1009}$ | $\textsf{0.0685}$ | $\textsf{0.0509}$ | $\color{red}{\textsf{-1.5643}}$ |
-| $\textsf{5.0000}$ | $\textsf{0.4000}$ | $\textsf{20.9900}$ | $\textsf{18.2247}$ | $\color{red}{\textsf{25.8200}}$ | $\textsf{0.0771}$ | $\textsf{0.0516}$ | $\textsf{0.0411}$ | $\textsf{-1.5939}$ |
-| $\textsf{5.0000}$ | $\textsf{0.6000}$ | $\textsf{22.3200}$ | $\textsf{20.0740}$ | $\textsf{25.7600}$ | $\textsf{0.0480}$ | $\textsf{0.0237}$ | $\textsf{0.0129}$ | $\textsf{-1.7818}$ |
-| $\textsf{5.0000}$ | $\textsf{0.8000}$ | $\textsf{27.6700}$ | $\textsf{23.4062}$ | $\textsf{25.6800}$ | $\textsf{0.0363}$ | $\textsf{0.0132}$ | $\textsf{0.0037}$ | $\textsf{-1.8793}$ |
-| $\textsf{10.0000}$ | $\textsf{0.2000}$ | $\textsf{17.2600}$ | $\color{red}{\textsf{16.2361}}$ | $\textsf{24.0400}$ | $\textsf{0.0734}$ | $\textsf{0.0370}$ | $\textsf{0.0239}$ | $\textsf{-1.6323}$ |
-| $\textsf{10.0000}$ | $\textsf{0.4000}$ | $\textsf{30.8500}$ | $\textsf{19.8886}$ | $\textsf{25.6000}$ | $\textsf{0.0729}$ | $\textsf{0.0354}$ | $\textsf{0.0194}$ | $\textsf{-1.7791}$ |
-| $\textsf{10.0000}$ | $\textsf{0.6000}$ | $\textsf{19.6400}$ | $\textsf{22.3595}$ | $\textsf{25.4600}$ | $\textsf{0.0563}$ | $\textsf{0.0240}$ | $\textsf{0.0140}$ | $\textsf{-1.9432}$ |
-| $\textsf{10.0000}$ | $\textsf{0.8000}$ | $\textsf{31.5300}$ | $\textsf{23.3664}$ | $\textsf{25.7000}$ | $\textsf{0.0295}$ | $\textsf{0.0088}$ | $\textsf{0.0028}$ | $\textsf{-2.1024}$ |
-| $\color{green}{\textsf{50.0000}}$ | $\color{green}{\textsf{0.2000}}$ | $\color{red}{\textsf{38.1800}}$ | $\color{green}{\textsf{21.6485}}$ | $\color{green}{\textsf{25.0800}}$ | $\color{green}{\textsf{0.0858}}$ | $\color{green}{\textsf{0.0444}}$ | $\color{green}{\textsf{0.0266}}$ | $\color{green}{\textsf{-1.6863}}$ |
+| $\textsf{5.0000}$ | $\textsf{0.2000}$ | $\textsf{46.2900}$ | $\textsf{21.6543}$ | $\textsf{25.2000}$ | $\textsf{0.1009}$ | $\textsf{0.0685}$ | $\textsf{0.0509}$ | $\color{red}{\textsf{-1.5643}}$ |
+| $\color{green}{\textsf{5.0000}}$ | $\color{green}{\textsf{0.4000}}$ | $\color{red}{\textsf{78.9700}}$ | $\color{green}{\textsf{18.2247}}$ | $\color{red}{\textsf{25.8200}}$ | $\color{green}{\textsf{0.0771}}$ | $\color{green}{\textsf{0.0516}}$ | $\color{green}{\textsf{0.0411}}$ | $\color{green}{\textsf{-1.5939}}$ |
+| $\textsf{5.0000}$ | $\textsf{0.6000}$ | $\textsf{47.9600}$ | $\textsf{20.0740}$ | $\textsf{25.7600}$ | $\textsf{0.0480}$ | $\textsf{0.0237}$ | $\textsf{0.0129}$ | $\textsf{-1.7818}$ |
+| $\textsf{5.0000}$ | $\textsf{0.8000}$ | $\textsf{63.1100}$ | $\textsf{23.4062}$ | $\textsf{25.6800}$ | $\textsf{0.0363}$ | $\textsf{0.0132}$ | $\textsf{0.0037}$ | $\textsf{-1.8793}$ |
+| $\textsf{10.0000}$ | $\textsf{0.2000}$ | $\textsf{38.7500}$ | $\color{red}{\textsf{16.2361}}$ | $\textsf{24.0400}$ | $\textsf{0.0734}$ | $\textsf{0.0370}$ | $\textsf{0.0239}$ | $\textsf{-1.6323}$ |
+| $\textsf{10.0000}$ | $\textsf{0.4000}$ | $\textsf{67.3900}$ | $\textsf{19.8886}$ | $\textsf{25.6000}$ | $\textsf{0.0729}$ | $\textsf{0.0354}$ | $\textsf{0.0194}$ | $\textsf{-1.7791}$ |
+| $\textsf{10.0000}$ | $\textsf{0.6000}$ | $\textsf{46.5100}$ | $\textsf{22.3595}$ | $\textsf{25.4600}$ | $\textsf{0.0563}$ | $\textsf{0.0240}$ | $\textsf{0.0140}$ | $\textsf{-1.9432}$ |
+| $\textsf{10.0000}$ | $\textsf{0.8000}$ | $\textsf{45.9400}$ | $\textsf{23.3664}$ | $\textsf{25.7000}$ | $\textsf{0.0295}$ | $\textsf{0.0088}$ | $\textsf{0.0028}$ | $\textsf{-2.1024}$ |
+| $\textsf{50.0000}$ | $\textsf{0.2000}$ | $\textsf{38.1800}$ | $\textsf{21.6485}$ | $\textsf{25.0800}$ | $\textsf{0.0858}$ | $\textsf{0.0444}$ | $\textsf{0.0266}$ | $\textsf{-1.6863}$ |
 | $\textsf{50.0000}$ | $\textsf{0.4000}$ | $\textsf{14.5000}$ | $\textsf{24.9877}$ | $\textsf{25.1800}$ | $\textsf{0.0492}$ | $\textsf{0.0198}$ | $\textsf{0.0123}$ | $\textsf{-2.0140}$ |
 | $\textsf{50.0000}$ | $\textsf{0.6000}$ | $\textsf{31.2800}$ | $\textsf{30.1679}$ | $\textsf{24.9600}$ | $\textsf{0.0488}$ | $\textsf{0.0328}$ | $\textsf{0.0239}$ | $\textsf{-2.1723}$ |
 | $\textsf{50.0000}$ | $\textsf{0.8000}$ | $\textsf{33.4000}$ | $\textsf{30.9690}$ | $\textsf{24.7200}$ | $\color{red}{\textsf{0.0211}}$ | $\color{red}{\textsf{0.0046}}$ | $\color{red}{\textsf{0.0019}}$ | $\textsf{-2.5857}$ |
@@ -130,7 +130,7 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 
 | Configuration | Beam Size | Gen Length | Coherence | Diversity | MAUVE | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **gpt2-xl (Beam)** | 10 | 23.98 | -0.939 | 61.04 | 30.32 | 23.776 |
+| **gpt2-xl (Beam)** | 10 | 23.98 | -0.939 | 61.04 | 52.34 | 23.776 |
 
 <!-- **Note :** La longueur générée moyenne (~24 tokens) est inférieure à la cible de 128. C'est un comportement fréquent du Beam Search qui favorise des phrases courtes et "sûres", s'arrêtant souvent prématurément dès qu'un token de fin (`<eos>`) est probable. -->
 
@@ -175,56 +175,56 @@ $$
 
 | Model/Config | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| `beam-10_gpt2-xl_32` | $\color{red}{\textsf{0.812}}$ | 61.040 | 30.320 | 23.980 | 23.776 |
+| `beam-10_gpt2-xl_32` | $\color{red}{\textsf{0.812}}$ | 61.040 | 52.340 | 23.980 | 23.776 |
 | `contrastive-alpha-0.6_gpt2_50` | N/A | 7.070 | 27.810 | 0.000 | N/A |
-| `epsilon_k10_alpha0.2_gpt2-xl` | 0.749 | 87.350 | 17.260 | 24.040 | $\color{red}{\textsf{16.236}}$ |
-| `epsilon_k10_alpha0.4_gpt2-xl` | 0.734 | 87.690 | 30.850 | 25.600 | 19.889 |
-| `epsilon_k10_alpha0.6_gpt2-xl` | 0.761 | 90.820 | 19.640 | 25.460 | 22.359 |
-| `epsilon_k10_alpha0.8_gpt2-xl` | 0.760 | 95.930 | 31.530 | 25.700 | 23.366 |
+| `epsilon_k10_alpha0.2_gpt2-xl` | 0.749 | 87.350 | 38.750 | 24.040 | $\color{red}{\textsf{16.236}}$ |
+| `epsilon_k10_alpha0.4_gpt2-xl` | 0.734 | 87.690 | 67.390 | 25.600 | 19.889 |
+| `epsilon_k10_alpha0.6_gpt2-xl` | 0.761 | 90.820 | 46.510 | 25.460 | 22.359 |
+| `epsilon_k10_alpha0.8_gpt2-xl` | 0.760 | 95.930 | 45.940 | 25.700 | 23.366 |
 | `epsilon_k50_alpha0.2_gpt2-xl` | 0.748 | 85.040 | 38.180 | 25.080 | 21.649 |
 | `epsilon_k50_alpha0.4_gpt2-xl` | 0.752 | 92.050 | 14.500 | 25.180 | 24.988 |
 | `epsilon_k50_alpha0.6_gpt2-xl` | 0.727 | 89.800 | 31.280 | 24.960 | 30.168 |
 | `epsilon_k50_alpha0.8_gpt2-xl` | 0.721 | 97.250 | 33.400 | 24.720 | 30.969 |
-| `epsilon_k5_alpha0.2_gpt2-xl` | 0.768 | 79.490 | 34.570 | 25.200 | 21.654 |
-| `epsilon_k5_alpha0.4_gpt2-xl` | 0.759 | 84.160 | 20.990 | 25.820 | 18.225 |
-| `epsilon_k5_alpha0.6_gpt2-xl` | 0.759 | 91.740 | 22.320 | 25.760 | 20.074 |
-| `epsilon_k5_alpha0.8_gpt2-xl` | 0.752 | 94.750 | 27.670 | 25.680 | 23.406 |
-| `greedy_gpt2-large_256` | 0.727 | 1.410 | 4.190 | 196.720 | N/A |
-| `greedy_gpt2-medium_256` | 0.708 | 0.990 | 4.790 | 200.880 | N/A |
+| `epsilon_k5_alpha0.2_gpt2-xl` | 0.768 | 79.490 | 46.290 | 25.200 | 21.654 |
+| `epsilon_k5_alpha0.4_gpt2-xl` | 0.759 | 84.160 | 78.970 | 25.820 | 18.225 |
+| `epsilon_k5_alpha0.6_gpt2-xl` | 0.759 | 91.740 | 47.960 | 25.760 | 20.074 |
+| `epsilon_k5_alpha0.8_gpt2-xl` | 0.752 | 94.750 | 63.110 | 25.680 | 23.406 |
+| `greedy_gpt2-large_256` | 0.727 | 1.410 | 2.110 | 196.720 | N/A |
+| `greedy_gpt2-medium_256` | 0.708 | 0.990 | 1.390 | 200.880 | N/A |
 | `greedy_gpt2-xl_256` | 0.708 | N/A | N/A | N/A | N/A |
-| `greedy_gpt2_256` | 0.711 | 0.440 | 2.290 | $\color{red}{\textsf{202.210}}$ | N/A |
-| `k10_a0.4_e0.0_gpt2` | 0.493 | 0.640 | 3.420 | 90.360 | N/A |
-| `k10_a0.4_e0.0_gpt2-large` | 0.399 | 0.000 | 2.360 | 189.080 | N/A |
-| `k10_a0.4_e0.0_gpt2-medium` | 0.524 | 0.340 | 0.570 | 7.600 | N/A |
-| `k10_a0.4_e0.0_gpt2-xl` | 0.567 | 96.060 | 4.430 | 115.280 | N/A |
-| `k10_a0.6_e0.0_gpt2` | 0.512 | 2.920 | 1.440 | 60.000 | N/A |
-| `k10_a0.6_e0.0_gpt2-large` | 0.410 | 0.010 | 3.600 | 188.960 | N/A |
-| `k10_a0.6_e0.0_gpt2-medium` | 0.525 | 5.940 | 0.430 | 3.030 | N/A |
-| `k10_a0.6_e0.0_gpt2-xl` | 0.567 | 99.530 | 4.510 | 112.690 | N/A |
-| `k10_a0.8_e0.0_gpt2` | 0.514 | 15.870 | 0.730 | 27.940 | N/A |
-| `k10_a0.8_e0.0_gpt2-large` | 0.422 | 0.100 | 6.910 | 189.190 | N/A |
-| `k10_a0.8_e0.0_gpt2-medium` | 0.521 | $\color{red}{\textsf{100.000}}$ | 0.640 | 2.120 | N/A |
-| `k10_a0.8_e0.0_gpt2-xl` | 0.570 | 99.850 | 4.110 | 113.210 | N/A |
-| `k5_a0.4_e0.0_gpt2` | 0.491 | 0.470 | 5.460 | 90.620 | N/A |
-| `k5_a0.4_e0.0_gpt2-large` | 0.393 | 0.000 | 2.870 | 189.790 | N/A |
-| `k5_a0.4_e0.0_gpt2-medium` | 0.516 | 0.810 | 0.640 | 8.730 | N/A |
-| `k5_a0.4_e0.0_gpt2-xl` | 0.558 | 67.720 | 11.940 | 120.310 | N/A |
+| `greedy_gpt2_256` | 0.711 | 0.440 | 1.040 | $\color{red}{\textsf{202.210}}$ | N/A |
+| `k10_a0.4_e0.0_gpt2` | 0.493 | 0.640 | 35.460 | 90.360 | N/A |
+| `k10_a0.4_e0.0_gpt2-large` | 0.399 | 0.000 | 13.500 | 189.080 | N/A |
+| `k10_a0.4_e0.0_gpt2-medium` | 0.524 | 0.340 | 14.860 | 7.600 | N/A |
+| `k10_a0.4_e0.0_gpt2-xl` | 0.567 | 96.060 | 2.670 | 115.280 | N/A |
+| `k10_a0.6_e0.0_gpt2` | 0.512 | 2.920 | 61.010 | 60.000 | N/A |
+| `k10_a0.6_e0.0_gpt2-large` | 0.410 | 0.010 | 6.840 | 188.960 | N/A |
+| `k10_a0.6_e0.0_gpt2-medium` | 0.525 | 5.940 | 10.940 | 3.030 | N/A |
+| `k10_a0.6_e0.0_gpt2-xl` | 0.567 | 99.530 | 4.000 | 112.690 | N/A |
+| `k10_a0.8_e0.0_gpt2` | 0.514 | 15.870 | 22.910 | 27.940 | N/A |
+| `k10_a0.8_e0.0_gpt2-large` | 0.422 | 0.100 | 4.840 | 189.190 | N/A |
+| `k10_a0.8_e0.0_gpt2-medium` | 0.521 | $\color{red}{\textsf{100.000}}$ | 15.820 | 2.120 | N/A |
+| `k10_a0.8_e0.0_gpt2-xl` | 0.570 | 99.850 | 1.710 | 113.210 | N/A |
+| `k5_a0.4_e0.0_gpt2` | 0.491 | 0.470 | 37.370 | 90.620 | N/A |
+| `k5_a0.4_e0.0_gpt2-large` | 0.393 | 0.000 | 5.550 | 189.790 | N/A |
+| `k5_a0.4_e0.0_gpt2-medium` | 0.516 | 0.810 | 12.680 | 8.730 | N/A |
+| `k5_a0.4_e0.0_gpt2-xl` | 0.558 | 67.720 | 9.270 | 120.310 | N/A |
 | `k5_a0.6_e0.0_gpt2` | 0.507 | 7.070 | 27.810 | 0.000 | N/A |
-| `k5_a0.6_e0.0_gpt2-large` | 0.398 | 0.000 | 4.100 | 188.910 | N/A |
-| `k5_a0.6_e0.0_gpt2-medium` | 0.518 | 27.780 | 0.460 | 4.210 | N/A |
-| `k5_a0.6_e0.0_gpt2-xl` | 0.563 | 84.290 | 12.330 | 116.280 | N/A |
-| `k5_a0.8_e0.0_gpt2` | 0.516 | 4.840 | 1.280 | 45.510 | N/A |
-| `k5_a0.8_e0.0_gpt2-large` | 0.401 | 0.020 | 2.780 | 189.340 | N/A |
-| `k5_a0.8_e0.0_gpt2-medium` | 0.523 | 97.850 | 0.450 | 3.350 | N/A |
-| `k5_a0.8_e0.0_gpt2-xl` | 0.565 | 93.860 | 15.060 | 114.570 | N/A |
-| `p-0.95_gpt2-large_256` | 0.763 | 79.260 | 49.320 | 178.020 | N/A |
-| **`p-0.95_gpt2-medium_256`** | 0.748 | 86.840 | $\color{red}{\textsf{56.120}}$ | 183.740 | N/A |
+| `k5_a0.6_e0.0_gpt2-large` | 0.398 | 0.000 | 11.250 | 188.910 | N/A |
+| `k5_a0.6_e0.0_gpt2-medium` | 0.518 | 27.780 | 11.550 | 4.210 | N/A |
+| `k5_a0.6_e0.0_gpt2-xl` | 0.563 | 84.290 | 3.240 | 116.280 | N/A |
+| `k5_a0.8_e0.0_gpt2` | 0.516 | 4.840 | 78.240 | 45.510 | N/A |
+| `k5_a0.8_e0.0_gpt2-large` | 0.401 | 0.020 | 5.180 | 189.340 | N/A |
+| `k5_a0.8_e0.0_gpt2-medium` | 0.523 | 97.850 | 13.430 | 3.350 | N/A |
+| `k5_a0.8_e0.0_gpt2-xl` | 0.565 | 93.860 | 3.760 | 114.570 | N/A |
+| `p-0.95_gpt2-large_256` | 0.763 | 79.260 | 54.400 | 178.020 | N/A |
+| `p-0.95_gpt2-medium_256` | 0.748 | 86.840 | 67.940 | 183.740 | N/A |
 | `p-0.95_gpt2-xl_256` | 0.759 | N/A | N/A | N/A | N/A |
-| `p-0.95_gpt2_256` | 0.733 | 83.140 | 34.760 | 189.530 | N/A |
-| `typical-0.95_gpt2-large_256` | 0.755 | 82.430 | 38.730 | 177.090 | N/A |
-| `typical-0.95_gpt2-medium_256` | 0.762 | 80.570 | 44.280 | 186.650 | N/A |
+| `p-0.95_gpt2_256` | 0.733 | 83.140 | 67.610 | 189.530 | N/A |
+| `typical-0.95_gpt2-large_256` | 0.755 | 82.430 | 71.070 | 177.090 | N/A |
+| **`typical-0.95_gpt2-medium_256`** | 0.762 | 80.570 | $\color{red}{\textsf{79.920}}$ | 186.650 | N/A |
 | `typical-0.95_gpt2-xl_256` | 0.758 | N/A | N/A | N/A | N/A |
-| `typical-0.95_gpt2_256` | 0.738 | 82.050 | 43.030 | 186.410 | N/A |
+| `typical-0.95_gpt2_256` | 0.738 | 82.050 | 60.790 | 186.410 | N/A |
 
 > **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).
 
@@ -232,55 +232,55 @@ $$
 
 | Method/Model                 |   SimCSE (Coh) |   Diversity |   MAUVE | PPL    |    Len |
 |------------------------------|----------------|-------------|---------|--------|--------|
-| beam-10_gpt2-xl_32           |          0.812 |       61.04 |   30.32 | 23.776 |  23.98 |
-| epsilon_k10_alpha0.2_gpt2-xl |          0.749 |       87.35 |   17.26 | 16.236 |  24.04 |
-| epsilon_k10_alpha0.4_gpt2-xl |          0.734 |       87.69 |   30.85 | 19.889 |  25.6  |
-| epsilon_k10_alpha0.6_gpt2-xl |          0.761 |       90.82 |   19.64 | 22.359 |  25.46 |
-| epsilon_k10_alpha0.8_gpt2-xl |          0.76  |       95.93 |   31.53 | 23.366 |  25.7  |
+| beam-10_gpt2-xl_32           |          0.812 |       61.04 |   52.34 | 23.776 |  23.98 |
+| epsilon_k10_alpha0.2_gpt2-xl |          0.749 |       87.35 |   38.75 | 16.236 |  24.04 |
+| epsilon_k10_alpha0.4_gpt2-xl |          0.734 |       87.69 |   67.39 | 19.889 |  25.6  |
+| epsilon_k10_alpha0.6_gpt2-xl |          0.761 |       90.82 |   46.51 | 22.359 |  25.46 |
+| epsilon_k10_alpha0.8_gpt2-xl |          0.76  |       95.93 |   45.94 | 23.366 |  25.7  |
 | epsilon_k50_alpha0.2_gpt2-xl |          0.748 |       85.04 |   38.18 | 21.649 |  25.08 |
 | epsilon_k50_alpha0.4_gpt2-xl |          0.752 |       92.05 |   14.5  | 24.988 |  25.18 |
 | epsilon_k50_alpha0.6_gpt2-xl |          0.727 |       89.8  |   31.28 | 30.168 |  24.96 |
 | epsilon_k50_alpha0.8_gpt2-xl |          0.721 |       97.25 |   33.4  | 30.969 |  24.72 |
-| epsilon_k5_alpha0.2_gpt2-xl  |          0.768 |       79.49 |   34.57 | 21.654 |  25.2  |
-| epsilon_k5_alpha0.4_gpt2-xl  |          0.759 |       84.16 |   20.99 | 18.225 |  25.82 |
-| epsilon_k5_alpha0.6_gpt2-xl  |          0.759 |       91.74 |   22.32 | 20.074 |  25.76 |
-| epsilon_k5_alpha0.8_gpt2-xl  |          0.752 |       94.75 |   27.67 | 23.406 |  25.68 |
-| greedy_gpt2-large_256        |          0.727 |        1.41 |    4.19 | N/A    | 196.72 |
-| greedy_gpt2-medium_256       |          0.708 |        0.99 |    4.79 | N/A    | 200.88 |
-| greedy_gpt2-xl_256           |          0.708 |        2.12 |    5.02 | N/A    | 196.54 |
-| greedy_gpt2_256              |          0.711 |        0.44 |    2.29 | N/A    | 202.21 |
-| k10_a0.4_e0.0_gpt2           |          0.493 |        0.64 |    3.42 | N/A    |  90.36 |
-| k10_a0.4_e0.0_gpt2-large     |          0.399 |        0    |    2.36 | N/A    | 189.08 |
-| k10_a0.4_e0.0_gpt2-medium    |          0.524 |        0.34 |    0.57 | N/A    |   7.6  |
-| k10_a0.4_e0.0_gpt2-xl        |          0.567 |       96.06 |    4.43 | N/A    | 115.28 |
-| k10_a0.6_e0.0_gpt2           |          0.512 |        2.92 |    1.44 | N/A    |  60    |
-| k10_a0.6_e0.0_gpt2-large     |          0.41  |        0.01 |    3.6  | N/A    | 188.96 |
-| k10_a0.6_e0.0_gpt2-medium    |          0.525 |        5.94 |    0.43 | N/A    |   3.03 |
-| k10_a0.6_e0.0_gpt2-xl        |          0.567 |       99.53 |    4.51 | N/A    | 112.69 |
-| k10_a0.8_e0.0_gpt2           |          0.514 |       15.87 |    0.73 | N/A    |  27.94 |
-| k10_a0.8_e0.0_gpt2-large     |          0.422 |        0.1  |    6.91 | N/A    | 189.19 |
-| k10_a0.8_e0.0_gpt2-medium    |          0.521 |      100    |    0.64 | N/A    |   2.12 |
-| k10_a0.8_e0.0_gpt2-xl        |          0.57  |       99.85 |    4.11 | N/A    | 113.21 |
-| k5_a0.4_e0.0_gpt2            |          0.491 |        0.47 |    5.46 | N/A    |  90.62 |
-| k5_a0.4_e0.0_gpt2-large      |          0.393 |        0    |    2.87 | N/A    | 189.79 |
-| k5_a0.4_e0.0_gpt2-medium     |          0.516 |        0.81 |    0.64 | N/A    |   8.73 |
-| k5_a0.4_e0.0_gpt2-xl         |          0.558 |       67.72 |   11.94 | N/A    | 120.31 |
-| k5_a0.6_e0.0_gpt2            |          0.507 |        1.25 |    1.19 | N/A    |  71.09 |
-| k5_a0.6_e0.0_gpt2-large      |          0.398 |        0    |    4.1  | N/A    | 188.91 |
-| k5_a0.6_e0.0_gpt2-medium     |          0.518 |       27.78 |    0.46 | N/A    |   4.21 |
-| k5_a0.6_e0.0_gpt2-xl         |          0.563 |       84.29 |   12.33 | N/A    | 116.28 |
-| k5_a0.8_e0.0_gpt2            |          0.516 |        4.84 |    1.28 | N/A    |  45.51 |
-| k5_a0.8_e0.0_gpt2-large      |          0.401 |        0.02 |    2.78 | N/A    | 189.34 |
-| k5_a0.8_e0.0_gpt2-medium     |          0.523 |       97.85 |    0.45 | N/A    |   3.35 |
-| k5_a0.8_e0.0_gpt2-xl         |          0.565 |       93.86 |   15.06 | N/A    | 114.57 |
-| p-0.95_gpt2-large_256        |          0.763 |       79.26 |   49.32 | N/A    | 178.02 |
-| p-0.95_gpt2-medium_256       |          0.748 |       86.84 |   56.12 | N/A    | 183.74 |
-| p-0.95_gpt2-xl_256           |          0.759 |       82.03 |   50.9  | N/A    | 178.92 |
-| p-0.95_gpt2_256              |          0.733 |       83.14 |   34.76 | N/A    | 189.53 |
-| typical-0.95_gpt2-large_256  |          0.755 |       82.43 |   38.73 | N/A    | 177.09 |
-| typical-0.95_gpt2-medium_256 |          0.762 |       80.57 |   44.28 | N/A    | 186.65 |
-| typical-0.95_gpt2-xl_256     |          0.758 |       79.88 |   38.77 | N/A    | 183.05 |
-| typical-0.95_gpt2_256        |          0.738 |       82.05 |   43.03 | N/A    | 186.41 |
+| epsilon_k5_alpha0.2_gpt2-xl  |          0.768 |       79.49 |   46.29 | 21.654 |  25.2  |
+| epsilon_k5_alpha0.4_gpt2-xl  |          0.759 |       84.16 |   78.97 | 18.225 |  25.82 |
+| epsilon_k5_alpha0.6_gpt2-xl  |          0.759 |       91.74 |   47.96 | 20.074 |  25.76 |
+| epsilon_k5_alpha0.8_gpt2-xl  |          0.752 |       94.75 |   63.11 | 23.406 |  25.68 |
+| greedy_gpt2-large_256        |          0.727 |        1.41 |    2.11 | N/A    | 196.72 |
+| greedy_gpt2-medium_256       |          0.708 |        0.99 |    1.39 | N/A    | 200.88 |
+| greedy_gpt2-xl_256           |          0.708 |        2.12 |    3.34 | N/A    | 196.54 |
+| greedy_gpt2_256              |          0.711 |        0.44 |    1.04 | N/A    | 202.21 |
+| k10_a0.4_e0.0_gpt2           |          0.493 |        0.64 |   35.46 | N/A    |  90.36 |
+| k10_a0.4_e0.0_gpt2-large     |          0.399 |        0    |   13.5  | N/A    | 189.08 |
+| k10_a0.4_e0.0_gpt2-medium    |          0.524 |        0.34 |   14.86 | N/A    |   7.6  |
+| k10_a0.4_e0.0_gpt2-xl        |          0.567 |       96.06 |    2.67 | N/A    | 115.28 |
+| k10_a0.6_e0.0_gpt2           |          0.512 |        2.92 |   61.01 | N/A    |  60    |
+| k10_a0.6_e0.0_gpt2-large     |          0.41  |        0.01 |    6.84 | N/A    | 188.96 |
+| k10_a0.6_e0.0_gpt2-medium    |          0.525 |        5.94 |   10.94 | N/A    |   3.03 |
+| k10_a0.6_e0.0_gpt2-xl        |          0.567 |       99.53 |    4    | N/A    | 112.69 |
+| k10_a0.8_e0.0_gpt2           |          0.514 |       15.87 |   22.91 | N/A    |  27.94 |
+| k10_a0.8_e0.0_gpt2-large     |          0.422 |        0.1  |    4.84 | N/A    | 189.19 |
+| k10_a0.8_e0.0_gpt2-medium    |          0.521 |      100    |   15.82 | N/A    |   2.12 |
+| k10_a0.8_e0.0_gpt2-xl        |          0.57  |       99.85 |    1.71 | N/A    | 113.21 |
+| k5_a0.4_e0.0_gpt2            |          0.491 |        0.47 |   37.37 | N/A    |  90.62 |
+| k5_a0.4_e0.0_gpt2-large      |          0.393 |        0    |    5.55 | N/A    | 189.79 |
+| k5_a0.4_e0.0_gpt2-medium     |          0.516 |        0.81 |   12.68 | N/A    |   8.73 |
+| k5_a0.4_e0.0_gpt2-xl         |          0.558 |       67.72 |    9.27 | N/A    | 120.31 |
+| k5_a0.6_e0.0_gpt2            |          0.507 |        1.25 |   64.75 | N/A    |  71.09 |
+| k5_a0.6_e0.0_gpt2-large      |          0.398 |        0    |   11.25 | N/A    | 188.91 |
+| k5_a0.6_e0.0_gpt2-medium     |          0.518 |       27.78 |   11.55 | N/A    |   4.21 |
+| k5_a0.6_e0.0_gpt2-xl         |          0.563 |       84.29 |    3.24 | N/A    | 116.28 |
+| k5_a0.8_e0.0_gpt2            |          0.516 |        4.84 |   78.24 | N/A    |  45.51 |
+| k5_a0.8_e0.0_gpt2-large      |          0.401 |        0.02 |    5.18 | N/A    | 189.34 |
+| k5_a0.8_e0.0_gpt2-medium     |          0.523 |       97.85 |   13.43 | N/A    |   3.35 |
+| k5_a0.8_e0.0_gpt2-xl         |          0.565 |       93.86 |    3.76 | N/A    | 114.57 |
+| p-0.95_gpt2-large_256        |          0.763 |       79.26 |   54.4  | N/A    | 178.02 |
+| p-0.95_gpt2-medium_256       |          0.748 |       86.84 |   67.94 | N/A    | 183.74 |
+| p-0.95_gpt2-xl_256           |          0.759 |       82.03 |   62.41 | N/A    | 178.92 |
+| p-0.95_gpt2_256              |          0.733 |       83.14 |   67.61 | N/A    | 189.53 |
+| typical-0.95_gpt2-large_256  |          0.755 |       82.43 |   71.07 | N/A    | 177.09 |
+| typical-0.95_gpt2-medium_256 |          0.762 |       80.57 |   79.92 | N/A    | 186.65 |
+| typical-0.95_gpt2-xl_256     |          0.758 |       79.88 |   86.29 | N/A    | 183.05 |
+| typical-0.95_gpt2_256        |          0.738 |       82.05 |   60.79 | N/A    | 186.41 |
 
 ## Generation
 
