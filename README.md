@@ -282,6 +282,26 @@ $$
 | typical-0.95_gpt2-xl_256     |          0.758 |       79.88 |   86.29 | N/A    | 183.05 |
 | typical-0.95_gpt2_256        |          0.738 |       82.05 |   60.79 | N/A    | 186.41 |
 
+### Comparaison des Performances avec des modèle d'Ollama (llama3.2, mistral, ...)
+#### Résultats Ollama
+
+(Version avec couleur)
+
+| Model | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **`llama3.2`** | $\color{red}{\textsf{-2.767}}$ | 90.870 | $\color{red}{\textsf{97.040}}$ | 122.260 | N/A |
+| `mistral` | -2.795 | $\color{red}{\textsf{94.160}}$ | 97.020 | $\color{red}{\textsf{128.660}}$ | N/A |
+
+
+> **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).
+
+(Version sans couleur)
+
+| Model | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `llama3.2` | -2.767 | 90.870 | 97.040 | 122.260 | N/A |
+| `mistral` | -2.795 | 94.160 | 97.020 | 128.660 | N/A |
+
 ## Generation
 
 ```py
