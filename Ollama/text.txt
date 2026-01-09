@@ -1,1 +1,2 @@
 ollama create gpt2-xl -f Modelfile
+https://huggingface.co/QuantFactory/gpt2-xl-GGUF
