@@ -284,23 +284,26 @@ $$
 
 ### Comparaison des Performances avec des modèle d'Ollama (llama3.2, mistral, ...)
 #### Résultats Ollama
+<!-- 1. **Cohérence Likelihood** (Syntactique) : Évalue la fluidité et la prédictibilité du texte.
+2. **Cohérence SimCSE** (Sémantique) : Vérifie la conservation du sens par rapport au prompt. -->
 
 (Version avec couleur)
 
-| Model | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`llama3.2`** | $\color{red}{\textsf{-2.767}}$ | 90.870 | $\color{red}{\textsf{97.040}}$ | 122.260 | N/A |
-| `mistral` | -2.795 | $\color{red}{\textsf{94.160}}$ | 97.020 | $\color{red}{\textsf{128.660}}$ | N/A |
+| Model | Coh_Likelihood | Coh_SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`llama3.2`** | $\color{red}{\textsf{-2.767}}$ | 0.789 | 90.870 | $\color{red}{\textsf{97.040}}$ | 122.260 | N/A |
+| `mistral` | -2.795 | $\color{red}{\textsf{0.828}}$ | $\color{red}{\textsf{94.160}}$ | 97.020 | $\color{red}{\textsf{128.660}}$ | N/A |
 
 
 > **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).
+> **Coh_Likelihood** : Log-vraisemblance moyenne (OPT). (Modèle Juge : facebook/opt-125m) **Coh_SimCSE** : Similarité sémantique (SimCSE). (Modèle Juge : princeton-nlp/sup-simcse-bert-base-uncased)
 
 (Version sans couleur)
 
-| Model | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| `llama3.2` | -2.767 | 90.870 | 97.040 | 122.260 | N/A |
-| `mistral` | -2.795 | 94.160 | 97.020 | 128.660 | N/A |
+| Model | Coh_Likelihood | Coh_SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `llama3.2` | -2.767 | 0.789 | 90.870 | 97.040 | 122.260 | N/A |
+| `mistral` | -2.795 | 0.828 | 94.160 | 97.020 | 128.660 | N/A |
 
 ## Generation
 

@@ -11,7 +11,6 @@ def load_metrics(diversity_file):
     
     # Extraction du nom du modèle
     # Ex: wikitext_llama3.2_ollama_opt-125m... -> llama3.2
-    # Ex: wikitext_mistral_ollama... -> mistral
     match = re.search(r'wikitext_(.+?)_ollama', filename)
     model_name = match.group(1) if match else "Unknown"
     
@@ -22,50 +21,46 @@ def load_metrics(diversity_file):
             if isinstance(data, list) and len(data) > 0: 
                 data = data[0]
             
-            # Gestion safe des types (float/str)
             def get_val(d, k1, k2):
                 val = d.get(k1, {}).get(k2, 0)
-                try:
-                    return float(val)
-                except:
-                    return 0.0
+                try: return float(val)
+                except: return 0.0
 
             metrics['MAUVE'] = get_val(data, 'mauve_dict', 'mauve_mean')
             metrics['Gen_Length'] = get_val(data, 'gen_length_dict', 'gen_len_mean')
             metrics['Diversity'] = get_val(data, 'diversity_dict', 'prediction_div_mean')
     except Exception as e:
-        print(f"Erreur chargement metrics {filename}: {e}")
         metrics['MAUVE'] = 0.0
         metrics['Gen_Length'] = 0.0
         metrics['Diversity'] = 0.0
 
-    # 2. Chercher le fichier de Cohérence SimCSE (NOUVEAU)
-    # Pattern: wikitext_<model>_ollama_simcse_result.json
-    metrics['SimCSE'] = 0.0 # Valeur par défaut
+    # 2. Charger Coherence (Likelihood / OPT) - Ancien fichier
+    # Pattern: *coherence_result.json (excluant simcse)
+    metrics['Coh_Likelihood'] = 0.0
+    # On cherche tous les fichiers coherence pour ce modèle
+    coh_files = glob.glob(os.path.join(directory, f"*{model_name}*coherence_result.json"))
+    # On s'assure de ne pas prendre un fichier qui contiendrait 'simcse' par erreur, bien que le nommage soit différent
+    coh_files = [f for f in coh_files if 'simcse' not in f]
     
-    # On cherche d'abord le fichier SimCSE spécifique
+    if coh_files:
+        try:
+            with open(coh_files[0], 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                if isinstance(data, list): data = data[0]
+                metrics['Coh_Likelihood'] = float(data.get('coherence_mean', 0))
+        except: pass
+
+    # 3. Charger Coherence (SimCSE) - Nouveau fichier
+    metrics['Coh_SimCSE'] = 0.0
     simcse_files = glob.glob(os.path.join(directory, f"*{model_name}*simcse_result.json"))
     
     if simcse_files:
-        target_file = simcse_files[0]
         try:
-            with open(target_file, 'r', encoding='utf-8') as f:
+            with open(simcse_files[0], 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                # Le format de votre script compute_simcse.py est un dict direct
-                metrics['SimCSE'] = float(data.get('coherence_mean', 0))
-        except Exception as e:
-            print(f"Erreur chargement SimCSE {target_file}: {e}")
-    else:
-        # Fallback sur l'ancien fichier de cohérence (si jamais SimCSE est absent)
-        old_coh_files = glob.glob(os.path.join(directory, f"*{model_name}*coherence_result.json"))
-        if old_coh_files:
-            try:
-                with open(old_coh_files[0], 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                    if isinstance(data, list): data = data[0]
-                    metrics['SimCSE'] = float(data.get('coherence_mean', 0))
-            except:
-                pass
+                # Le script simcse sauvegarde un dict direct, pas une liste
+                metrics['Coh_SimCSE'] = float(data.get('coherence_mean', 0))
+        except: pass
 
     metrics['Model'] = f"`{model_name}`"
     metrics['Perplexity'] = "N/A" # Pas de PPL pour Ollama ici
@@ -85,28 +80,25 @@ def generate_table(df, colored=False):
     if df.empty:
         return "Aucune donnée disponible."
 
-    # Colonnes
-    cols = ['Model', 'SimCSE', 'Diversity', 'MAUVE', 'Gen_Length', 'Perplexity']
+    # Colonnes à afficher
+    cols = ['Model', 'Coh_Likelihood', 'Coh_SimCSE', 'Diversity', 'MAUVE', 'Gen_Length', 'Perplexity']
     
     # Identifier les meilleurs scores
     best_indices = {}
     best_mauve_idx = -1
     
     if not df.empty:
-        # On suppose que plus c'est haut mieux c'est pour SimCSE, Diversity, MAUVE
-        for col in ['SimCSE', 'Diversity', 'MAUVE']:
+        # On suppose que plus c'est haut mieux c'est pour ces métriques
+        for col in ['Coh_Likelihood', 'Coh_SimCSE', 'Diversity', 'MAUVE', 'Gen_Length']:
             best_indices[col] = df[col].idxmax()
-        
-        # Pour Gen_Length, on ne met généralement pas de "meilleur", mais ici on suit la logique max
-        best_indices['Gen_Length'] = df['Gen_Length'].idxmax()
             
         best_mauve_idx = df['MAUVE'].idxmax()
     
-    # Header
+    # Header Markdown
     markdown = "| " + " | ".join(cols) + " |\n"
     markdown += "|" + "|".join([" :--- " if i==0 else " :---: " for i in range(len(cols))]) + "|\n"
     
-    # Rows
+    # Lignes
     for idx, row in df.iterrows():
         line = "|"
         
@@ -135,7 +127,6 @@ def main():
         print(f"Le dossier {results_dir} n'existe pas.")
         return
 
-    # On utilise les fichiers de diversité comme point d'entrée pour lister les modèles
     files = glob.glob(os.path.join(results_dir, '*_diversity_mauve_gen_length_result.json'))
     
     if not files:
@@ -153,12 +144,13 @@ def main():
         df = df.sort_values(by='Model')
         df = df.reset_index(drop=True)
 
-        print("\n### Résultats Ollama (SimCSE Updated)\n")
+        print("\n### Résultats Ollama (Double Cohérence)\n")
         
         print("(Version avec couleur)\n")
         print(generate_table(df, colored=True))
         
-        print("\n> **Légende :** $\color{red}{\\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).\n")
+        print("\n> **Légende :** $\color{red}{\\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).")
+        print("> **Coh_Likelihood** : Log-vraisemblance moyenne (OPT). **Coh_SimCSE** : Similarité sémantique (SimCSE).\n")
         
         print("(Version sans couleur)\n")
         print(generate_table(df, colored=False))
