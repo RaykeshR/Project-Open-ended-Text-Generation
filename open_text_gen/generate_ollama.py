@@ -57,7 +57,8 @@ def main():
                 try:
                     response = ollama.generate(model=model_name, prompt=prefix_text,options={
                             'temperature': 0.0,  # 0 = Le modèle choisit toujours le mot le plus probable (Greedy)
-                            'num_predict': 256   # On force la longueur pour correspondre au gold
+                            'num_predict': 256,   # On force la longueur pour correspondre au gold
+                            'repeat_penalty': 1.1  
                         })
                     generated_text = response['response']
                     
