@@ -307,7 +307,9 @@ $$
 
 
 ================================================================================
+
 Epsilon Sampling Grid Search (Comparaison des différent dataset)
+
 ================================================================================
 
 (Sans couleur)
@@ -353,7 +355,9 @@ Epsilon Sampling Grid Search (Comparaison des différent dataset)
 | 10 | 0.8 | **99.9** | 97.49 | -1.92 | 0.72 | 17.5 | 25.34 |
 
 ================================================================================
+
 Epsilon Sampling Grid Search (Comparaison des différent dataset)
+
 ================================================================================
 
 (Avec couleur)
