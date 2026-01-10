@@ -170,7 +170,7 @@ $$
 
 ### Comparaison des Performances (SimCSE Updated)
 
-(Version avec couleur)
+<!-- (Version avec couleur) -->
 
 
 | Model/Config | SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
@@ -228,7 +228,7 @@ $$
 
 > **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).
 
-(Version sans couleur)
+<!-- (Version sans couleur)
 
 | Method/Model                 |   SimCSE (Coh) |   Diversity |   MAUVE | PPL    |    Len |
 |------------------------------|----------------|-------------|---------|--------|--------|
@@ -280,7 +280,7 @@ $$
 | typical-0.95_gpt2-large_256  |          0.755 |       82.43 |   71.07 | N/A    | 177.09 |
 | typical-0.95_gpt2-medium_256 |          0.762 |       80.57 |   79.92 | N/A    | 186.65 |
 | typical-0.95_gpt2-xl_256     |          0.758 |       79.88 |   86.29 | N/A    | 183.05 |
-| typical-0.95_gpt2_256        |          0.738 |       82.05 |   60.79 | N/A    | 186.41 |
+| typical-0.95_gpt2_256        |          0.738 |       82.05 |   60.79 | N/A    | 186.41 | -->
 
 ### Comparaison des Performances avec des modèle d'Ollama (llama3.2, mistral, ...)
 #### Résultats Ollama
@@ -306,7 +306,7 @@ $$
 | `mistral` | -2.795 | 0.828 | 94.160 | 97.020 | 128.660 | N/A |
 
 
-================================================================================
+<!-- ================================================================================
 
 Epsilon Sampling Grid Search (Comparaison des différent dataset)
 
@@ -352,15 +352,15 @@ Epsilon Sampling Grid Search (Comparaison des différent dataset)
 | 10 | 0.2 | 96.9 | 94.01 | -1.46 | 0.75 | 11.6 | 24.78 |
 | 10 | 0.4 | 99.8 | 92.44 | -1.58 | 0.75 | 13.9 | 25.38 |
 | 10 | 0.6 | 91.2 | **98.43** | -1.78 | 0.72 | 15.2 | 25.06 |
-| 10 | 0.8 | **99.9** | 97.49 | -1.92 | 0.72 | 17.5 | 25.34 |
+| 10 | 0.8 | **99.9** | 97.49 | -1.92 | 0.72 | 17.5 | 25.34 | -->
 
-================================================================================
+============================================================================
 
 Epsilon Sampling Grid Search (Comparaison des différent dataset)
 
-================================================================================
+============================================================================
 
-(Avec couleur)
+<!-- (Avec couleur) -->
 
 ### WIKITEXT
 | K | Alpha | MAUVE | Diversity | Coh_Likelihood | Coh_SimCSE | Perplexity | Gen_Length |
