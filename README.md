@@ -291,8 +291,9 @@ $$
 
 | Model | Coh_Likelihood | Coh_SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`llama3.2`** | $\color{red}{\textsf{-2.767}}$ | 0.789 | 90.870 | $\color{red}{\textsf{97.040}}$ | 122.260 | N/A |
-| `mistral` | -2.795 | $\color{red}{\textsf{0.828}}$ | $\color{red}{\textsf{94.160}}$ | 97.020 | $\color{red}{\textsf{128.660}}$ | N/A |
+| **`gpt2-xl`** | -2.787 | 0.594 | 77.830 | $\color{red}{\textsf{98.920}}$ | 110.820 | N/A |
+| `llama3.2` | -2.791 | 0.772 | 90.700 | 92.800 | 110.710 | N/A |
+| `mistral` | $\color{red}{\textsf{-2.665}}$ | $\color{red}{\textsf{0.834}}$ | $\color{red}{\textsf{94.340}}$ | 98.360 | $\color{red}{\textsf{121.370}}$ | N/A |
 
 
 > **Légende :** $\color{red}{\textsf{Rouge}}$ = Meilleur score. **`Nom_en_Gras`** = Meilleur Modèle (MAUVE).
@@ -302,8 +303,9 @@ $$
 
 | Model | Coh_Likelihood | Coh_SimCSE | Diversity | MAUVE | Gen_Length | Perplexity |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| `llama3.2` | -2.767 | 0.789 | 90.870 | 97.040 | 122.260 | N/A |
-| `mistral` | -2.795 | 0.828 | 94.160 | 97.020 | 128.660 | N/A |
+| `gpt2-xl` | -2.787 | 0.594 | 77.830 | 98.920 | 110.820 | N/A |
+| `llama3.2` | -2.791 | 0.772 | 90.700 | 92.800 | 110.710 | N/A |
+| `mistral` | -2.665 | 0.834 | 94.340 | 98.360 | 121.370 | N/A |
 
 
 <!-- ================================================================================
