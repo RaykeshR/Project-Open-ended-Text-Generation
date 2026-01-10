@@ -3,23 +3,23 @@
         "diversity_dict": {
             "reference_div": "99.49",
             "prediction_diversity_list": [
-                "97.49"
+                "94.92"
             ],
-            "prediction_div_mean": "97.49",
+            "prediction_div_mean": "94.92",
             "prediction_div_std": "0.0"
         },
         "gen_length_dict": {
             "gen_len_list": [
-                "80.63157894736842"
+                "62.21052631578947"
             ],
-            "gen_len_mean": "80.63",
+            "gen_len_mean": "62.21",
             "gen_len_std": "0.0"
         },
         "mauve_dict": {
             "mauve_score_list": [
-                "90.77725721324407"
+                "20.49866811488122"
             ],
-            "mauve_mean": "90.78",
+            "mauve_mean": "20.5",
             "mauve_std": "0.0"
         }
     }

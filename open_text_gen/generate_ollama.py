@@ -8,7 +8,7 @@ from transformers import AutoTokenizer
 def main():
     parser = argparse.ArgumentParser()
     # Liste des modèles Ollama à tester (ex: llama3, mistral)
-    parser.add_argument('--models', type=str, nargs='+', default=['llama3.2', 'mistral'], help='Liste des modèles Ollama')
+    parser.add_argument('--models', type=str, nargs='+', default=['gpt2-xl','llama3.2', 'mistral'], help='Liste des modèles Ollama')
     parser.add_argument('--dataset_name', type=str, default='wikitext', help='Nom du dataset')
     parser.add_argument('--dataset_config', type=str, default='wikitext-103-raw-v1', help='Config du dataset')
     parser.add_argument('--dataset_split', type=str, default='test', help='Split du dataset')
@@ -55,7 +55,11 @@ def main():
 
                 # --- APPEL OLLAMA ---
                 try:
-                    response = ollama.generate(model=model_name, prompt=prefix_text)
+                    response = ollama.generate(model=model_name, prompt=prefix_text,options={
+                            'temperature': 0.0,  # 0 = Le modèle choisit toujours le mot le plus probable (Greedy)
+                            'top_p': 1.0,        # On ne coupe pas la distribution
+                            'num_predict': 128   # On force la longueur pour correspondre au gold
+                        })
                     generated_text = response['response']
                     
                     # On nettoie un peu si le modèle répète le prompt (dépend des modèles)
