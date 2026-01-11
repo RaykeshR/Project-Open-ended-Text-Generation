@@ -9,12 +9,16 @@ def main():
     parser = argparse.ArgumentParser()
     # Liste des modèles Ollama à tester (ex: llama3, mistral)
     parser.add_argument('--models', type=str, nargs='+', default=['gpt2-xl','llama3.2', 'mistral'], help='Liste des modèles Ollama')
-    # parser.add_argument('--dataset_name', type=str, default='wikitext', help='Nom du dataset')
-    parser.add_argument('--dataset_name', type=str, default='cc_news', help='Nom du dataset')
-    # parser.add_argument('--dataset_config', type=str, default='wikitext-103-raw-v1', help='Config du dataset')
-    parser.add_argument('--dataset_config', type=str, default='plain_text', help='Config du dataset')
-    # parser.add_argument('--dataset_split', type=str, default='test', help='Split du dataset')
-    parser.add_argument('--dataset_split', type=str, default='train', help='Split du dataset')
+
+    parser.add_argument('--dataset_name', type=str, default='wikitext', help='Nom du dataset')
+    # parser.add_argument('--dataset_name', type=str, default='cc_news', help='Nom du dataset')
+
+    parser.add_argument('--dataset_config', type=str, default='wikitext-103-raw-v1', help='Config du dataset')
+    # parser.add_argument('--dataset_config', type=str, default='plain_text', help='Config du dataset')
+
+    parser.add_argument('--dataset_split', type=str, default='test', help='Split du dataset')
+    # parser.add_argument('--dataset_split', type=str, default='train', help='Split du dataset')
+
     parser.add_argument('--output_dir', type=str, default='open_text_gen/ollama_results', help='Dossier de sortie')
     parser.add_argument('--num_prefixes', type=int, default=100, help='Nombre de textes à générer')
     
@@ -35,8 +39,9 @@ def main():
         
         # Nom de fichier compatible avec vos scripts d'analyse
         # Format : {dataset}_{model}_ollama.jsonl
+        safe_dataset_name = args.dataset_name.replace('/', '_')
         safe_model_name = model_name.replace(':', '-') # Ollama utilise ':' (ex: llama3:8b), on remplace pour le fichier
-        output_filename = f'{args.dataset_name}_{safe_model_name}_ollama.jsonl'
+        output_filename = f'{safe_dataset_name}_{safe_model_name}_ollama.jsonl'
         output_path = f'{args.output_dir}/{output_filename}'
         
         with open(output_path, 'w', encoding='utf-8') as f:
