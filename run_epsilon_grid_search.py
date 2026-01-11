@@ -41,7 +41,7 @@ def main():
     ]
 
     # Paramètres globaux
-    dataset_name = 'bookcorpus' # wikitext | cc_news | bookcorpus
+    dataset_name = 'cc_news' # wikitext | cc_news | bookcorpus
     dataset_config = 'plain_text' # wikitext-103-raw-v1 | plain_text | plain_text
     dataset_split = 'train' # test | train | train
     num_prefixes = 50         # Nombre d'exemples à générer (100 est standard utilisé pour 'gpt2...'~124M-~1.5B params sinon 5 )
@@ -50,7 +50,7 @@ def main():
     # GRILLE DE RECHERCHE EPSILON GREEDY
     # On va tester toutes les combinaisons de ces listes
     alphas = [0.2, 0.4, 0.6, 0.8]
-    ks = [5, 10]#[5, 10, 50]
+    ks = [50]#[5, 10, 50]
 
     # =========================================================================
     # 2. EXÉCUTION
