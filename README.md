@@ -18,7 +18,7 @@ Rapport : [Fichier Word](https://reseaueseo-my.sharepoint.com/:w:/r/personal/lea
 
 TODO :octocat: :neckbeard: :bowtie: :shipit:
 
-## Résultat de l'analyse/évaluation : 
+## Résultat de l'analyse/évaluation :  (wikitext;num_prefixes=100;decoding_len=256))
 
 ============================================================================================================================================
 | Model&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Method | Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MAUVE | Gen_Length | rep-2 | rep-3 | rep-4 | Coh_gpt2 | Coh_gpt2-large | Coh_gpt2-medium | Coh_gpt2-xl | Coh_opt-1.3b | Coh_opt-125m | Coh_opt-2.7b |
