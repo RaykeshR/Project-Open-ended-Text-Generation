@@ -2,84 +2,135 @@ import os
 import subprocess
 import time
 
-# --- CONFIGURATION COMMUNE ---
+# --- CONFIGURATION ---
 MODEL = "gpt2-xl"
-GEN_LENGTH = 256      # Longueur de génération
-NUM_SAMPLES = 100     # Nombre d'échantillons
-BASE_DIR = "open_text_gen" # Dossier racine du projet
+GEN_LENGTH = 256      
+NUM_SAMPLES = 100     
+BASE_DIR = "open_text_gen"
 
-# Liste des datasets
+# Datasets
 DATASETS = ["wikitext", "cc_news", "bookcorpus"] 
 
-commands = []
+# Paramètres optimaux retenus
+BEST_K = 10
+BEST_ALPHA = 0.6
+BEST_P = 0.95
 
-print(f"--- Préparation du Benchmark pour {MODEL} ---")
+# --- FONCTION DE VÉRIFICATION ---
+def file_exists_pattern(directory, pattern_keywords):
+    """
+    Vérifie si un fichier contenant tous les mots-clés existe dans le dossier.
+    """
+    if not os.path.exists(directory):
+        return False
+    
+    files = os.listdir(directory)
+    for f in files:
+        if all(kw in f for kw in pattern_keywords) and f.endswith(".jsonl"):
+            print(f" Fichier trouvé : {f}")
+            return True
+    return False
+
+# --- LISTE DES TÂCHES ---
+tasks = []
 
 for dataset in DATASETS:
-    # 1. Définition des dossiers de sortie cibles (pour matcher le script d'analyse)
-    dir_baselines = os.path.join(BASE_DIR, dataset)
-    dir_contrastive = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
+    # 1. Dossier standard (pour Greedy, Nucleus, Typical, Contrastive)
+    dir_standard = os.path.join(BASE_DIR, dataset)
     
-    # Création des dossiers si inexistants
-    os.makedirs(dir_baselines, exist_ok=True)
-    os.makedirs(dir_contrastive, exist_ok=True)
+    # 2. Dossier Grid Search (pour Epsilon Sampling)
+    dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
     
-    print(f"[{dataset}] Baselines iront dans : {dir_baselines}")
-    print(f"[{dataset}] Contrastive ira dans : {dir_contrastive}")
+    # Création des dossiers
+    os.makedirs(dir_standard, exist_ok=True)
+    os.makedirs(dir_epsilon, exist_ok=True)
 
-    # --- Commandes Baselines (Greedy, Nucleus, Typical) ---
-    # Elles vont dans open_text_gen/dataset/
-    
-    # Greedy
-    commands.append(
-        f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--decoding_strategy greedy --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
-        f"--output_dir {dir_baselines}"
-    )
-    
-    # Nucleus (p=0.95)
-    commands.append(
-        f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--decoding_strategy nucleus --probs 0.95 --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
-        f"--output_dir {dir_baselines}"
-    )
-    
-    # Typical (p=0.95)
-    commands.append(
-        f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--decoding_strategy typical --probs 0.95 --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
-        f"--output_dir {dir_baselines}"
-    )
-    
-    # --- Commande Contrastive (k=10, alpha=0.6) ---
-    # Elle va dans open_text_gen/dataset_epsilon_grid_search/
-    commands.append(
-        f"python open_text_gen/generate_epsilon.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--k 10 --alpha 0.6 --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
-        f"--output_dir {dir_contrastive}"
-    )
+    # --- MÉTHODE 1 : GREEDY ---
+    tasks.append({
+        "dataset": dataset,
+        "method": "Greedy",
+        "output_dir": dir_standard,
+        "check_keywords": ["greedy", str(GEN_LENGTH), MODEL],
+        "cmd": (
+            f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
+            f"--decoding_strategy greedy --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
+            f"--output_dir {dir_standard}"
+        )
+    })
+
+    # --- MÉTHODE 2 : NUCLEUS ---
+    tasks.append({
+        "dataset": dataset,
+        "method": f"Nucleus (p={BEST_P})",
+        "output_dir": dir_standard,
+        "check_keywords": [f"p-{BEST_P}", str(GEN_LENGTH), MODEL],
+        "cmd": (
+            f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
+            f"--decoding_strategy nucleus --probs {BEST_P} --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
+            f"--output_dir {dir_standard}"
+        )
+    })
+
+    # --- MÉTHODE 3 : TYPICAL ---
+    tasks.append({
+        "dataset": dataset,
+        "method": f"Typical (p={BEST_P})",
+        "output_dir": dir_standard,
+        "check_keywords": [f"typical-{BEST_P}", str(GEN_LENGTH), MODEL],
+        "cmd": (
+            f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
+            f"--decoding_strategy typical --probs {BEST_P} --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
+            f"--output_dir {dir_standard}"
+        )
+    })
+
+    # --- MÉTHODE 4 : EPSILON SAMPLING (Grid Search Winner) ---
+    # Utilise generate_epsilon.py
+    tasks.append({
+        "dataset": dataset,
+        "method": f"Epsilon (k={BEST_K}, α={BEST_ALPHA})",
+        "output_dir": dir_epsilon,
+        "check_keywords": [f"k{BEST_K}", f"alpha{BEST_ALPHA}", "epsilon", MODEL],
+        "cmd": (
+            f"python open_text_gen/generate_epsilon.py --model_name {MODEL} --dataset_name {dataset} "
+            f"--k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
+            f"--output_dir {dir_epsilon}"
+        )
+    })
+
+    # --- MÉTHODE 5 : CONTRASTIVE SEARCH (Standard) ---
+    # Utilise generate.py
+    tasks.append({
+        "dataset": dataset,
+        "method": f"Contrastive (k={BEST_K}, α={BEST_ALPHA})",
+        "output_dir": dir_standard,
+        "check_keywords": [f"k{BEST_K}", f"alpha{BEST_ALPHA}", "contrastive", MODEL], 
+        # Note: Si generate.py ne met pas "contrastive" dans le nom, ajustez les keywords
+        "cmd": (
+            f"python open_text_gen/generate.py --model_name {MODEL} --dataset_name {dataset} "
+            f"--k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES} "
+            f"--output_dir {dir_standard}"
+        )
+    })
 
 # --- EXÉCUTION ---
 t0 = time.time()
-print(f"\nLancement de {len(commands)} tâches de génération...\n")
+print(f" Démarrage du Benchmark 5 Méthodes ({len(tasks)} tâches)\n")
 
-for i, cmd in enumerate(commands):
-    # Extraction infos pour affichage
-    parts = cmd.split()
-    ds = parts[parts.index("--dataset_name") + 1]
+for i, task in enumerate(tasks):
+    print(f" Étape {i+1}/{len(tasks)} | {task['dataset']} | {task['method']}")
     
-    if "--decoding_strategy" in parts:
-        method = parts[parts.index("--decoding_strategy") + 1]
-    else:
-        method = "contrastive (k=10, α=0.6)"
-
-    elapsed = int(time.time() - t0)
-    avg_time = elapsed / i if i > 0 else 0
-    eta = int(avg_time * (len(commands) - i))
+    # Vérification
+    if file_exists_pattern(task['output_dir'], task['check_keywords']):
+        print(f" Déjà fait. On passe.")
+        continue
     
-    print(f" Étape {i+1}/{len(commands)} | {elapsed}s (Fin ~{eta}s) | {ds} -> {method}")
-    
+    # Lancement
+    print(f"  Génération en cours...")
     try:
-        subprocess.run(cmd, shell=True, check=True)
+        subprocess.run(task['cmd'], shell=True, check=True)
+        print(f" Succès.")
     except subprocess.CalledProcessError:
-        print(f" Erreur critique sur l'étape {i+1}. Commande : {cmd}")
+        print(f" ERREUR CRITIQUE. Commande échouée.")
+
+print("\n Benchmark terminé.")
