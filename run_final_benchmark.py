@@ -1,51 +1,76 @@
-import os, subprocess, time
+import os
+import subprocess
+import time
 
 # --- CONFIGURATION COMMUNE ---
 MODEL = "gpt2-xl"
-GEN_LENGTH = 256      # Longueur standard pour la comparaison
-NUM_SAMPLES = 100     # Nombre de générations (ajustez selon votre temps/GPU, ex: 1000 pour MAUVE précis)
-BATCH_SIZE = 16       # Ajustez selon votre VRAM (ex: 8, 16, 32)
+GEN_LENGTH = 256      # Correspond à --decoding_len
+NUM_SAMPLES = 100     # Correspond à --num_prefixes (nombre de prompts à traiter)
 
 # Liste des datasets
-DATASETS = ["wikitext", "cc_news", "bookcorpus"] # Vérifiez les noms exacts attendus par vos scripts
+DATASETS = ["wikitext", "cc_news", "bookcorpus"] 
 
 # Commandes pour chaque méthode
-# Assurez-vous que les arguments correspondent exactement à ceux de vos scripts generate_*.py
 commands = []
 
 for dataset in DATASETS:
-    print(f"--- Préparation des commandes pour {dataset} ---")
-    
-    # 1. Greedy Search (Baseline)
+    # 1. Greedy Search
+    # Note: --decoding_strategy remplace --method
+    # Note: --decoding_len remplace --max_length
+    # Note: --num_prefixes remplace --num_return_sequences
     commands.append(
         f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--method greedy --max_length {GEN_LENGTH} --num_return_sequences {NUM_SAMPLES} --batch_size {BATCH_SIZE}"
+        f"--decoding_strategy greedy --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES}"
     )
     
     # 2. Nucleus Sampling (p=0.95)
+    # Note: L'argument pour p semble être --probs selon l'usage standard de ce repo, ou implicite via strategy
     commands.append(
         f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--method nucleus --p 0.95 --max_length {GEN_LENGTH} --num_return_sequences {NUM_SAMPLES} --batch_size {BATCH_SIZE}"
+        f"--decoding_strategy nucleus --probs 0.95 --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES}"
     )
     
-    # 3. Typical Sampling (p=0.95 ou tau=0.95 selon votre implémentation)
+    # 3. Typical Sampling (p=0.95)
     commands.append(
         f"python open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--method typical --p 0.95 --max_length {GEN_LENGTH} --num_return_sequences {NUM_SAMPLES} --batch_size {BATCH_SIZE}"
+        f"--decoding_strategy typical --probs 0.95 --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES}"
     )
     
-    # 4. Contrastive Search (Meilleurs hyperparamètres : k=10, alpha=0.6)
+    # 4. Contrastive Search (k=10, alpha=0.6)
+    # Note: generate_epsilon.py n'accepte pas --batch_size ou --num_return_sequences
     commands.append(
         f"python open_text_gen/generate_epsilon.py --model_name {MODEL} --dataset_name {dataset} "
-        f"--k 10 --alpha 0.6 --max_length {GEN_LENGTH} --num_return_sequences {NUM_SAMPLES} --batch_size {BATCH_SIZE}"
+        f"--k 10 --alpha 0.6 --decoding_len {GEN_LENGTH} --num_prefixes {NUM_SAMPLES}"
     )
 
 # --- EXÉCUTION ---
-t0 = time.time()
+t0 = time.time() # Top départ
+print(f"Démarrage du benchmark sur {len(commands)} configurations...\n")
+
 for i, cmd in enumerate(commands):
+    # Parsing simple pour l'affichage
+    parts = cmd.split()
+    ds = "Unknown"
+    method = "Unknown"
+    
+    if "--dataset_name" in parts:
+        ds = parts[parts.index("--dataset_name") + 1]
+    
+    if "--decoding_strategy" in parts:
+        method = parts[parts.index("--decoding_strategy") + 1]
+    elif "generate_epsilon" in cmd:
+        method = "contrastive (k=10, a=0.6)"
+
+    elapsed = int(time.time() - t0)
+    # Estimation du temps restant (évite la division par zéro)
+    avg_time = elapsed / i if i > 0 else 0
+    eta = int(avg_time * (len(commands) - i))
+    
+    print(f" Étape {i+1}/{len(commands)} | {elapsed}s écoulés (Fin ~{eta}s) |Dataset: {ds} | Méthode: {method}")
+    
     try:
-        print(f"=> Étape {i+1}/{len(commands)} | {int(time.time()-t0)}s écoulés (Fin estimée dans ~{int((time.time()-t0)/(i if i>0 else 1)*(len(commands)-i))}s) | Dataset: {cmd.split('--dataset_name ')[1].split()[0]} | Méthode: {cmd.split('--method ')[1].split()[0] if '--method' in cmd else 'contrastive'}")
+        # capture_output=False permet de voir les erreurs si elles persistent
         subprocess.run(cmd, shell=True, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Erreur lors de l'exécution de : {cmd}")
-        # Continue ou break selon votre préférence
+        print(f" Erreur critique sur l'étape {i+1}. Commande : {cmd}")
+        # On continue quand même pour essayer les autres datasets
