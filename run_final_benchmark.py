@@ -134,7 +134,7 @@ for i, task in enumerate(tasks):
     # Lancement
     print(f"  Génération en cours...")
     try:
-        subprocess.run(task['cmd'], shell=True, check=True)
+        print(subprocess.run(task['cmd'], shell=True, check=True, capture_output=True, text=True))
         print(f" Succès.")
     except subprocess.CalledProcessError as e:
         print(f" ERREUR CRITIQUE. Commande échouée: {task['cmd']} ERROR : {e}")
