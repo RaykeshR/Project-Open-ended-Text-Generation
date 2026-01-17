@@ -35,8 +35,13 @@ def file_exists_pattern(directory, pattern_keywords):
 tasks = []
 
 for dataset in DATASETS:
+    if dataset in ["cc_news", "bookcorpus"]:
+        GEN_LENGTH = 32      
+        NUM_SAMPLES = 50 
+        dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
+    
     # 1. Dossier standard (pour Greedy, Nucleus, Typical, Contrastive)
-    dir_standard = os.path.join(BASE_DIR, dataset)
+    dir_standard = os.path.join(BASE_DIR, dataset)+"_grid_search"
     
     # 2. Dossier Grid Search (pour Epsilon Sampling)
     dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
@@ -103,8 +108,8 @@ for dataset in DATASETS:
     tasks.append({
         "dataset": dataset,
         "method": f"Contrastive (k={BEST_K}, α={BEST_ALPHA})",
-        "output_dir": dir_standard,
-        "check_keywords": [f"k{BEST_K}", f"alpha{BEST_ALPHA}", "contrastive", MODEL], 
+        "output_dir": dir_standard, 
+        "check_keywords": [f"k{BEST_K}", f"a{BEST_ALPHA}", MODEL], 
         # Note: Si generate.py ne met pas "contrastive" dans le nom, ajustez les keywords
         "cmd": (
             f"python open_text_gen/generate.py --model_name {MODEL} --dataset_name {dataset} "
@@ -120,11 +125,11 @@ print(f" Démarrage du Benchmark 5 Méthodes ({len(tasks)} tâches)\n")
 for i, task in enumerate(tasks):
     print(f" Étape {i+1}/{len(tasks)} | {task['dataset']} | {task['method']}")
     
+    print((task['output_dir'], task['check_keywords']))
     # Vérification
     if file_exists_pattern(task['output_dir'], task['check_keywords']):
         print(f" Déjà fait. On passe.")
         continue
-    
     # Lancement
     print(f"  Génération en cours...")
     try:
