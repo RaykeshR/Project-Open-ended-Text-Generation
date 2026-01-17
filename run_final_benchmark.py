@@ -44,7 +44,7 @@ for dataset in DATASETS:
     dir_standard = os.path.join(BASE_DIR, dataset)+"_grid_search"
     
     # 2. Dossier Grid Search (pour Epsilon Sampling)
-    dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
+    dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search_256")
     
     # Création des dossiers
     os.makedirs(dir_standard, exist_ok=True)
