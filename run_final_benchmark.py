@@ -136,7 +136,7 @@ for i, task in enumerate(tasks):
     try:
         subprocess.run(task['cmd'], shell=True, check=True)
         print(f" Succès.")
-    except subprocess.CalledProcessError:
-        print(f" ERREUR CRITIQUE. Commande échouée.")
+    except subprocess.CalledProcessError as e:
+        print(f" ERREUR CRITIQUE. Commande échouée: {task['cmd']} ERROR : {e}")
 
 print("\n Benchmark terminé.")
