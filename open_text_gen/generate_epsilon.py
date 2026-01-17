@@ -10,7 +10,7 @@ from tqdm import tqdm
 from datasets import load_dataset
 import random
 
-def main():
+def main(): 
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', type=str, default='gpt2-xl', help='the name of the language model')
     parser.add_argument('--dataset_name', type=str, default='wikitext', help='the name of the dataset to use')
