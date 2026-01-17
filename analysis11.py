@@ -66,8 +66,8 @@ def load_all_methods():
         # 1. Définir les dossiers où chercher
         dirs_to_scan = [
             os.path.join(BASE_DIR, dataset),  # Baselines (Greedy, Nucleus...)
-            os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search"), # Contrastive
-            os.path.join(BASE_DIR, "ollama_results") # Modèles externes
+            os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search_256"), # Contrastive
+            # os.path.join(BASE_DIR, "ollama_results") # Modèles externes
         ]
 
         for folder in dirs_to_scan:
