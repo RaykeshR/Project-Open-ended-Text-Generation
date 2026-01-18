@@ -3,6 +3,7 @@ import subprocess
 import time
 import sys
 import datetime
+import glob
 
 # --- CONFIGURATION PRINCIPALE ---
 MODEL = "gpt2-xl"
@@ -11,7 +12,7 @@ MODEL_SAFE = MODEL.replace("/", "-")
 # Datasets à traiter
 DATASETS = ["wikitext", "cc_news", "bookcorpus"]
 
-# Paramètres optimaux retenus (pour Epsilon et Contrastive)
+# Paramètres optimaux retenus
 BEST_K = 10
 BEST_ALPHA = 0.6
 BEST_P = 0.95
@@ -23,7 +24,7 @@ BASE_DIR = "open_text_gen"
 COHERENCE_JUDGES = [
     "facebook/opt-125m",   # Rapide
     # "facebook/opt-1.3b", # Moyen
-    # "facebook/opt-2.7b",   # Précis (Lourd)
+    "facebook/opt-2.7b",   # Précis (Lourd)
 
     # # # # --- FAMILLE GPT-2 (Les classiques) ---
     # 'gpt2',          # ~124M params (Très rapide)
@@ -81,7 +82,6 @@ def main():
     for dataset in DATASETS:
         info = DATASET_INFO[dataset]
         
-        # Définition des dossiers de sortie
         if dataset in ["cc_news", "bookcorpus"]:
             dir_standard = os.path.join(BASE_DIR, f"{dataset}_grid_search")
             dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
@@ -92,10 +92,8 @@ def main():
         os.makedirs(dir_standard, exist_ok=True)
         os.makedirs(dir_epsilon, exist_ok=True)
         
-        # folders_to_evaluate_perplexity.add(dir_standard)
-        # folders_to_evaluate_perplexity.add(dir_epsilon)
-
-        # Note: Ajout des guillemets autour de "{python_exe}" pour gérer les espaces dans les chemins Windows
+        folders_to_evaluate_perplexity.add(dir_standard)
+        folders_to_evaluate_perplexity.add(dir_epsilon)
 
         # 1. GREEDY
         tasks.append({
@@ -145,33 +143,47 @@ def main():
         print(f"➤ Tâche {i+1}/{len(tasks)} : \033[1m{task['name']}\033[0m")
         file_path = os.path.join(task['output_dir'], task['expected_file'])
         
-        # 1. GÉNÉRATION
+        # --- 1. GÉNÉRATION ---
         if os.path.exists(file_path):
             print(f"   [INFO] Fichier déjà existant : {task['expected_file']}")
         else:
-            print(f"   [INFO] Fichier à généré : {task['expected_file']}")
+            # Recherche floue avant de générer (au cas où le nom varie légèrement)
+            possible = glob.glob(os.path.join(task['output_dir'], f"*{task['name'].split()[0]}*"))            
+            print(f"   [INFO] Génération de : {task['expected_file']}")
             success = run_command(task['gen_cmd'], "Génération du texte")
             if not success:
                 print(f"   [SKIP] Impossible d'évaluer car la génération a échoué.")
                 continue
 
-        # Vérification et recherche floue
+        # Vérification existence fichier
         if not os.path.exists(file_path):
-            print(f"   [ERREUR] Le fichier attendu n'a pas été créé : {file_path}")
-            possible_files = [f for f in os.listdir(task['output_dir']) if task['name'].split(" - ")[0] in f and MODEL_SAFE in f and f.endswith(".jsonl")]
-            if possible_files:
-                possible_files.sort(key=lambda x: os.path.getmtime(os.path.join(task['output_dir'], x)), reverse=True)
-                file_path = os.path.join(task['output_dir'], possible_files[0])
-                print(f"   [FIX] Fichier alternatif utilisé : {possible_files[0]}")
-            else:
+            # Tentative de rattrapage sur noms alternatifs (ex: contrastive)
+            found = False
+            for f in os.listdir(task['output_dir']):
+                if f.endswith(".jsonl") and MODEL_SAFE in f:
+                    # Logique basique de matching
+                    if "contrastive" in task['name'].lower() and ("contrastive" in f or "k10" in f):
+                         file_path = os.path.join(task['output_dir'], f)
+                         print(f"   [FIX] Utilisation du fichier alternatif : {f}")
+                         found = True
+                         break
+                    if "epsilon" in task['name'].lower() and "epsilon" in f and f"k{BEST_K}" in f:
+                         file_path = os.path.join(task['output_dir'], f)
+                         print(f"   [FIX] Utilisation du fichier alternatif : {f}")
+                         found = True
+                         break
+            if not found and not os.path.exists(file_path):
                 print(f"   [ERREUR] Fichier introuvable.")
                 continue
 
-        # 2. ÉVALUATIONS
+        # --- 2. ÉVALUATIONS ---
         
         # Diversity / MAUVE
         res_div = file_path.replace(".jsonl", "_diversity_mauve_gen_length_result.json")
-        if not (os.path.exists(res_div) or os.path.exists(file_path.replace(".jsonl", "._diversity_mauve_gen_length_result.json"))):
+        # On vérifie aussi le format alternatif avec point devant
+        res_div_alt = file_path.replace(".jsonl", "._diversity_mauve_gen_length_result.json")
+        
+        if not (os.path.exists(res_div) or os.path.exists(res_div_alt)):
             run_command(
                 f'"{python_exe}" open_text_gen/measure_diversity_mauve_gen_length.py --test_path "{file_path}"',
                 "Mesure Diversity/MAUVE"
@@ -189,7 +201,7 @@ def main():
         else:
             print("   [SKIP] SimCSE déjà calculé.")
 
-        # Cohérence
+        # Cohérence (Likelihood)
         for judge in COHERENCE_JUDGES:
             judge_safe = judge.split("/")[-1]
             res_coh = file_path.replace(".jsonl", f"._{judge_safe}_coherence_result.json")
@@ -203,19 +215,34 @@ def main():
                 print(f"   [SKIP] Cohérence ({judge_safe}) déjà calculée.")
 
     print(f"\n{'='*60}")
-    print(f"CALCUL DE LA PERPLEXITÉ (Par dossier)")
+    print(f"CALCUL DE LA PERPLEXITÉ (Optimisé)")
     print(f"{'='*60}\n")
     
     for folder in folders_to_evaluate_perplexity:
-        if os.path.exists(folder):
-            print(f"➤ Traitement du dossier : {folder}")
-            if len([f for f in os.listdir(folder) if f.endswith(".jsonl")]) > 0:
-                run_command(
-                    f'"{python_exe}" open_text_gen/measure_perplexity.py --folder "{folder}" --model_name gpt2-xl',
-                    "Mesure Perplexité"
-                )
-            else:
-                print("   Dossier vide ou sans .jsonl")
+        if not os.path.exists(folder): continue
+        
+        files_in_folder = [f for f in os.listdir(folder) if f.endswith(".jsonl")]
+        if not files_in_folder:
+            print(f"   [INFO] Dossier vide : {folder}")
+            continue
+
+        # Vérifier si TOUS les fichiers ont déjà leur résultat de perplexité
+        # Si oui, on saute le calcul coûteux
+        all_done = True
+        for f in files_in_folder:
+            ppl_res = os.path.join(folder, f.replace(".jsonl", "_perplexity_result.json"))
+            if not os.path.exists(ppl_res):
+                all_done = False
+                break
+        
+        if all_done:
+            print(f"➤ [SKIP] Perplexité déjà calculée pour tous les fichiers de : {folder}")
+        else:
+            print(f"➤ [RUN] Calcul Perplexité pour le dossier : {folder}")
+            run_command(
+                f'"{python_exe}" open_text_gen/measure_perplexity.py --folder "{folder}" --model_name gpt2-xl',
+                "Mesure Perplexité (Batch)"
+            )
 
     total_time = time.time() - start_time
     print(f"\n\n\033[42m TERMINÉ \033[0m Durée totale : {format_timedelta(total_time)}")

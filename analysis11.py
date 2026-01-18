@@ -9,17 +9,16 @@ import seaborn as sns
 # --- Configuration ---
 BASE_DIR = "open_text_gen"
 DATASETS = ["wikitext", "bookcorpus", "cc_news"]
-METRICS_COLS = ['MAUVE', 'Diversity', 'Coh_Likelihood', 'Coh_SimCSE', 'Perplexity', 'Gen_Length']
 
 # --- PARAMÈTRES OPTIMAUX PAR DATASET ---
-# Modifiez ici les valeurs si nécessaire (ex: k=50 pour cc_news)
+# Modifiez ces valeurs pour qu'elles correspondent EXACTEMENT à ce que vous avez généré.
 DATASET_PARAMS = {
     "wikitext":   {"k": 10, "alpha": 0.6, "p": 0.95},
     "bookcorpus": {"k": 10, "alpha": 0.6, "p": 0.95},
     "cc_news":    {"k": 50, "alpha": 0.2, "p": 0.95} 
 }
 
-MODEL_NAME_FILTER = "gpt2-xl" # Pour éviter de mélanger avec gpt2-large/medium
+MODEL_NAME_FILTER = "gpt2-xl" 
 
 # --- Codes couleurs ANSI ---
 RED = "\033[91m"
@@ -43,61 +42,56 @@ def get_json_val(data, keys, default=0.0):
 
 def detect_method_name(filename, dataset):
     """
-    Déduit le nom de la méthode.
-    Filtre STRICTEMENT selon le modèle et les paramètres du dataset.
+    Déduit le nom de la méthode et filtre selon les paramètres DATASET_PARAMS.
+    Retourne (Nom_Methode, Raison_Si_Skip)
     """
     base = os.path.basename(filename)
     
-    # 1. Filtrage Modèle (Crucial pour Wikitext qui a plein de modèles)
     if MODEL_NAME_FILTER not in base:
-        return "Skip"
+        return "Skip", "Mauvais modèle"
 
     params = DATASET_PARAMS[dataset]
     best_k = params["k"]
     best_alpha = params["alpha"]
     best_p = params["p"]
 
-    # 2. Identification Méthode
-    
     # Greedy
     if "greedy" in base:
-        return "Greedy Search"
+        return "Greedy Search", None
     
     # Nucleus
     elif f"p-{best_p}" in base or (f"nucleus" in base and str(best_p) in base):
-        return f"Nucleus Sampling (p={best_p})"
+        return f"Nucleus Sampling (p={best_p})", None
     
     # Typical
     elif "typical" in base and str(best_p) in base:
-        return f"Typical Sampling (p={best_p})"
+        return f"Typical Sampling (p={best_p})", None
     
     # Epsilon Sampling
     elif "epsilon" in base:
         if f"k{best_k}" in base and f"alpha{best_alpha}" in base:
-            return f"Epsilon Sampling (k={best_k}, α={best_alpha})"
-        return "Skip" # On ignore les autres configs
+            return f"Epsilon Sampling (k={best_k}, α={best_alpha})", None
+        return "Skip", f"Params Epsilon mismatch (found {base}, want k{best_k} a{best_alpha})"
 
     # Contrastive Search
-    elif "contrastive" in base:
-        # Souvent contrastive a le format 'contrastive-alpha-0.6'
-        if f"alpha-{best_alpha}" in base or f"alpha{best_alpha}" in base:
-            return f"Contrastive Search (k={best_k}, α={best_alpha})"
-        return "Skip"
-        
-    # Format alternatif Contrastive (généré par generate.py) : k10_a0.6_e0.0
-    elif f"k{best_k}_a{best_alpha}_e0.0" in base:
-        return f"Contrastive Search (k={best_k}, α={best_alpha})"
+    # Pattern 1: contrastive-alpha-0.6
+    # Pattern 2: k10_a0.6_e0.0 (généré par generate.py standard)
+    elif "contrastive" in base or (f"k{best_k}" in base and f"a{best_alpha}" in base and "e0.0" in base):
+        # On vérifie k et alpha
+        if (f"alpha-{best_alpha}" in base) or (f"a{best_alpha}" in base and f"k{best_k}" in base):
+            return f"Contrastive Search (k={best_k}, α={best_alpha})", None
+        return "Skip", f"Params Contrastive mismatch (found {base}, want k{best_k} a{best_alpha})"
 
-    return "Skip"
+    return "Skip", "Méthode inconnue ou params incorrects"
 
 def load_all_methods():
     all_data = []
+    print(f"{YELLOW}Chargement des fichiers...{RESET}")
 
     for dataset in DATASETS:
         # Dossiers à scanner
         dirs_to_scan = [
             os.path.join(BASE_DIR, f"{dataset}_grid_search"),
-            # os.path.join(BASE_DIR, "ollama_results") 
         ]
         
         # Ajout dossier Epsilon
@@ -108,22 +102,25 @@ def load_all_methods():
 
         for folder in dirs_to_scan:
             if not os.path.exists(folder):
+                print(f"{RED}[WARN] Dossier introuvable : {folder}{RESET}")
                 continue
 
-            # On cherche les fichiers de résultats
             result_files = glob.glob(os.path.join(folder, "*diversity_mauve_gen_length_result.json"))
 
             for res_file in result_files:
                 basename = os.path.basename(res_file)
                 
-                # Vérif dataset
+                # Vérif dataset dans le nom (sécurité)
                 if dataset not in basename:
                     continue
 
-                # Détection méthode avec paramètres spécifiques au dataset
-                method_name = detect_method_name(basename, dataset)
+                method_name, skip_reason = detect_method_name(basename, dataset)
                 if method_name == "Skip": 
+                    # Décommenter pour voir pourquoi un fichier est ignoré
+                    # print(f"  [SKIP] {basename} -> {skip_reason}")
                     continue
+
+                print(f"  [OK] Found: {method_name} in {basename}")
 
                 file_prefix = res_file.replace("_diversity_mauve_gen_length_result.json", "")
                 
@@ -132,8 +129,6 @@ def load_all_methods():
                     'Method': method_name,
                 }
 
-                # --- Chargement Métriques ---
-                
                 # 1. Diversity / MAUVE
                 try:
                     with open(res_file, 'r', encoding='utf-8') as f:
@@ -142,7 +137,8 @@ def load_all_methods():
                         row['MAUVE'] = get_json_val(d, ['mauve_dict', 'mauve_mean'])
                         row['Diversity'] = get_json_val(d, ['diversity_dict', 'prediction_div_mean'])
                         row['Gen_Length'] = get_json_val(d, ['gen_length_dict', 'gen_len_mean'])
-                except: pass
+                except Exception as e: 
+                    print(f"{RED}Error reading DIV/MAUVE for {basename}: {e}{RESET}")
 
                 # 2. Perplexity
                 ppl_file = f"{file_prefix}_perplexity_result.json"
@@ -150,28 +146,41 @@ def load_all_methods():
                     try:
                         with open(ppl_file, 'r', encoding='utf-8') as f:
                             d = json.load(f)
-                            val = d.get('mean_perplexity')
-                            if val is None: val = d.get('ppl')
-                            if val is not None:
-                                row['Perplexity'] = float(val)
-                            else:
-                                row['Perplexity'] = float('nan')
+                            val = d.get('mean_perplexity') or d.get('ppl')
+                            row['Perplexity'] = float(val) if val else float('nan')
                     except: row['Perplexity'] = float('nan')
-                else: row['Perplexity'] = float('nan')
+                else: 
+                    # print(f"  [WARN] Missing PPL file for {method_name}")
+                    row['Perplexity'] = float('nan')
 
-                # 3. Coherence (Likelihood)
+                # 3. Coherence (Likelihood) - DYNAMIQUE PAR MODELE JUGE
+                # Pattern: fichier se termine par _coherence_result.json
+                # Mais attention, simcse se termine aussi par là dans certains noms, d'où le filtrage
                 coh_files = glob.glob(f"{file_prefix}*_coherence_result.json")
-                coh_files = [x for x in coh_files if 'simcse' not in x]
-                if coh_files:
-                    # On préfère le plus gros modèle juge
-                    coh_files.sort(key=lambda x: os.path.getsize(x), reverse=True)
+                
+                for cf in coh_files:
+                    cf_base = os.path.basename(cf)
+                    if "simcse" in cf_base: continue 
+                    
+                    # Extraction du nom du modèle juge
+                    # Ex: wikinews_greedy..._opt-2.7b_coherence_result.json
+                    # On cherche la partie entre le préfixe et _coherence_result
+                    # C'est un peu tricky, on va essayer de parser "opt-..."
                     try:
-                        with open(coh_files[0], 'r', encoding='utf-8') as f:
+                        with open(cf, 'r', encoding='utf-8') as f:
                             d = json.load(f)
                             if isinstance(d, list): d = d[0]
-                            row['Coh_Likelihood'] = float(d.get('coherence_mean', 0.0))
-                    except: row['Coh_Likelihood'] = 0.0
-                else: row['Coh_Likelihood'] = 0.0
+                            val = float(d.get('coherence_mean', 0.0))
+                            
+                            # Trouver le nom du juge
+                            if "opt-2.7b" in cf_base: judge = "OPT-2.7B"
+                            elif "opt-1.3b" in cf_base: judge = "OPT-1.3B"
+                            elif "opt-125m" in cf_base: judge = "OPT-125m"
+                            elif "gpt2-xl" in cf_base and "gpt2-xl_" not in cf_base: judge = "GPT2-XL" # Attention auto-reference
+                            else: judge = "Unknown_Judge"
+                            
+                            row[f'Coh_Like_{judge}'] = val
+                    except: pass
 
                 # 4. SimCSE
                 simcse_file = f"{file_prefix}_simcse_result.json"
@@ -179,9 +188,14 @@ def load_all_methods():
                     try:
                         with open(simcse_file, 'r', encoding='utf-8') as f:
                             d = json.load(f)
-                            row['Coh_SimCSE'] = float(d.get('coherence_mean', 0.0))
-                    except: row['Coh_SimCSE'] = 0.0
-                else: row['Coh_SimCSE'] = 0.0
+                            val = float(d.get('coherence_mean', 0.0))
+                            if val == 0.0:
+                                print(f"{RED}  [WARN] SimCSE is 0.0 for {method_name}{RESET}")
+                            row['Coh_Sem_SimCSE'] = val
+                    except: row['Coh_Sem_SimCSE'] = 0.0
+                else: 
+                    # print(f"  [WARN] Missing SimCSE for {method_name}")
+                    row['Coh_Sem_SimCSE'] = float('nan')
 
                 all_data.append(row)
 
@@ -208,10 +222,23 @@ def generate_comparison_table(df, dataset_name, output_format="terminal"):
     sub_df = df[df['Dataset'] == dataset_name].copy()
     if sub_df.empty: return "Pas de données."
 
-    # Récupération params pour affichage
+    # Colonnes Dynamiques
+    # On prend les colonnes standard + toutes les colonnes Coh_ trouvées
+    std_cols = ['MAUVE', 'Diversity', 'Perplexity', 'Gen_Length']
+    coh_cols = sorted([c for c in sub_df.columns if c.startswith('Coh_')])
+    
+    # On met SimCSE à la fin des Coh
+    sim_cols = [c for c in coh_cols if "SimCSE" in c]
+    like_cols = [c for c in coh_cols if "SimCSE" not in c]
+    
+    current_metrics = std_cols + like_cols + sim_cols
+    
+    # Vérifier que les colonnes existent bien dans ce sous-df (sinon drop)
+    current_metrics = [c for c in current_metrics if c in sub_df.columns]
+
     params = DATASET_PARAMS[dataset_name]
     
-    # Ordre
+    # Ordre des méthodes
     method_order = [
         "Greedy Search", 
         f"Nucleus Sampling (p={params['p']})", 
@@ -220,14 +247,14 @@ def generate_comparison_table(df, dataset_name, output_format="terminal"):
         f"Epsilon Sampling (k={params['k']}, α={params['alpha']})"
     ]
     
-    # Tri
+    # Catégorisation
     sub_df['Method'] = pd.Categorical(sub_df['Method'], categories=method_order, ordered=True)
     sub_df = sub_df.sort_values('Method')
 
     # Meilleurs scores
     best_idxs = {}
-    for col in METRICS_COLS:
-        if col in sub_df.columns and not sub_df[col].isna().all():
+    for col in current_metrics:
+        if not sub_df[col].isna().all():
             if col == 'Perplexity':
                 best_idxs[col] = sub_df[col].idxmin()
             elif col == 'Gen_Length':
@@ -235,21 +262,23 @@ def generate_comparison_table(df, dataset_name, output_format="terminal"):
             else:
                 best_idxs[col] = sub_df[col].idxmax()
 
-    # Affichage
+    # Construction du tableau
     lines = []
-    col_width = 16
-    method_width = 45
     
+    # Headers
     if output_format == "terminal":
-        header = f"{CYAN}{'Method':<{method_width}} " + " ".join([f"{c:<{col_width}}" for c in METRICS_COLS]) + f"{RESET}"
+        col_width = 14
+        method_width = 45
+        header = f"{CYAN}{'Method':<{method_width}} " + " ".join([f"{c:<{col_width}}" for c in current_metrics]) + f"{RESET}"
         lines.append(header)
         lines.append("-" * len(re.sub(r'\033\[[0-9;]*m', '', header)))
     else:
-        # Markdown Header
-        header = "| Method | " + " | ".join(METRICS_COLS) + " |"
+        # Markdown
+        header = "| Method | " + " | ".join(current_metrics) + " |"
         lines.append(header)
-        lines.append("|:---| " + " | ".join([":---:" for _ in METRICS_COLS]) + " |")
+        lines.append("|:---| " + " | ".join([":---:" for _ in current_metrics]) + " |")
 
+    # Rows
     for idx, row in sub_df.iterrows():
         m_name = str(row['Method'])
         row_str = ""
@@ -259,7 +288,7 @@ def generate_comparison_table(df, dataset_name, output_format="terminal"):
         else:
             row_str += f"| {m_name} | "
             
-        for col in METRICS_COLS:
+        for col in current_metrics:
             val = row.get(col, float('nan'))
             is_best = (idx == best_idxs.get(col))
             fmt_val = format_val(val, col, is_best, color_mode=output_format)
@@ -280,8 +309,17 @@ def plot_comparative_graphs(df):
     output_dir = "plots_final_comparison"
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
-    metrics_to_plot = ['MAUVE', 'Diversity', 'Coh_Likelihood', 'Perplexity']
+    # On plotte les métriques standard + une moyenne de cohérence si dispo
+    metrics_to_plot = ['MAUVE', 'Diversity', 'Perplexity']
     
+    # Ajouter une colonne cohérence principale (ex: OPT-2.7B si dispo)
+    cols = df.columns
+    opt_cols = [c for c in cols if "OPT-2.7B" in c]
+    if opt_cols: metrics_to_plot.append(opt_cols[0])
+    
+    sim_cols = [c for c in cols if "SimCSE" in c]
+    if sim_cols: metrics_to_plot.append(sim_cols[0])
+
     for metric in metrics_to_plot:
         if metric not in df.columns: continue
         valid_df = df.dropna(subset=[metric])
@@ -304,7 +342,6 @@ def plot_comparative_graphs(df):
 def main():
     print(f"{BOLD}Analyse Comparative Finale{RESET}")
     print(f"Filtre Modèle : {MODEL_NAME_FILTER}")
-    print(f"Params CC_NEWS : k={DATASET_PARAMS['cc_news']['k']}, alpha={DATASET_PARAMS['cc_news']['alpha']}")
     
     df = load_all_methods()
     
@@ -313,31 +350,46 @@ def main():
         return
 
     # 1. Terminal Output
-    print("\n" + "="*130)
+    print("\n" + "="*150)
     print(f"{BOLD} TABLEAUX COMPARATIFS (TERMINAL){RESET}")
-    print("="*130)
+    print("="*150)
     for ds in DATASETS:
         print(f"\n{BOLD}>>> DATASET: {ds.upper()}{RESET}")
         print(generate_comparison_table(df, ds, "terminal"))
 
+    # Texte Introductif Markdown
+    intro_md = """
+## Détails de l'Expérience
+
+Les résultats ci-dessous comparent différentes stratégies de décodage sur le modèle **GPT2-XL**.
+
+* **Wikitext-103** : 100 exemples générés, longueur de décodage = 256 tokens.
+* **CC-News & BookCorpus** : 50 exemples générés, longueur de décodage = 32 tokens.
+* **Paramètres Contrastive/Epsilon** :
+    * Wikitext/BookCorpus : k=10, alpha=0.6
+    * CC-News : k=50, alpha=0.2 (Optimisé via Grid Search)
+"""
+
     # 2. Markdown Simple
-    print("\n" + "="*130)
+    print("\n" + "="*150)
     print(f"{BOLD} MARKDOWN GITHUB{RESET}")
-    print("="*130)
+    print("="*150)
+    print(intro_md)
     for ds in DATASETS:
         print(f"\n### Résultats : {ds.upper()}")
         print(generate_comparison_table(df, ds, "markdown"))
 
     # 3. Markdown Latex
-    print("\n" + "="*130)
+    print("\n" + "="*150)
     print(f"{BOLD} MARKDOWN COLORÉ (LATEX){RESET}")
-    print("="*130)
+    print("="*150)
+    print(intro_md)
     for ds in DATASETS:
         print(f"\n### {ds.upper()}")
         print(generate_comparison_table(df, ds, "markdown_color"))
 
     # 4. Graphs
-    print("\n" + "="*130)
+    print("\n" + "="*150)
     print(f"{BOLD} GÉNÉRATION DES GRAPHIQUES{RESET}")
     plot_comparative_graphs(df)
 
