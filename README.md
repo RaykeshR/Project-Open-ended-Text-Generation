@@ -21,7 +21,9 @@ TODO :octocat: :neckbeard: :bowtie: :shipit:
 ## Résultat de l'analyse/évaluation :  (wikitext;num_prefixes=100;decoding_len=256 / CC-News&BookCorpus;num_prefixes=50;decoding_len=32)
 
 ================================================================================================================================================================  
+
  MARKDOWN COLORÉ :
+
 ================================================================================================================================================================  
 
 ## Détails de l'Expérience
@@ -86,9 +88,11 @@ Les résultats ci-dessous comparent différentes stratégies de décodage sur le
   <img src="plots_final_comparison/compare_Coh_Sem_SimCSE.png" width="16%" />
 </p>
 
-
+<!-- 
 ================================================================================================================================================================  
+
  MARKDOWN SANS COULEUR (en cas de bug) :
+
 ================================================================================================================================================================  
 
 ## Détails de l'Expérience
@@ -126,7 +130,7 @@ Les résultats ci-dessous comparent différentes stratégies de décodage sur le
 | Nucleus Sampling (p=0.95) | 90.56 | 99.570 | 24.25 | 25.30 | -2.614 | -2.278 | 0.723 |
 | Typical Sampling (p=0.95) | **99.97** | 99.150 | 20.74 | 25.74 | -2.482 | -2.205 | 0.725 |
 | Contrastive Search (k=10, α=0.6) | 3.93 | **100.000** | 130291.92 | 13.92 | -10.121 | -9.863 | 0.577 |
-| Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | -1.951 | -1.581 | 0.749 |
+| Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | -1.951 | -1.581 | 0.749 | -->
 
 
 ## Résultat de l'analyse/évaluation :  (wikitext;num_prefixes=100;decoding_len=256))
