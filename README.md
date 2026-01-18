@@ -18,7 +18,7 @@ Rapport : [Fichier Word](https://reseaueseo-my.sharepoint.com/:w:/r/personal/lea
 
 TODO :octocat: :neckbeard: :bowtie: :shipit:
 
-## Résultat de l'analyse/évaluation :  (wikitext;num_prefixes=100;decoding_len=256))
+## Résultat de l'analyse/évaluation :  (wikitext;num_prefixes=100;decoding_len=256 / CC-News&BookCorpus;num_prefixes=50;decoding_len=32)
 
 ================================================================================================================================================================  
  MARKDOWN COLORÉ :
