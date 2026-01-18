@@ -12,11 +12,6 @@ MODEL_SAFE = MODEL.replace("/", "-")
 # Datasets à traiter
 DATASETS = ["wikitext", "cc_news", "bookcorpus"]
 
-# Paramètres optimaux retenus
-BEST_K = 10
-BEST_ALPHA = 0.6
-BEST_P = 0.95
-
 # Dossier racine
 BASE_DIR = "open_text_gen"
 
@@ -31,7 +26,27 @@ COHERENCE_JUDGES = [
     # 'gpt2-medium',   # ~355M params
     # 'gpt2-large',    # ~774M params
     # 'gpt2-xl',       # ~1.5B params (Lourd)
-    ]
+]
+
+# ---> PARAMÈTRES OPTIMAUX (Doivent correspondre à analysis11.py)
+# C'est ici qu'on définit k=5 pour cc_news spécifiquement
+OPTIMAL_PARAMS = {
+    "wikitext": {
+        "p": 0.95,
+        "contrastive": {"k": 10, "alpha": 0.6},
+        "epsilon":     {"k": 10, "alpha": 0.6}
+    },
+    "bookcorpus": {
+        "p": 0.95,
+        "contrastive": {"k": 10, "alpha": 0.6},
+        "epsilon":     {"k": 10, "alpha": 0.6}
+    },
+    "cc_news": {
+        "p": 0.95,
+        "contrastive": {"k": 10, "alpha": 0.6},
+        "epsilon":     {"k": 5, "alpha": 0.6}  # <---
+    }
+}
 
 # --- CONFIGURATION DATASETS ---
 DATASET_INFO = {
@@ -81,7 +96,9 @@ def main():
 
     for dataset in DATASETS:
         info = DATASET_INFO[dataset]
+        params = OPTIMAL_PARAMS[dataset]
         
+        # Définition des dossiers
         if dataset in ["cc_news", "bookcorpus"]:
             dir_standard = os.path.join(BASE_DIR, f"{dataset}_grid_search")
             dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
@@ -104,35 +121,40 @@ def main():
         })
 
         # 2. NUCLEUS
+        p_val = params['p']
         tasks.append({
-            "name": f"{dataset} - Nucleus (p={BEST_P})",
+            "name": f"{dataset} - Nucleus (p={p_val})",
             "output_dir": dir_standard,
-            "expected_file": f"{dataset}_p-{BEST_P}_{MODEL_SAFE}_{info['len']}.jsonl",
-            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy nucleus --probs {BEST_P} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+            "expected_file": f"{dataset}_p-{p_val}_{MODEL_SAFE}_{info['len']}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy nucleus --probs {p_val} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
         })
 
         # 3. TYPICAL
         tasks.append({
-            "name": f"{dataset} - Typical (p={BEST_P})",
+            "name": f"{dataset} - Typical (p={p_val})",
             "output_dir": dir_standard,
-            "expected_file": f"{dataset}_typical-{BEST_P}_{MODEL_SAFE}_{info['len']}.jsonl",
-            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy typical --probs {BEST_P} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+            "expected_file": f"{dataset}_typical-{p_val}_{MODEL_SAFE}_{info['len']}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy typical --probs {p_val} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
         })
 
         # 4. CONTRASTIVE
+        ck = params['contrastive']['k']
+        ca = params['contrastive']['alpha']
         tasks.append({
-            "name": f"{dataset} - Contrastive (k={BEST_K}, a={BEST_ALPHA})",
+            "name": f"{dataset} - Contrastive (k={ck}, a={ca})",
             "output_dir": dir_standard,
-            "expected_file": f"{dataset}_k{BEST_K}_a{BEST_ALPHA}_e0.0_{MODEL_SAFE}.jsonl",
-            "gen_cmd": f'"{python_exe}" open_text_gen/generate.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+            "expected_file": f"{dataset}_k{ck}_a{ca}_e0.0_{MODEL_SAFE}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --k {ck} --alpha {ca} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
         })
 
         # 5. EPSILON
+        ek = params['epsilon']['k']
+        ea = params['epsilon']['alpha']
         tasks.append({
-            "name": f"{dataset} - Epsilon (k={BEST_K}, a={BEST_ALPHA})",
+            "name": f"{dataset} - Epsilon (k={ek}, a={ea})",
             "output_dir": dir_epsilon,
-            "expected_file": f"{dataset}_epsilon_k{BEST_K}_alpha{BEST_ALPHA}_{MODEL_SAFE}.jsonl",
-            "gen_cmd": f'"{python_exe}" open_text_gen/generate_epsilon.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_epsilon}'
+            "expected_file": f"{dataset}_epsilon_k{ek}_alpha{ea}_{MODEL_SAFE}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_epsilon.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --k {ek} --alpha {ea} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_epsilon}'
         })
 
     print(f"\n{'='*60}")
@@ -147,7 +169,7 @@ def main():
         if os.path.exists(file_path):
             print(f"   [INFO] Fichier déjà existant : {task['expected_file']}")
         else:
-            # Recherche floue avant de générer (au cas où le nom varie légèrement)
+            # Recherche floue
             possible = glob.glob(os.path.join(task['output_dir'], f"*{task['name'].split()[0]}*"))            
             print(f"   [INFO] Génération de : {task['expected_file']}")
             success = run_command(task['gen_cmd'], "Génération du texte")
@@ -157,17 +179,25 @@ def main():
 
         # Vérification existence fichier
         if not os.path.exists(file_path):
-            # Tentative de rattrapage sur noms alternatifs (ex: contrastive)
+            # Tentative de rattrapage sur noms alternatifs
             found = False
+            # On récupère les params actuels pour le rattrapage
+            target_params = ""
+            if "contrastive" in task['name'].lower():
+                ck = OPTIMAL_PARAMS[task['name'].split()[0]]['contrastive']['k']
+                target_params = f"k{ck}"
+            elif "epsilon" in task['name'].lower():
+                ek = OPTIMAL_PARAMS[task['name'].split()[0]]['epsilon']['k']
+                target_params = f"k{ek}"
+
             for f in os.listdir(task['output_dir']):
                 if f.endswith(".jsonl") and MODEL_SAFE in f:
-                    # Logique basique de matching
-                    if "contrastive" in task['name'].lower() and ("contrastive" in f or "k10" in f):
+                    if "contrastive" in task['name'].lower() and ("contrastive" in f or (target_params in f and "e0.0" in f)):
                          file_path = os.path.join(task['output_dir'], f)
                          print(f"   [FIX] Utilisation du fichier alternatif : {f}")
                          found = True
                          break
-                    if "epsilon" in task['name'].lower() and "epsilon" in f and f"k{BEST_K}" in f:
+                    if "epsilon" in task['name'].lower() and "epsilon" in f and target_params in f:
                          file_path = os.path.join(task['output_dir'], f)
                          print(f"   [FIX] Utilisation du fichier alternatif : {f}")
                          found = True
@@ -180,7 +210,6 @@ def main():
         
         # Diversity / MAUVE
         res_div = file_path.replace(".jsonl", "_diversity_mauve_gen_length_result.json")
-        # On vérifie aussi le format alternatif avec point devant
         res_div_alt = file_path.replace(".jsonl", "._diversity_mauve_gen_length_result.json")
         
         if not (os.path.exists(res_div) or os.path.exists(res_div_alt)):
@@ -227,7 +256,6 @@ def main():
             continue
 
         # Vérifier si TOUS les fichiers ont déjà leur résultat de perplexité
-        # Si oui, on saute le calcul coûteux
         all_done = True
         for f in files_in_folder:
             ppl_res = os.path.join(folder, f.replace(".jsonl", "_perplexity_result.json"))
