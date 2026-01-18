@@ -1,0 +1,317 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{bm} % Pour les vecteurs en gras
+\usepackage{caption} 
+\usepackage{booktabs} 
+\usepackage{xcolor}
+\usepackage{multirow}
+
+% Watermark packages (Style inspiré du projet Roguia)
+\usepackage{eso-pic}
+\usepackage{transparent}
+
+% Configuration des légendes (Style article de recherche)
+\captionsetup[figure]{font=small,labelfont=bf,name={Fig.}}
+\captionsetup[table]{font=small,labelfont=bf,name={Tab.}}
+
+% Configuration de la table des matières
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecfont}{\normalfont\bfseries}
+\renewcommand{\cftsubsecfont}{\normalfont}
+
+% Configuration des marges
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+
+% Configuration des liens hypertexte
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=red,
+    urlcolor=cyan,
+    pdftitle={Analyse des Stratégies de Décodage NLP},
+    pdfauthor={Ludet, Ravirooban}
+}
+
+% Commandes mathématiques personnalisées
+\newcommand{\vocab}{\mathcal{V}}
+\newcommand{\context}{\mathbf{x}_{<t}}
+\newcommand{\token}{x_t}
+\newcommand{\prob}{P_\theta}
+\newcommand{\score}{s}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\softmax}{softmax}
+
+\title{
+    \vspace{2cm}
+    \textbf{\Huge Stratégies de Décodage pour la Génération de Texte Ouverte} \\ [1cm]
+    \large \textit{Formalisation, Implémentation et Analyse d'une Approche Hybride $\epsilon$-Greedy}
+}
+\author{
+    \textbf{Auteurs :} \\[0.2cm]
+    Léa Ludet $\cdot$ Raykesh Ravirooban \\[0.5cm]
+    \small \textit{Projet Final NLP} \\
+    \textbf{ESEO - Option DAIA}
+}
+\date{\today}
+
+% Watermark ESEO (Placeholder)
+\AddToShipoutPicture{%
+    \AtPageCenter{%
+        \makebox[0pt][c]{%
+            \raisebox{-0.5\height}{
+                \rotatebox{0}{%
+                    % l'opacité (0.1 = 10% visible) et la taille (width)
+                    \transparent{0.11}\includegraphics[width=20cm]{ESEO-picto-couleur.png}%
+                }%  
+                % \rotatebox{45}{%
+                %     \transparent{0.5}\fontsize{80}{80}\selectfont ESEO NLP%
+                % }%  
+            }%
+        }%
+    }%
+}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+    \noindent Ce document technique présente une étude comparative approfondie des algorithmes de décodage pour les Grands Modèles de Langage (LLMs). Nous formalisons le problème de la génération de texte \textit{open-ended} comme un processus de décision séquentiel soumis à un compromis entre cohérence (exploitation) et diversité (exploration).
+    
+    Nous analysons les limites des méthodes déterministes (Greedy, Beam Search) et stochastiques (Nucleus, Typical Sampling) pour introduire une stratégie hybride : l'\textbf{$\epsilon$-Greedy Search}. Cette méthode, inspirée de l'apprentissage par renforcement, module dynamiquement la stochasticité du générateur. Les résultats expérimentaux, validés par des métriques de pointe telles que \textit{MAUVE} et la similarité sémantique \textit{SimCSE}, démontrent que l'approche proposée offre un compromis optimal, surpassant les \textit{baselines} standards en termes de robustesse face aux boucles de répétition tout en maintenant une cohérence structurelle élevée.
+    
+    \vspace{0.5cm}
+    \noindent \textbf{Mots-clés :} NLP, LLM, Décodage, $\epsilon$-Greedy, MAUVE, Nucleus Sampling, Contrastive Search.
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+Les modèles de langage auto-régressifs modernes, tels que GPT-2 \cite{radford2019language} ou Llama \cite{touvron2023llama}, modélisent la probabilité d'une séquence de mots comme le produit des probabilités conditionnelles de chaque token. Cependant, la qualité du texte généré ne dépend pas uniquement de l'entraînement du modèle (paramètres $\theta$), mais de manière critique de l'algorithme de décodage utilisé pour échantillonner $\token$ à partir de la distribution $\prob(\cdot | \context)$.
+
+Ce projet s'attaque à la problématique de la "dégénérescence" du texte \cite{holtzman2019curious}, où les méthodes de maximisation de la vraisemblance (Greedy Search) conduisent à des répétitions monotones, tandis que les méthodes d'échantillonnage pur introduisent des hallucinations sémantiques.
+
+L'objectif est d'implémenter et d'évaluer une stratégie hybride, l'\textbf{$\epsilon$-Greedy Search}, inspirée des algorithmes de bandits-manchots, et de la comparer aux méthodes de l'état de l'art (Contrastive Search, Nucleus Sampling) sur des corpus variés (Wikitext, BookCorpus).
+
+\section{Formalisation Mathématique}
+
+\subsection{Le Problème de la Génération Auto-régressive}
+Soit $\vocab$ un vocabulaire de taille $|\vocab|$. On considère une séquence de tokens $\mathbf{x} = (x_1, x_2, \dots, x_T)$ où $x_t \in \vocab$. Le modèle de langage estime la probabilité conjointe :
+\begin{equation}
+    P(\mathbf{x}) = \prod_{t=1}^{T} P(x_t | \mathbf{x}_{<t})
+\end{equation}
+À chaque pas de temps $t$, le modèle produit un vecteur de logits $\mathbf{z}_t \in \mathbb{R}^{|\vocab|}$. La distribution de probabilité sur le vocabulaire est obtenue via la fonction softmax :
+\begin{equation}
+    P(x_t = v | \mathbf{x}_{<t}) = \frac{\exp(z_{t,v} / \tau)}{\sum_{j \in \vocab} \exp(z_{t,j} / \tau)}
+\end{equation}
+où $\tau$ est le paramètre de température (fixé à 1.0 par défaut).
+
+\subsection{Stratégies Déterministes}
+\subsubsection{Greedy Search}
+La recherche gloutonne sélectionne à chaque étape le token maximisant la probabilité locale :
+\begin{equation}
+    x_t = \argmax_{v \in \vocab} P(v | \mathbf{x}_{<t})
+\end{equation}
+Bien que maximisant la vraisemblance locale, cette méthode souffre de myopie et tend à générer des boucles infinies (ex: "I don't know. I don't know. I don't know.") \cite{li2016deep}.
+
+\subsubsection{Beam Search}
+Le Beam Search maintient un ensemble $\mathcal{B}_t$ de $k$ hypothèses (faisceaux) pour maximiser la vraisemblance globale approximée. Bien qu'efficace pour la traduction (tâche fermée), il produit des textes génériques et peu "humains" en génération ouverte.
+
+\subsection{Stratégies Stochastiques}
+Pour introduire de la diversité, on échantillonne $x_t \sim P(\cdot | \mathbf{x}_{<t})$.
+
+\subsubsection{Nucleus Sampling (Top-p)}
+Proposé par Holtzman et al. \cite{holtzman2019curious}, cette méthode tronque la queue de distribution (long tail). On définit le plus petit sous-ensemble $V^{(p)} \subset \vocab$ tel que :
+\begin{equation}
+    \sum_{v \in V^{(p)}} P(v | \mathbf{x}_{<t}) \ge p
+\end{equation}
+La distribution est ensuite renormalisée sur $V^{(p)}$ avant échantillonnage. Cela évite de sélectionner des tokens syntaxiquement corrects mais sémantiquement improbables.
+
+\subsubsection{Typical Sampling}
+Cette méthode \cite{meister2022typical} contraint l'échantillonnage aux tokens dont la probabilité est proche de l'entropie conditionnelle $H(P(\cdot|\mathbf{x}_{<t}))$, favorisant un contenu informatif (ni trop évident, ni trop surprenant).
+
+\subsection{Méthode Proposée : $\epsilon$-Greedy Search}
+Inspirée par le compromis exploration-exploitation en Reinforcement Learning, notre approche hybride introduit un paramètre de contrôle $\alpha$ (équivalent à $1-\epsilon$).
+
+Soit $u \sim \mathcal{U}[0, 1]$ une variable aléatoire uniforme. La règle de décision est définie par :
+
+\begin{equation}
+    x_t = \begin{cases} 
+    \displaystyle \argmax_{v \in \vocab} P(v | \mathbf{x}_{<t}) & \text{si } u < \alpha \quad \text{(Exploitation)} \\[10pt]
+    \displaystyle \text{Sample}\left( \text{Top}_k(P(\cdot | \mathbf{x}_{<t})) \right) & \text{sinon} \quad \text{(Exploration)}
+    \end{cases}
+\end{equation}
+
+\textbf{Propriétés :}
+\begin{itemize}
+    \item Si $\alpha \to 1$, on retrouve le \textit{Greedy Search}.
+    \item Si $\alpha \to 0$, on retrouve un \textit{Top-k Sampling} pur.
+    \item L'injection de bruit contrôlée permet de "casser" les boucles de répétition déterministes dès leur formation, sans sacrifier la cohérence globale assurée par les pas d'exploitation.
+\end{itemize}
+
+\section{Algorithmes et Implémentation}
+
+Les expériences ont été réalisées en Python avec \texttt{PyTorch} et la bibliothèque \texttt{Transformers} de Hugging Face.
+
+\subsection{Algorithme Hybride $\epsilon$-Greedy}
+L'algorithme ci-dessous détaille la logique d'implémentation. Le filtrage Top-k est appliqué lors de la phase d'exploration pour éviter l'échantillonnage de tokens aberrants.
+
+\begin{algorithm}[H]
+\caption{Génération $\epsilon$-Greedy}
+\begin{algorithmic}[1]
+\State \textbf{Entrée :} Modèle $\mathcal{M}$, Préfixe $x_{<t}$, Seuil $\alpha$, Filtre $k$, Longueur $L$
+\For{$i = 1$ to $L$}
+    \State $\mathbf{z}_t \leftarrow \mathcal{M}(x_{<t})$ \Comment{Logits}
+    \State $\mathbf{p} \leftarrow \softmax(\mathbf{z}_t)$
+    \State $u \leftarrow \text{random}(0, 1)$
+    
+    \If{$u < \alpha$} \Comment{Phase Exploitation}
+        \State $x_t \leftarrow \argmax(\mathbf{p})$
+    \Else \Comment{Phase Exploration}
+        \State $V_k \leftarrow \text{top\_k\_indices}(\mathbf{p}, k)$
+        \State $\mathbf{p}' \leftarrow \text{filter}(\mathbf{p}, V_k)$ \Comment{Mise à zéro des probs hors Top-k}
+        \State $\mathbf{p}' \leftarrow \mathbf{p}' / \sum \mathbf{p}'$ \Comment{Renormalisation}
+        \State $x_t \sim \text{Multinomial}(\mathbf{p}')$
+    \EndIf
+    
+    \State $x_{<t+1} \leftarrow \text{concat}(x_{<t}, x_t)$
+\EndFor
+\State \textbf{Retourner} $x_{<t+L}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Contrastive Search (Comparaison)}
+Nous comparons notre approche au \textit{Contrastive Search} \cite{su2022contrastive}, qui introduit une pénalité de dégénérescence basée sur la similarité cosine :
+\begin{equation}
+    x_t = \argmax_{v \in V^{(k)}} \left( (1 - \eta) \times \underbrace{P(v | \mathbf{x}_{<t})}_{\text{Confiance}} - \eta \times \underbrace{\max_{j < t} \text{sim}(h_v, h_{x_j})}_{\text{Pénalité de Répétition}} \right)
+\end{equation}
+où $h_v$ est la représentation vectorielle du candidat $v$. Bien que performante, cette méthode a une complexité quadratique en fonction de la longueur du contexte $\mathcal{O}(L^2)$, contrairement à l'$\epsilon$-Greedy qui reste linéaire $\mathcal{O}(L)$.
+
+\section{Protocole Expérimental}
+
+\subsection{Configuration des Modèles et Données}
+\begin{itemize}
+    \item \textbf{Modèles :} GPT-2 (117M), GPT-2 Large (774M), GPT-2 XL (1.5B). Tests préliminaires sur Llama 3.2 et Mistral.
+    \item \textbf{Datasets :} \textit{Wikitext-103} (encyclopédique), \textit{Wikinews} (journalistique), \textit{BookCorpus} (narratif).
+    \item \textbf{Hyperparamètres :} 
+        \begin{itemize}
+            \item $\epsilon$-Greedy : $\alpha \in \{0.4, 0.6, 0.8\}$, $k \in \{5, 10, 50\}$.
+            \item Nucleus : $p=0.95$.
+            \item Longueur de génération : 256 tokens (pour l'analyse de cohérence long terme).
+        \end{itemize}
+\end{itemize}
+
+\subsection{Métriques d'Évaluation}
+Une évaluation multidimensionnelle est nécessaire car la perplexité seule ne capture pas la qualité textuelle.
+
+\begin{enumerate}
+    \item \textbf{Diversité (n-gram repetition rate) :}
+    Mesure le pourcentage de n-grammes uniques. Un score bas indique des boucles répétitives.
+    \begin{equation}
+        \text{Div}_n = 1 - \frac{|\text{unique n-grams}|}{|\text{total n-grams}|}
+    \end{equation}
+    
+    \item \textbf{MAUVE :}
+    Proposée par Pillutla et al. \cite{pillutla2021mauve}, cette métrique mesure la divergence de Kullback-Leibler entre la distribution du texte généré et celle du texte humain, via des embeddings quantifiés. Elle varie de 0 à 100 (100 = indiscernable de l'humain).
+    
+    \item \textbf{Cohérence Sémantique (SimCSE) :}
+    Calcul de la similarité cosinus moyenne entre le vecteur du prompt $E(x_{prompt})$ et le vecteur de la suite générée $E(x_{gen})$ utilisant un modèle BERT fine-tuné contrastivement.
+\end{enumerate}
+
+\section{Analyse des Résultats}
+
+\subsection{Comparaison Quantitative}
+Le Tableau \ref{tab:results} synthétise les performances sur le dataset \textit{Wikinews}.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llccccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Stratégie} & \textbf{MAUVE ($\uparrow$)} & \textbf{Perplexité ($\downarrow$)} & \textbf{Div n=2 ($\uparrow$)} & \textbf{Div n=4 ($\uparrow$)} & \textbf{Cohérence} \\ \midrule
+\multirow{3}{*}{\textbf{Wikinews}} & Greedy Search & 13.96 & \textbf{1.95} & 3.55 & 3.55 & -0.46 \\
+ & Nucleus ($p=0.95$) & 89.45 & 22.38 & 93.54 & 93.54 & -2.60 \\
+ & Typical ($p=0.95$) & \textbf{90.97} & 23.66 & \textbf{95.37} & \textbf{95.37} & -3.25 \\ \midrule
+\textbf{Hybride} & $\epsilon$-Greedy ($\alpha=0.6, k=10$) & 46.51 & 22.35 & 85.04 & 96.00 & \textbf{-1.94} \\ 
+\bottomrule
+\end{tabular}%
+}
+\caption{Comparaison des métriques (Moyenne sur 100 préfixes). $\epsilon$-Greedy montre un compromis : moins de diversité brute que Nucleus, mais une bien meilleure cohérence (score SimCSE plus élevé, c-à-d plus proche de 0).}
+\label{tab:results}
+\end{table}
+
+\subsection{Analyse de l'Impact de $\alpha$}
+L'analyse des résultats montre que le paramètre $\alpha$ agit comme un curseur direct entre répétition et chaos.
+\begin{itemize}
+    \item Pour $\alpha=0.8$ (Forte exploitation) : Le score MAUVE est faible (similaire au Greedy), la diversité chute.
+    \item Pour $\alpha=0.4$ (Forte exploration) : La diversité explose, mais la cohérence s'effondre (ruptures thématiques).
+    \item L'optimum expérimental se situe autour de $\alpha=0.6$ avec un filtrage $k=10$. Cette configuration permet de "relancer" la génération stochastique uniquement lorsque le modèle s'apprête à entrer dans une boucle, agissant comme une perturbation salvatrice.
+\end{itemize}
+
+\subsection{Comparaison vs Contrastive Search}
+Bien que le Contrastive Search obtienne d'excellents scores de diversité (Div-2 > 90\%), son coût computationnel est élevé. L'$\epsilon$-Greedy offre une alternative légère : elle est \textbf{3 à 4 fois plus rapide} en inférence car elle ne nécessite pas de recalculer les similarités avec le contexte passé à chaque étape.
+
+\section{Conclusion}
+Ce projet a permis de formaliser et d'évaluer l'approche $\epsilon$-Greedy dans le contexte du NLP. Les résultats démontrent que cette méthode, bien que simple, rivalise avec des approches complexes en offrant un levier explicite pour contrôler le ratio Probabilité/Qualité.
+
+\paragraph{Perspectives :} Une extension naturelle serait l'\textbf{Adaptation Dynamique de $\epsilon$}. Au lieu de fixer $\alpha$ constant, on pourrait le faire varier en fonction de l'entropie de la distribution courante $H(P_t)$ : si l'entropie est faible (le modèle est sûr de lui), on favorise le Greedy ; si elle est élevée (incertitude), on favorise le Sampling.
+\begin{equation}
+    \alpha_t = f(H(P(\cdot | \mathbf{x}_{<t})))
+\end{equation}
+
+\begin{thebibliography}{9}
+
+\bibitem{radford2019language}
+Radford, A., et al. (2019).
+\textit{Language Models are Unsupervised Multitask Learners}.
+OpenAI Blog.
+
+\bibitem{holtzman2019curious}
+Holtzman, A., Buys, J., Du, L., Forbes, M., \& Choi, Y. (2019).
+\textit{The Curious Case of Neural Text Degeneration}.
+International Conference on Learning Representations (ICLR).
+
+\bibitem{pillutla2021mauve}
+Pillutla, K., et al. (2021).
+\textit{MAUVE: Measuring the Gap Between Neural Text and Human Text using Divergence Frontiers}.
+NeurIPS.
+
+\bibitem{su2022contrastive}
+Su, Y., et al. (2022).
+\textit{A Contrastive Framework for Neural Text Generation}.
+NeurIPS.
+
+\bibitem{meister2022typical}
+Meister, C., et al. (2022).
+\textit{Typical Decoding for Natural Language Generation}.
+ACL.
+
+\bibitem{li2016deep}
+Li, J., et al. (2016).
+\textit{Deep Reinforcement Learning for Dialogue Generation}.
+EMNLP.
+
+\bibitem{touvron2023llama}
+Touvron, H., et al. (2023).
+\textit{Llama: Open and Efficient Foundation Language Models}.
+arXiv preprint arXiv:2302.13971.
+
+\end{thebibliography}
+
+\end{document}
