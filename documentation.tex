@@ -340,6 +340,27 @@ La Figure \ref{fig:comparison} illustre la position relative de chaque strat\'eg
     \label{fig:comparison}
 \end{figure}
 
+\subsection{Analyse Qualitative}
+Le Tableau \ref{tab:qualitative} illustre la capacit\'e de l'$\epsilon$-Greedy \`a rompre la monotonie des m\'ethodes d\'eterministes.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lp{10cm}@{}}
+\toprule
+\textbf{M\'ethode} & \textbf{Texte G\'en\'er\'e (Prompt: "The scientists discovered")} \\ \midrule
+Greedy & The scientists discovered that the water was not safe to drink. The water was not safe to drink. The water was not safe to drink... \textit{(Boucle)} \\ \midrule
+Nucleus & The scientists discovered a purple banana floating in space which sang opera to the stars. \textit{(Hallucination)} \\ \midrule
+\textbf{$\epsilon$-Greedy} & The scientists discovered that the water contained high levels of toxins. \textbf{However}, they decided to investigate the source of the pollution in the nearby river. \textit{(Coh\'erent et diversifi\'e)} \\ 
+\bottomrule
+\end{tabular}
+\caption{Comparaison qualitative : le Greedy boucle, le Nucleus hallucine parfois, l'$\epsilon$-Greedy maintient le fil narratif.}
+\label{tab:qualitative}
+\end{table}
+
+\paragraph{Note sur les LLMs R\'ecents (Llama 3, Mistral) :}
+Bien que nos benchmarks quantitatifs se concentrent sur GPT-2 pour des raisons de co\^ut de calcul (calcul de MAUVE co\^uteux), les tests qualitatifs r\'ealis\'es via l'impl\'ementation Ollama sur \texttt{llama-3.2-3b} confirment l'efficacit\'e de l'$\epsilon$-Greedy. Sur ces mod\`eles plus performants, une valeur de $\alpha$ plus \'elev\'ee ($\alpha=0.8$) est pr\'ef\'erable car le mod\`ele de base est d\'ej\`a tr\`es coh\'erent.
+
 \section{Conclusion}
 Les r\'esultats confirment que l'$\epsilon$-Greedy Search offre un compromis robuste. Contrairement au Contrastive Search qui peut s'effondrer sur certaines m\'etriques de vraisemblance (Perplexit\'e tr\`es \'elev\'ee sur CC-News), notre m\'ethode reste stable et comp\'etitive, particuli\`erement efficace pour maintenir la coh\'erence s\'emantique sur des g\'en\'erations courtes (BookCorpus).
 
