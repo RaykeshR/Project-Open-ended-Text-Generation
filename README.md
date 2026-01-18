@@ -61,6 +61,32 @@ Les résultats ci-dessous comparent différentes stratégies de décodage sur le
 | Contrastive Search (k=10, α=0.6) | 3.93 | $\color{green}{\mathbf{100.000}}$ | 130291.92 | 13.92 | -10.121 | -9.863 | 0.577 |
 | Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | -1.951 | -1.581 | 0.749 |
 
+### Comparaison des Métriques
+
+<p align="center">
+  <img src="plots_final_comparison/compare_MAUVE.png" width="32%" />
+  <img src="plots_final_comparison/compare_Diversity.png" width="32%" />
+  <img src="plots_final_comparison/compare_Perplexity.png" width="32%" />
+</p>
+
+<p align="center">
+  <img src="plots_final_comparison/compare_Coh_Like_opt-2.7b.png" width="32%" />
+  <img src="plots_final_comparison/compare_Coh_Like_opt-125m.png" width="32%" />
+  <img src="plots_final_comparison/compare_Coh_Sem_SimCSE.png" width="32%" />
+</p>
+
+### Vue d'ensemble
+
+<p float="left">
+  <img src="plots_final_comparison/compare_MAUVE.png" width="16%" />
+  <img src="plots_final_comparison/compare_Diversity.png" width="16%" />
+  <img src="plots_final_comparison/compare_Perplexity.png" width="16%" />
+  <img src="plots_final_comparison/compare_Coh_Like_opt-2.7b.png" width="16%" />
+  <img src="plots_final_comparison/compare_Coh_Like_opt-125m.png" width="16%" />
+  <img src="plots_final_comparison/compare_Coh_Sem_SimCSE.png" width="16%" />
+</p>
+
+
 ================================================================================================================================================================  
  MARKDOWN SANS COULEUR (en cas de bug) :
 ================================================================================================================================================================  
