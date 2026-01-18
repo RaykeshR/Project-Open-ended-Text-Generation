@@ -103,3 +103,4 @@ if __name__ == "__main__":
     # python open_text_gen/measure_perplexity.py --folder open_text_gen/wikitext_epsilon_grid_search --model_name gpt2-xl
     # python open_text_gen/measure_perplexity.py --folder open_text_gen/cc_news_epsilon_grid_search --model_name gpt2-xl
     # python open_text_gen/measure_perplexity.py --folder open_text_gen/bookcorpus_epsilon_grid_search --model_name gpt2-xl
+    # python open_text_gen/measure_perplexity.py --folder open_text_gen/wikitext_epsilon_grid_search_256 --model_name gpt2-xl
