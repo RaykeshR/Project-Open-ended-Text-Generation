@@ -47,7 +47,7 @@ SHOW_MODEL_COL_TERMINAL = False
 # Quels juges de cohérence (Likelihood) afficher ?
 # Commentez ceux que vous ne voulez pas voir.
 SELECTED_COH_JUDGES = [
-    # "opt-125m", 
+    "opt-125m", 
     # "opt-1.3b",
     "opt-2.7b",     # Le plus précis
     # "gpt2-xl"
