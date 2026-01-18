@@ -92,8 +92,8 @@ def main():
         os.makedirs(dir_standard, exist_ok=True)
         os.makedirs(dir_epsilon, exist_ok=True)
         
-        folders_to_evaluate_perplexity.add(dir_standard)
-        folders_to_evaluate_perplexity.add(dir_epsilon)
+        # folders_to_evaluate_perplexity.add(dir_standard)
+        # folders_to_evaluate_perplexity.add(dir_epsilon)
 
         # Note: Ajout des guillemets autour de "{python_exe}" pour gérer les espaces dans les chemins Windows
 
@@ -171,7 +171,7 @@ def main():
         
         # Diversity / MAUVE
         res_div = file_path.replace(".jsonl", "_diversity_mauve_gen_length_result.json")
-        if not os.path.exists(res_div):
+        if not (os.path.exists(res_div) or os.path.exists(file_path.replace(".jsonl", "._diversity_mauve_gen_length_result.json"))):
             run_command(
                 f'"{python_exe}" open_text_gen/measure_diversity_mauve_gen_length.py --test_path "{file_path}"',
                 "Mesure Diversity/MAUVE"
