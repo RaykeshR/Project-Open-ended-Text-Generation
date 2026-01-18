@@ -37,7 +37,7 @@ def main():
     model.to(device)
     model.eval()
     
-    dataset = load_dataset(args.dataset_name, args.dataset_config, split=args.dataset_split, trust_remote_code=True)
+    dataset = load_dataset(args.dataset_name, args.dataset_config, split=args.dataset_split) #, trust_remote_code=True
 
     # Nom du fichier de sortie
     safe_model_name = args.model_name.replace('/', '-')
