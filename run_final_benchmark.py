@@ -9,7 +9,7 @@ NUM_SAMPLES = 100
 BASE_DIR = "open_text_gen"
 
 # Datasets
-DATASETS = ["wikitext", "cc_news", "bookcorpus"]  #(pip install datasets<2.14;pip install "pyarrow<15.0.0";pip install "numpy<2.0" pour bookcorpus)
+DATASETS = ["wikitext", "cc_news", "bookcorpus"]  #(pip install datasets<2.14;pip install "pyarrow<15.0.0";pip install "numpy<2.0";pip install -U fsspec pour bookcorpus)
 
 # Paramètres optimaux retenus
 BEST_K = 10
