@@ -8,9 +8,12 @@ def main():
     target_dirs = [
         # 'open_text_gen/wikitext_grid_search',
         # 'open_text_gen/wikitext_epsilon_grid_search',
-        'open_text_gen/ollama_results',
+        # 'open_text_gen/ollama_results',
         # 'open_text_gen/cc_news_epsilon_grid_search',
-        # 'open_text_gen/bookcorpus_epsilon_grid_search'
+        # 'open_text_gen/bookcorpus_epsilon_grid_search',
+        "open_text_gen/bookcorpus_grid_search",
+        "open_text_gen/cc_news_grid_search",
+        "open_text_gen/wikitext_epsilon_grid_search_256",
     ]
     
     python_exe = sys.executable

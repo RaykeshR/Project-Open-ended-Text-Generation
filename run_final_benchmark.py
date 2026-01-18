@@ -1,168 +1,224 @@
 import os
 import subprocess
 import time
+import sys
+import datetime
 
-# --- CONFIGURATION ---
+# --- CONFIGURATION PRINCIPALE ---
 MODEL = "gpt2-xl"
-GEN_LENGTH = 256      
-NUM_SAMPLES = 100     
-BASE_DIR = "open_text_gen"
+MODEL_SAFE = MODEL.replace("/", "-")
 
-# Datasets
-DATASETS = ["wikitext", "cc_news", "bookcorpus"]  #(pip install datasets<2.14;pip install "pyarrow<15.0.0";pip install "numpy<2.0";pip install -U fsspec pour bookcorpus)
+# Datasets à traiter
+DATASETS = ["wikitext", "cc_news", "bookcorpus"]
 
-# Paramètres optimaux retenus
+# Paramètres optimaux retenus (pour Epsilon et Contrastive)
 BEST_K = 10
 BEST_ALPHA = 0.6
 BEST_P = 0.95
 
-# --- MAPPING CONFIGURATIONS DATASETS ---
+# Dossier racine
+BASE_DIR = "open_text_gen"
+
+# Modèles juges pour la cohérence
+COHERENCE_JUDGES = [
+    "facebook/opt-125m",   # Rapide
+    # "facebook/opt-1.3b", # Moyen
+    # "facebook/opt-2.7b",   # Précis (Lourd)
+
+    # # # # --- FAMILLE GPT-2 (Les classiques) ---
+    # 'gpt2',          # ~124M params (Très rapide)
+    # 'gpt2-medium',   # ~355M params
+    # 'gpt2-large',    # ~774M params
+    # 'gpt2-xl',       # ~1.5B params (Lourd)
+    ]
+
+# --- CONFIGURATION DATASETS ---
 DATASET_INFO = {
     "wikitext": {
         "config": "wikitext-103-raw-v1",
-        "split": "test"
+        "split": "test",
+        "len": 256,
+        "samples": 100
     },
     "cc_news": {
-        "config": "plain_text", # ou None selon votre wrapper
-        "split": "train"
+        "config": "plain_text",
+        "split": "train",
+        "len": 32, 
+        "samples": 50
     },
     "bookcorpus": {
         "config": "plain_text",
-        "split": "train"
+        "split": "train",
+        "len": 32,
+        "samples": 50
     }
 }
 
-# --- FONCTION DE VÉRIFICATION ---
-def file_exists_pattern(directory, pattern_keywords):
-    """
-    Vérifie si un fichier contenant tous les mots-clés existe dans le dossier.
-    """
-    if not os.path.exists(directory):
-        return False
-    
-    files = os.listdir(directory)
-    for f in files:
-        if all(kw in f for kw in pattern_keywords) and f.endswith(".jsonl"):
-            print(f" Fichier trouvé : {f}")
-            return True
-    return False
+def format_timedelta(seconds):
+    return str(datetime.timedelta(seconds=int(seconds)))
 
-# --- LISTE DES TÂCHES ---
-tasks = []
-
-for dataset in DATASETS:
-    # Récupération des paramètres spécifiques au dataset
-    ds_config = DATASET_INFO[dataset]["config"]
-    ds_split = DATASET_INFO[dataset]["split"]
-
-    if dataset in ["cc_news", "bookcorpus"]:
-        current_gen_length = 32
-        current_num_samples = 50
-        dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
-        dir_standard = os.path.join(BASE_DIR, f"{dataset}_grid_search")
-    else:
-        current_gen_length = GEN_LENGTH
-        current_num_samples = NUM_SAMPLES
-        # 1. Dossier standard (pour Greedy, Nucleus, Typical, Contrastive)
-        dir_standard = os.path.join(BASE_DIR, f"{dataset}_grid_search")
-        
-        # 2. Dossier Grid Search (pour Epsilon Sampling)
-        dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search_256")
-    
-    # Création des dossiers
-    os.makedirs(dir_standard, exist_ok=True)
-    os.makedirs(dir_epsilon, exist_ok=True)
-
-    # --- MÉTHODE 1 : GREEDY ---
-    tasks.append({
-        "dataset": dataset,
-        "method": "Greedy",
-        "output_dir": dir_standard,
-        "check_keywords": ["greedy", str(current_gen_length), MODEL],
-        "cmd": (
-            f"python open_text_gen/generate_baselines.py --model_name {MODEL} "
-            f"--dataset_name {dataset} --dataset_config {ds_config} --dataset_split {ds_split} "
-            f"--decoding_strategy greedy --decoding_len {current_gen_length} --num_prefixes {current_num_samples} "
-            f"--output_dir {dir_standard}"
-        )
-    })
-
-    # --- MÉTHODE 2 : NUCLEUS ---
-    tasks.append({
-        "dataset": dataset,
-        "method": f"Nucleus (p={BEST_P})",
-        "output_dir": dir_standard,
-        "check_keywords": [f"p-{BEST_P}", str(current_gen_length), MODEL],
-        "cmd": (
-            f"python open_text_gen/generate_baselines.py --model_name {MODEL} "
-            f"--dataset_name {dataset} --dataset_config {ds_config} --dataset_split {ds_split} "
-            f"--decoding_strategy nucleus --probs {BEST_P} --decoding_len {current_gen_length} --num_prefixes {current_num_samples} "
-            f"--output_dir {dir_standard}"
-        )
-    })
-
-    # --- MÉTHODE 3 : TYPICAL ---
-    tasks.append({
-        "dataset": dataset,
-        "method": f"Typical (p={BEST_P})",
-        "output_dir": dir_standard,
-        "check_keywords": [f"typical-{BEST_P}", str(current_gen_length), MODEL],
-        "cmd": (
-            f"python open_text_gen/generate_baselines.py --model_name {MODEL} "
-            f"--dataset_name {dataset} --dataset_config {ds_config} --dataset_split {ds_split} "
-            f"--decoding_strategy typical --probs {BEST_P} --decoding_len {current_gen_length} --num_prefixes {current_num_samples} "
-            f"--output_dir {dir_standard}"
-        )
-    })
-
-    # --- MÉTHODE 4 : EPSILON SAMPLING (Grid Search Winner) ---
-    tasks.append({
-        "dataset": dataset,
-        "method": f"Epsilon (k={BEST_K}, α={BEST_ALPHA})",
-        "output_dir": dir_epsilon,
-        "check_keywords": [f"k{BEST_K}", f"alpha{BEST_ALPHA}", "epsilon", MODEL],
-        "cmd": (
-            f"python open_text_gen/generate_epsilon.py --model_name {MODEL} "
-            f"--dataset_name {dataset} --dataset_config {ds_config} --dataset_split {ds_split} "
-            f"--k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {current_gen_length} --num_prefixes {current_num_samples} "
-            f"--output_dir {dir_epsilon}"
-        )
-    })
-
-    # --- MÉTHODE 5 : CONTRASTIVE SEARCH (Standard) ---
-    tasks.append({
-        "dataset": dataset,
-        "method": f"Contrastive (k={BEST_K}, α={BEST_ALPHA})",
-        "output_dir": dir_standard,
-        "check_keywords": [f"k{BEST_K}", f"a{BEST_ALPHA}", MODEL],
-        "cmd": (
-            f"python open_text_gen/generate.py --model_name {MODEL} "
-            f"--dataset_name {dataset} --dataset_config {ds_config} --dataset_split {ds_split} "
-            f"--k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {current_gen_length} --num_prefixes {current_num_samples} "
-            f"--output_dir {dir_standard}"
-        )
-    })
-
-# --- EXÉCUTION ---
-t0 = time.time()
-print(f" Démarrage du Benchmark 5 Méthodes ({len(tasks)} tâches)\n")
-
-for i, task in enumerate(tasks):
-    print(f" Étape {i+1}/{len(tasks)} | {task['dataset']} | {task['method']}")
-    
-    # print((task['output_dir'], task['check_keywords']))
-    # Vérification
-    if file_exists_pattern(task['output_dir'], task['check_keywords']):
-        print(f" Déjà fait. On passe.")
-        continue
-    # Lancement
-    print(f"  Génération en cours...")
-    print(f"  CMD: {task['cmd']}") # Affichage pour debug
+def run_command(cmd, step_name):
+    """Exécute une commande shell et gère les erreurs."""
+    print(f"   [RUN] {step_name}...")
     try:
-        # subprocess.run(task['cmd'], shell=True, check=True, capture_output=True, text=True)
-        subprocess.run(task['cmd'], shell=True, check=True)
-        print(f" Succès.")
+        subprocess.run(cmd, shell=True, check=True)
+        return True
     except subprocess.CalledProcessError as e:
-        print(f" ERREUR CRITIQUE. Commande échouée: {task['cmd']} ERROR : {e}")
+        print(f"   \033[91m[ERREUR] Échec de {step_name} (Code {e.returncode})\033[0m")
+        print(f"   Commande: {cmd}")
+        return False
 
-print("\n Benchmark terminé.")
+def main():
+    start_time = time.time()
+    python_exe = sys.executable
+    
+    # Liste pour collecter les chemins des dossiers pour la perplexité finale
+    folders_to_evaluate_perplexity = set()
+
+    # On construit la liste des tâches
+    tasks = []
+
+    for dataset in DATASETS:
+        info = DATASET_INFO[dataset]
+        
+        # Définition des dossiers de sortie
+        if dataset in ["cc_news", "bookcorpus"]:
+            dir_standard = os.path.join(BASE_DIR, f"{dataset}_grid_search")
+            dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search")
+        else:
+            dir_standard = os.path.join(BASE_DIR, f"{dataset}_grid_search")
+            dir_epsilon = os.path.join(BASE_DIR, f"{dataset}_epsilon_grid_search_256")
+
+        os.makedirs(dir_standard, exist_ok=True)
+        os.makedirs(dir_epsilon, exist_ok=True)
+        
+        folders_to_evaluate_perplexity.add(dir_standard)
+        folders_to_evaluate_perplexity.add(dir_epsilon)
+
+        # Note: Ajout des guillemets autour de "{python_exe}" pour gérer les espaces dans les chemins Windows
+
+        # 1. GREEDY
+        tasks.append({
+            "name": f"{dataset} - Greedy",
+            "output_dir": dir_standard,
+            "expected_file": f"{dataset}_greedy_{MODEL_SAFE}_{info['len']}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy greedy --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+        })
+
+        # 2. NUCLEUS
+        tasks.append({
+            "name": f"{dataset} - Nucleus (p={BEST_P})",
+            "output_dir": dir_standard,
+            "expected_file": f"{dataset}_p-{BEST_P}_{MODEL_SAFE}_{info['len']}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy nucleus --probs {BEST_P} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+        })
+
+        # 3. TYPICAL
+        tasks.append({
+            "name": f"{dataset} - Typical (p={BEST_P})",
+            "output_dir": dir_standard,
+            "expected_file": f"{dataset}_typical-{BEST_P}_{MODEL_SAFE}_{info['len']}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_baselines.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --decoding_strategy typical --probs {BEST_P} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+        })
+
+        # 4. CONTRASTIVE
+        tasks.append({
+            "name": f"{dataset} - Contrastive (k={BEST_K}, a={BEST_ALPHA})",
+            "output_dir": dir_standard,
+            "expected_file": f"{dataset}_k{BEST_K}_a{BEST_ALPHA}_e0.0_{MODEL_SAFE}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_standard}'
+        })
+
+        # 5. EPSILON
+        tasks.append({
+            "name": f"{dataset} - Epsilon (k={BEST_K}, a={BEST_ALPHA})",
+            "output_dir": dir_epsilon,
+            "expected_file": f"{dataset}_epsilon_k{BEST_K}_alpha{BEST_ALPHA}_{MODEL_SAFE}.jsonl",
+            "gen_cmd": f'"{python_exe}" open_text_gen/generate_epsilon.py --model_name {MODEL} --dataset_name {dataset} --dataset_config {info["config"]} --dataset_split {info["split"]} --k {BEST_K} --alpha {BEST_ALPHA} --decoding_len {info["len"]} --num_prefixes {info["samples"]} --output_dir {dir_epsilon}'
+        })
+
+    print(f"\n{'='*60}")
+    print(f"DÉMARRAGE DU BENCHMARK COMPLET ({len(tasks)} tâches)")
+    print(f"{'='*60}\n")
+
+    for i, task in enumerate(tasks):
+        print(f"➤ Tâche {i+1}/{len(tasks)} : \033[1m{task['name']}\033[0m")
+        file_path = os.path.join(task['output_dir'], task['expected_file'])
+        
+        # 1. GÉNÉRATION
+        if os.path.exists(file_path):
+            print(f"   [INFO] Fichier déjà existant : {task['expected_file']}")
+        else:
+            print(f"   [INFO] Fichier à généré : {task['expected_file']}")
+            success = run_command(task['gen_cmd'], "Génération du texte")
+            if not success:
+                print(f"   [SKIP] Impossible d'évaluer car la génération a échoué.")
+                continue
+
+        # Vérification et recherche floue
+        if not os.path.exists(file_path):
+            print(f"   [ERREUR] Le fichier attendu n'a pas été créé : {file_path}")
+            possible_files = [f for f in os.listdir(task['output_dir']) if task['name'].split(" - ")[0] in f and MODEL_SAFE in f and f.endswith(".jsonl")]
+            if possible_files:
+                possible_files.sort(key=lambda x: os.path.getmtime(os.path.join(task['output_dir'], x)), reverse=True)
+                file_path = os.path.join(task['output_dir'], possible_files[0])
+                print(f"   [FIX] Fichier alternatif utilisé : {possible_files[0]}")
+            else:
+                print(f"   [ERREUR] Fichier introuvable.")
+                continue
+
+        # 2. ÉVALUATIONS
+        
+        # Diversity / MAUVE
+        res_div = file_path.replace(".jsonl", "_diversity_mauve_gen_length_result.json")
+        if not os.path.exists(res_div):
+            run_command(
+                f'"{python_exe}" open_text_gen/measure_diversity_mauve_gen_length.py --test_path "{file_path}"',
+                "Mesure Diversity/MAUVE"
+            )
+        else:
+            print("   [SKIP] Diversity/MAUVE déjà calculé.")
+
+        # SimCSE
+        res_sim = file_path.replace(".jsonl", "_simcse_result.json")
+        if not os.path.exists(res_sim):
+            run_command(
+                f'"{python_exe}" open_text_gen/compute_simcse.py --test_path "{file_path}"',
+                "Mesure SimCSE"
+            )
+        else:
+            print("   [SKIP] SimCSE déjà calculé.")
+
+        # Cohérence
+        for judge in COHERENCE_JUDGES:
+            judge_safe = judge.split("/")[-1]
+            res_coh = file_path.replace(".jsonl", f"._{judge_safe}_coherence_result.json")
+            
+            if not os.path.exists(res_coh):
+                run_command(
+                    f'"{python_exe}" open_text_gen/compute_coherence.py --test_path "{file_path}" --opt_model_name {judge}',
+                    f"Mesure Cohérence ({judge_safe})"
+                )
+            else:
+                print(f"   [SKIP] Cohérence ({judge_safe}) déjà calculée.")
+
+    print(f"\n{'='*60}")
+    print(f"CALCUL DE LA PERPLEXITÉ (Par dossier)")
+    print(f"{'='*60}\n")
+    
+    for folder in folders_to_evaluate_perplexity:
+        if os.path.exists(folder):
+            print(f"➤ Traitement du dossier : {folder}")
+            if len([f for f in os.listdir(folder) if f.endswith(".jsonl")]) > 0:
+                run_command(
+                    f'"{python_exe}" open_text_gen/measure_perplexity.py --folder "{folder}" --model_name gpt2-xl',
+                    "Mesure Perplexité"
+                )
+            else:
+                print("   Dossier vide ou sans .jsonl")
+
+    total_time = time.time() - start_time
+    print(f"\n\n\033[42m TERMINÉ \033[0m Durée totale : {format_timedelta(total_time)}")
+
+if __name__ == "__main__":
+    main()
