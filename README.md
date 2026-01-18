@@ -40,8 +40,8 @@ Les résultats ci-dessous comparent différentes stratégies de décodage sur le
 | Greedy Search | 3.34 | 2.120 | N/A | 196.54 | $\color{green}{\mathbf{-0.557}}$ | $\color{green}{\mathbf{-0.427}}$ | 0.708 |
 | Nucleus Sampling (p=0.95) | 62.41 | 82.030 | N/A | 178.92 | -2.628 | -2.251 | $\color{green}{\mathbf{0.759}}$ |
 | Typical Sampling (p=0.95) | $\color{green}{\mathbf{86.29}}$ | 79.880 | N/A | 183.05 | -2.621 | -2.226 | 0.758 |
-| Contrastive Search (k=10, α=0.6) | 4.00 | $\color{green}{\mathbf{99.530}}$ | N/A | 112.69 | -9.280 | -8.899 | 0.567 |
-| Epsilon Sampling (k=10, α=0.6) | 55.00 | 45.740 | $\color{green}{\mathbf{4.55}}$ | 196.09 | -1.781 | -1.443 | 0.745 |
+| Contrastive Search (k=10, α=0.6) | 4.00 | $\color{green}{\mathbf{99.530}}$ | N/A | 112.69 | -9.280 | -8.899 | 0.567 |   
+| Epsilon Sampling (k=10, α=0.6) | 55.00 | 45.740 | $\color{green}{\mathbf{4.55}}$ | 196.09 | -1.781 | -1.443 | 0.745 |   
 
 ### BOOKCORPUS
 | Method | MAUVE | Diversity | Perplexity | Gen_Length | Coh_Like_opt-125m | Coh_Like_opt-2.7b | Coh_Sem_SimCSE |
@@ -50,16 +50,16 @@ Les résultats ci-dessous comparent différentes stratégies de décodage sur le
 | Nucleus Sampling (p=0.95) | 5.65 | 98.720 | 30.94 | 27.16 | -3.049 | -2.799 | 0.705 |
 | Typical Sampling (p=0.95) | 4.11 | 98.530 | 28.15 | 27.82 | -3.070 | -2.798 | 0.700 |
 | Contrastive Search (k=10, α=0.6) | 8.85 | $\color{green}{\mathbf{100.000}}$ | 9255.82 | 17.20 | -8.216 | -8.027 | 0.545 |
-| Epsilon Sampling (k=10, α=0.6) | 4.18 | 85.100 | 26.92 | 27.22 | -2.294 | -2.020 | $\color{green}{\mathbf{0.717}}$ |
+| Epsilon Sampling (k=10, α=0.6) | 4.18 | 85.100 | 26.92 | 27.22 | -2.294 | -2.020 | $\color{green}{\mathbf{0.717}}$ |    
 
 ### CC_NEWS
 | Method | MAUVE | Diversity | Perplexity | Gen_Length | Coh_Like_opt-125m | Coh_Like_opt-2.7b | Coh_Sem_SimCSE |
 |:---| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | Greedy Search | 99.09 | 87.170 | $\color{green}{\mathbf{10.55}}$ | 24.94 | $\color{green}{\mathbf{-1.654}}$ | $\color{green}{\mathbf{-1.314}}$ | $\color{green}{\mathbf{0.758}}$ |
 | Nucleus Sampling (p=0.95) | 90.56 | 99.570 | 24.25 | 25.30 | -2.614 | -2.278 | 0.723 |
-| Typical Sampling (p=0.95) | $\color{green}{\mathbf{99.97}}$ | 99.150 | 20.74 | 25.74 | -2.482 | -2.205 | 0.725 |
+| Typical Sampling (p=0.95) | $\color{green}{\mathbf{99.97}}$ | 99.150 | 20.74 | 25.74 | -2.482 | -2.205 | 0.725 |        
 | Contrastive Search (k=10, α=0.6) | 3.93 | $\color{green}{\mathbf{100.000}}$ | 130291.92 | 13.92 | -10.121 | -9.863 | 0.577 |
-| Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | N/A | -1.581 | 0.749 |
+| Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | -1.951 | -1.581 | 0.749 |
 
 ================================================================================================================================================================  
  MARKDOWN SANS COULEUR (en cas de bug) :
@@ -100,7 +100,7 @@ Les résultats ci-dessous comparent différentes stratégies de décodage sur le
 | Nucleus Sampling (p=0.95) | 90.56 | 99.570 | 24.25 | 25.30 | -2.614 | -2.278 | 0.723 |
 | Typical Sampling (p=0.95) | **99.97** | 99.150 | 20.74 | 25.74 | -2.482 | -2.205 | 0.725 |
 | Contrastive Search (k=10, α=0.6) | 3.93 | **100.000** | 130291.92 | 13.92 | -10.121 | -9.863 | 0.577 |
-| Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | N/A | -1.581 | 0.749 |
+| Epsilon Sampling (k=5, α=0.6) | 99.81 | 92.560 | 13.38 | 24.96 | -1.951 | -1.581 | 0.749 |
 
 
 ## Résultat de l'analyse/évaluation :  (wikitext;num_prefixes=100;decoding_len=256))
