@@ -19,6 +19,7 @@
 \usepackage{xcolor}
 \usepackage{multirow}
 \usepackage{listings}
+\usepackage{pmboxdraw}
 
 % Définition de la couleur pour les meilleurs résultats (vert foncé)
 \definecolor{bestgreen}{RGB}{0, 150, 0}
@@ -349,22 +350,34 @@ Les r\'esultats confirment que l'$\epsilon$-Greedy Search offre un compromis rob
 \subsection{Structure du Projet}
 L'architecture logicielle a \'et\'e pens\'ee pour la reproductibilit\'e.
 
-% \begin{lstlisting}[basicstyle=\small\ttfamily, frame=single]
-% Project-Open-Ended-Text-Generation/
-% ├── data/                   # Datasets (wikitext, bookcorpus...)
-% ├── models/                 # Checkpoints et adaptateurs
-% ├── plots_final_comparison/ # Graphiques generes
-% ├── src/
-% │   ├── decoding/           # Implementation des strategies
-% │   │   ├── epsilon.py      # Notre algorithme
-% │   │   ├── contrastive.py
-% │   │   └── sampling.py
-% │   ├── metrics/            # Calcul de MAUVE, SimCSE, etc.
-% │   └── utils.py            # Helpers (chargement donnees)
-% ├── main.py                 # Point d'entree principal
-% ├── requirements.txt        # Dependances Python
-% └── README.md
-% \end{lstlisting}
+\begin{lstlisting}[
+    basicstyle=\small\ttfamily, 
+    frame=single,
+    % La magie opère ici : on mappe les caractères UTF8 vers les commandes LaTeX
+    literate=
+    {├}{{\textSFviii}}1
+    {─}{{\textSFx}}1
+    {│}{{\textSFxi}}1
+    {└}{{\textSFii}}1
+    {é}{{\'e}}1
+    {è}{{\`e}}1
+    {à}{{\`a}}1
+]
+Project-Open-Ended-Text-Generation/
+├── data/                   # Datasets (wikitext, bookcorpus...)
+├── models/                 # Checkpoints et adaptateurs
+├── plots_final_comparison/ # Graphiques generes
+├── src/
+│   ├── decoding/           # Implementation des strategies
+│   │   ├── epsilon.py      # Notre algorithme
+│   │   ├── contrastive.py
+│   │   └── sampling.py
+│   ├── metrics/            # Calcul de MAUVE, SimCSE, etc.
+│   └── utils.py            # Helpers (chargement donnees)
+├── main.py                 # Point d'entree principal
+├── requirements.txt        # Dependances Python
+└── README.md
+\end{lstlisting}
 
 \subsection{Guide de D\'emarrage}
 Le projet offre plusieurs modes de lancement selon le besoin (test rapide ou benchmark complet).
