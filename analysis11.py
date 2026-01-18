@@ -181,19 +181,32 @@ def load_all_methods():
                         row['Gen_Length'] = get_json_val(d, ['gen_length_dict', 'gen_len_mean'])
                 except: pass
 
-                # --- 2. Perplexity ---
-                ppl_file = f"{file_prefix}_perplexity_result.json"
-                if os.path.exists(ppl_file):
-                    try:
-                        with open(ppl_file, 'r', encoding='utf-8') as f:
-                            d = json.load(f)
-                            val = d.get('mean_perplexity') or d.get('ppl')
-                            row['Perplexity'] = float(val) if val else float('nan')
-                    except: row['Perplexity'] = float('nan')
-                else: 
+                # --- 2. Perplexity (Avec gestion du "point" manquant) ---
+                # On cherche soit "...nom_perplexity..." soit "...nom._perplexity..."
+                potential_ppl_paths = [
+                    f"{file_prefix}_perplexity_result.json", # Cas standard
+                ]
+                if file_prefix.endswith('.'):
+                    potential_ppl_paths.append(f"{file_prefix[:-1]}_perplexity_result.json") # Cas sans le point
+
+                ppl_found = False
+                for ppl_path in potential_ppl_paths:
+                    if os.path.exists(ppl_path):
+                        try:
+                            with open(ppl_path, 'r', encoding='utf-8') as f:
+                                d = json.load(f)
+                                val = d.get('mean_perplexity') or d.get('ppl')
+                                row['Perplexity'] = float(val) if val else float('nan')
+                                ppl_found = True
+                                break
+                        except: pass
+                
+                if not ppl_found:
                     row['Perplexity'] = float('nan')
 
                 # --- 3. Coherence (Likelihood) - Filtrage par Juge ---
+                # Glob utilise le prefix, qui peut inclure un point. 
+                # Le glob fonctionne généralement bien même avec "nom.*_coherence"
                 coh_files = glob.glob(f"{file_prefix}*_coherence_result.json")
                 
                 for cf in coh_files:
@@ -217,15 +230,25 @@ def load_all_methods():
                                 row[f'Coh_Like_{judge_name}'] = val
                         except: pass
 
-                # --- 4. SimCSE ---
-                simcse_file = f"{file_prefix}_simcse_result.json"
-                if os.path.exists(simcse_file):
-                    try:
-                        with open(simcse_file, 'r', encoding='utf-8') as f:
-                            d = json.load(f)
-                            row['Coh_Sem_SimCSE'] = float(d.get('coherence_mean', 0.0))
-                    except: row['Coh_Sem_SimCSE'] = 0.0
-                else: 
+                # --- 4. SimCSE (Avec gestion du "point" manquant) ---
+                potential_simcse_paths = [
+                    f"{file_prefix}_simcse_result.json",
+                ]
+                if file_prefix.endswith('.'):
+                    potential_simcse_paths.append(f"{file_prefix[:-1]}_simcse_result.json")
+
+                simcse_found = False
+                for simcse_path in potential_simcse_paths:
+                    if os.path.exists(simcse_path):
+                        try:
+                            with open(simcse_path, 'r', encoding='utf-8') as f:
+                                d = json.load(f)
+                                row['Coh_Sem_SimCSE'] = float(d.get('coherence_mean', 0.0))
+                                simcse_found = True
+                                break
+                        except: pass
+                
+                if not simcse_found:
                     row['Coh_Sem_SimCSE'] = float('nan')
 
                 all_data.append(row)
