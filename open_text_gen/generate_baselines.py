@@ -33,7 +33,7 @@ def main():
 
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     # On utilise le modèle standard HF, plus robuste pour les baselines
-    model = AutoModelForCausalLM.from_pretrained(args.model_name)
+    model = AutoModelForCausalLM.from_pretrained(args.model_name) #, torch_dtype=torch.float16,device_map="auto", low_cpu_mem_usage=True, offload_folder="offload_tmp"
     model.to(device)
     model.eval()
     

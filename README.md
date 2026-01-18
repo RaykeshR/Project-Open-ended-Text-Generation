@@ -483,6 +483,7 @@ pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu13
 pip uninstall torch torchvision torchaudio -y
 pip install torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 --index-url https://download.pytorch.org/whl/cu130
 nvidia-smi
+pip install accelerate
 
 ```
 (les dernières lignes sont là en cas de bug)
