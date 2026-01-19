@@ -59,9 +59,12 @@ SELECTED_COH_JUDGES = [
 RED = "\033[91m"
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
+BLUE = "\033[94m"
+MAGENTA = "\033[95m" # Couleur ajoutée pour Epsilon
+CYAN = "\033[96m"
 BOLD = "\033[1m"
 RESET = "\033[0m"
-CYAN = "\033[96m"
+
 
 def get_json_val(data, keys, default=0.0):
     val = data
@@ -339,8 +342,16 @@ def generate_comparison_table(df, dataset_name, output_format="terminal"):
         m_name = str(row['Method'])
         row_str = ""
         
+        # Détection pour coloration de la ligne Epsilon (Uniquement Terminal)
+        is_epsilon_row = ("Epsilon" in m_name and output_format == "terminal")
+        row_color = MAGENTA if is_epsilon_row else ""
+        row_reset = RESET if is_epsilon_row else ""
+
         if output_format == "terminal":
-            row_str += f"{m_name:<{method_width}} "
+            # On applique la couleur au nom (tout en gérant le padding pour l'alignement)
+            padded_name = f"{m_name:<{method_width}}"
+            row_str += f"{row_color}{padded_name}{row_reset} "
+            
             if show_model_col:
                 row_str += f"{str(row.get('Model','')):<12} "
         else:
@@ -354,9 +365,17 @@ def generate_comparison_table(df, dataset_name, output_format="terminal"):
             if output_format == "terminal":
                 plain_len = len(re.sub(r'\033\[[0-9;]*m', '', fmt_val))
                 padding = " " * (col_width - plain_len)
-                row_str += f"{fmt_val}{padding} "
+                
+                if is_epsilon_row and not is_best:
+                    # Si c'est la ligne Epsilon et que ce n'est PAS la meilleure valeur (donc pas verte),
+                    # on la colorie en Magenta pour maintenir la couleur de la ligne.
+                    row_str += f"{row_color}{fmt_val}{row_reset}{padding} "
+                else:
+                    # Sinon (soit ligne normale, soit valeur "Best" verte), on laisse tel quel
+                    row_str += f"{fmt_val}{padding} "
             else:
                 row_str += f"{fmt_val} | "
+        
         lines.append(row_str)
         
     return "\n".join(lines)
