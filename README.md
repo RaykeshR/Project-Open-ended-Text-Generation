@@ -12,6 +12,7 @@
 
 <!-- Le site est accessible via ce [Lien qui fait une Redirection d'URL](https://raykeshr.github.io/PFE-Roguelike/) vers une page d'accueil pour le site du Github : PFE-Roguelike -->
 Rapport : [Fichier Word](https://reseaueseo-my.sharepoint.com/:w:/r/personal/lea_ludet_reseau_eseo_fr/Documents/Rapport_Projet_NLP.docx?d=w0ac3619c8d6b469e8e2f4897154e7524&csf=1&web=1&e=r4mTnR) 
+Présentation : [Canvas](https://www.canva.com/design/DAG9dRNklqY/9EyZtayW1BhTe001Xqsv0Q/edit) 
 
 
 #### Sommaire 
